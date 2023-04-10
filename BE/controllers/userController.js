@@ -79,7 +79,7 @@ exports.login = async (req, res) => {
   });
 };
 
-//update
+//update user information
 
 exports.updateUser = async (req, res) => {
   try {
@@ -102,7 +102,7 @@ exports.updateUser = async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ success: false, state: "some thing is wrong" });
+    res.status(500).json({ success: false, state: "Some thing is wrong" });
   }
 };
 
@@ -146,13 +146,15 @@ exports.changePassword = async (req, res) => {
       await user.update({ password: hashedPassword });
     }
 
-  } catch (err) { }
+  } catch (err) {
+    res.status(500).json({ success: false, state: "Some thing is wrong" });
+  }
 };
 
-
+//show user information
 
 exports.showInformation = async (req, res) => {
-  try{
+  try {
     const token = req.headers.authentication;
     if (!token) {
       return res.status(200).json({
@@ -164,14 +166,46 @@ exports.showInformation = async (req, res) => {
     const user = jwt.verify(token, key);
     await User.find(req.params.email);
     res.status(200).json({
-      success:true,
+      success: true,
       name: user.name,
       email: user.email,
       phone: user.phone,
       address: user.address,
     })
-  }catch(err)
-  {
+  } catch (err) {
     res.status(500).json({ success: false, state: "Some thing is wrong" });
+  }
+};
+
+//get all users
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(200).json({
+        success: false,
+        message: "Unauthorization",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const user = jwt.verify(token, key);
+    await User.find();
+    res.status(200).json(user);
+  }
+  catch (err) {
+    res.status(500).json({ success: false, state: "Some thing is wrong" });
+  }
+};
+
+//delete user
+
+exports.deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndRemove(req.params.id);
+    res.status(200).json({ success: true });
+    console.log("Success");
+  } catch (err) {
+    res.status(500).json({ success: false, state: "invalid ID" });
   }
 };
