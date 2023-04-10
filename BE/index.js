@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
+const productRouter = require("./routes/productRouter");
 const bodyParser = require("body-parser");
 const cors = require('cors')
 dotenv.config();
@@ -24,8 +25,11 @@ app.use(function (req, res, next) {
     });
 app.use(express.json());
 app.use(bodyParser.json());
-app.use("/api/user", userRouter)
 app.use(cors());
+
+app.use("/api/user", userRouter)
+app.use("/api", productRouter);
+
 app.listen(process.env.PORT || 8000, () => {
     console.log("Server is runing! port:"+process.env.PORT);
 })
