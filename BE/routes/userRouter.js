@@ -3,8 +3,7 @@ const userController = require("../controllers/userController")
 
 router.post("/register",userController.register);
 router.post("/login",userController.login);
-router.put("/:id", userController.updateUser);
-router.get("/:id",userController.showInformation);
-router.get("/users",userController.getAllUsers);
+router.put("/changepassword/:id",userController.changePassword);
+router.put("/update/:id", userController.updateUser);
 
 module.exports = router;

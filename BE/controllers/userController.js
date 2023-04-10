@@ -1,13 +1,12 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const user = require("../models/userModel");
 
 //register
 
 exports.register = async (req, res) => {
   const { name, email, password, phone, address } = req.body;
-  console.log(name,email,password);
+  console.log(name, email, password);
   if (!email || !password || !name) {
     return res.status(500).json({
       success: false,
@@ -22,13 +21,11 @@ exports.register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      // phone,
-      // address,
     });
     await user.save();
     res.status(200).json({
       success: true,
-      data: user,
+      message: "Success"
     });
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));
@@ -65,7 +62,7 @@ exports.login = async (req, res) => {
   if (!isMatch) {
     return res.status(500).json({
       success: false,
-      message: "Wrong password",
+      message: "Invalid password",
     });
   }
   const key = process.env.JWT_SEC;
@@ -86,33 +83,6 @@ exports.login = async (req, res) => {
   });
 };
 
-//update user information
-
-exports.updateUser = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      return res.status(200).json({
-        success: false,
-        message: "Unauthorization",
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const user = jwt.verify(token, key);
-    if (user) {
-      await User.findByIdAndUpdate(req.params.id, req.body);
-      res.status(200).json({ success: true });
-    } else {
-      res.status(200).json({
-        success: false,
-        message: "Unauthorization",
-      });
-    }
-  } catch (err) {
-    res.status(500).json({ success: false, state: "Some thing is wrong" });
-  }
-};
-
 //Change password
 
 exports.changePassword = async (req, res) => {
@@ -125,68 +95,43 @@ exports.changePassword = async (req, res) => {
       });
     }
     const key = process.env.JWT_SEC;
-    const user = jwt.verify(token, key);
-    if (user) {
-      const { password, newPassword, confirmPassword } = req.body;
-      if (!password || !newPassword || !confirmPassword) {
-        return res.status(500).json({
-          success: false,
-          message: "Invalid Input",
-        });
-      }
-      await User.findOne({ email });
-      if (!user) {
-        return res.status(500).json({
-          success: false,
-          message: "Invalid User",
-        });
-      }
-      const isMatch = bcrypt.compareSync(password, user.password);
-      if (!isMatch) {
-        return res.status(500).json({
-          success: false,
-          message: "Invalid User",
-        });
-      }
-      const salt = await bcrypt.genSaltSync(12);
-      hashedPassword = await bcrypt.hashSync(newPassword, salt);
-      await user.update({ password: hashedPassword });
-    }
-
-  } catch (err) {
-    res.status(500).json({ success: false, state: "Some thing is wrong" });
-  }
-};
-
-//show user information
-
-exports.showInformation = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      return res.status(200).json({
+    const decoded = jwt.verify(token, key);
+    const { password, newPassword, confirmPassword } = req.body;
+    if (!password || !newPassword || !confirmPassword) {
+      return res.status(500).json({
         success: false,
-        message: "Unauthorization",
+        message: "Invalid Input",
       });
     }
-    const key = process.env.JWT_SEC;
-    const user = jwt.verify(token, key);
-    await User.find(req.params.email);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(500).json({
+        success: false,
+        message: "Invalid User",
+      });
+    }
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      return res.status(500).json({
+        success: false,
+        message: "invalid password",
+      });
+    }
+    const salt = await bcrypt.genSaltSync(12);
+    hashedPassword = await bcrypt.hashSync(newPassword, salt);
+    await User.updateOne({ password: hashedPassword });
     res.status(200).json({
       success: true,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      address: user.address,
-    })
+      message: "Success"
+    });
   } catch (err) {
     res.status(500).json({ success: false, state: "Some thing is wrong" });
   }
 };
 
-//get all users
+//update user information
 
-exports.getAllUsers = async (req, res) => {
+exports.updateUser = async (req, res) => {
   try {
     const token = req.headers.authentication;
     if (!token) {
@@ -196,23 +141,25 @@ exports.getAllUsers = async (req, res) => {
       });
     }
     const key = process.env.JWT_SEC;
-    const user = jwt.verify(token, key);
-    await User.find();
-    res.status(200).json(user);
-  }
-  catch (err) {
-    res.status(500).json({ success: false, state: "Some thing is wrong" });
+    const decoded = jwt.verify(token, key);
+    await User.findByIdAndUpdate(req.params.id, req.body);
+    res.status(200).json({
+      success: true,
+      message: "Success"
+    });
+  } catch (error) {
+    console.log(JSON.stringify(error, null, 2));
+    console.log();
+    if (error.code === 11000) {
+      res.status(400).json({
+        success: false,
+        message: `${Object.keys(error.keyValue)} is already existed`,
+      });
+    }
   }
 };
 
 //delete user
 
-exports.deleteUser = async (req, res) => {
-  try {
-    await User.findByIdAndRemove(req.params.id);
-    res.status(200).json({ success: true });
-    console.log("Success");
-  } catch (err) {
-    res.status(500).json({ success: false, state: "invalid ID" });
-  }
-};
+
+

@@ -1,5 +1,5 @@
 const Product = require("../models/productModel");
-const User = require("../models/user");
+const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
 exports.addProduct = async (req,res)=>{
