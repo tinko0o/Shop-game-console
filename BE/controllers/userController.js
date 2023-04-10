@@ -1,6 +1,7 @@
-const User = require("../models/user");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const user = require("../models/userModel");
 
 //register
 
@@ -108,7 +109,7 @@ exports.updateUser = async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ success: false, state: "invalid ID" });
+    res.status(500).json({ success: false, state: "some thing is wrong" });
   }
 };
 
@@ -151,39 +152,33 @@ exports.changePassword = async (req, res) => {
       hashedPassword = await bcrypt.hashSync(newPassword, salt);
       await user.update({ password: hashedPassword });
     }
-    
-  } catch (err) {}
-  // const { email, password, newPassword } = req.body;
 
-  // if (!email || !password) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     message: "Invalid Input",
-  //   });
-  // }
-  // const user = await User.findOne({ email });
-  // if (!user) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     message: "Invalid User",
-  //   });
-  // }
-  // const isMatch = bcrypt.compareSync(password, user.password);
-  // if (!isMatch) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     message: "Invalid User",
-  //   });
-  // }
-  // const salt = await bcrypt.genSaltSync(12);
-  // hashedPassword = await bcrypt.hashSync(newPassword, salt);
-  // await user.update({ password: hashedPassword });
-  // res.json({
-  //   success: true,
-  //   data: {
-  //     idUser: user._id,
-  //     email: user.email,
-  //     username: user.username,
-  //   },
-  // });
+  } catch (err) { }
+};
+
+
+
+exports.showInformation = async (req, res) => {
+  try{
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(200).json({
+        success: false,
+        message: "Unauthorization",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const user = jwt.verify(token, key);
+    await User.find(req.params.email);
+    res.status(200).json({
+      success:true,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+    })
+  }catch(err)
+  {
+    res.status(500).json({ success: false, state: "Some thing is wrong" });
+  }
 };
