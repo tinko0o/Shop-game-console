@@ -7,6 +7,13 @@ const user = require("../models/userModel");
 
 exports.register = async (req, res) => {
   const { name, email, password, phone, address } = req.body;
+  console.log(name,email,password);
+  if (!email || !password || !name) {
+    return res.status(500).json({
+      success: false,
+      message: "Invalid Input",
+    });
+  }
   const salt = await bcrypt.genSaltSync(12);
   hashedPassword = await bcrypt.hashSync(password, salt);
   console.log("hashedPassword:", hashedPassword);
