@@ -111,28 +111,6 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const token = req.headers.authentication;
-    if (!token) {
-      res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid user",
-      });
-    }
-    if (!user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden",
-      });
-    }
     const products = await Product.find();
     res.status(200).json({
       success: true,
@@ -142,4 +120,3 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
-
