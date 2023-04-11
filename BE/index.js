@@ -27,8 +27,8 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use("/api/user", userRouter)
-app.use("/api", productRouter);
+app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
 
 app.listen(process.env.PORT || 8000, () => {
     console.log("Server is runing! port:"+process.env.PORT);

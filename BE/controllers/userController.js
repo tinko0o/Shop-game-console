@@ -197,7 +197,7 @@ exports.deleteUser = async (req, res) => {
       });
     }
     await User.findByIdAndRemove(req.params.id);
-    res.status(200).json({ success: true, message: "Success" });
+    res.status(200).json({ success: true, message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ success: false, message: "An error occurred while deleting user" });
   }
