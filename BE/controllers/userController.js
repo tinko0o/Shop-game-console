@@ -7,16 +7,16 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   const { name, email, password, phone, address } = req.body;
-  console.log(name, email, password);
-  if (!email || !password || !name) {
-    return res.status(500).json({
+  if (!name || !email || !password) {
+    return res.status(400).json({
       success: false,
-      message: "Invalid Input",
+      error: {
+        message: "Missing required fields",
+      },
     });
   }
   const salt = await bcrypt.genSaltSync(12);
-  hashedPassword = await bcrypt.hashSync(password, salt);
-  console.log("hashedPassword:", hashedPassword);
+  const hashedPassword = await bcrypt.hashSync(password, salt);
   try {
     const user = new User({
       name,
@@ -24,9 +24,9 @@ exports.register = async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
-    res.status(200).json({
+    res.status(201).json({
       success: true,
-      message: "Success"
+      message: "User registered successfully",
     });
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));
@@ -34,7 +34,16 @@ exports.register = async (req, res) => {
     if (error.code === 11000) {
       res.status(400).json({
         success: false,
-        message: `${Object.keys(error.keyValue)} is already existed`,
+        error: {
+          message: "Email is already taken",
+        },
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: {
+          message: "Something went wrong",
+        },
       });
     }
   }
@@ -46,43 +55,54 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
       message: "Invalid Input",
     });
   }
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(500).json({
-      success: false,
-      message: "Invalid User",
-    });
-  }
-  const isMatch = bcrypt.compareSync(password, user.password);
-  if (!isMatch) {
-    return res.status(500).json({
-      success: false,
-      message: "Invalid password",
-    });
-  }
-  const key = process.env.JWT_SEC;
-  const token = await jwt.sign(
-    {
-      email: user.email,
-      username: user.username,
-    },
-    key,
-    {
-      expiresIn: "1d",
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid User",
+      });
     }
-  );
-  res.json({
-    success: true,
-    user,
-    token,
-  });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    const key = process.env.JWT_SEC;
+    const token = await jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+        username: user.username,
+      },
+      key,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    res.json({
+      success: true,
+      user,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
 };
+
+
 
 //Change password
 
@@ -92,7 +112,7 @@ exports.changePassword = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorization",
+        message: "Unauthorized",
       });
     }
     const key = process.env.JWT_SEC;
@@ -105,8 +125,7 @@ exports.changePassword = async (req, res) => {
       });
     }
     const user = await User.findOne({ email: decoded.email });
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({
         success: false,
         message: "Invalid password",
@@ -118,12 +137,17 @@ exports.changePassword = async (req, res) => {
         message: "Passwords do not match",
       });
     }
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-    await User.updateOne({ email: decoded.email }, { password: hashedPassword });
+    const salt = bcrypt.genSaltSync(12);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    const updatedUser = await User.findOneAndUpdate(
+      { email: decoded.email },
+      { password: hashedPassword },
+      { new: true }
+    );
     res.status(200).json({
       success: true,
-      message: "Password changed successfully"
+      message: "Password changed successfully",
+      user: updatedUser,
     });
   } catch (err) {
     console.log(err);
@@ -142,13 +166,36 @@ exports.updateUser = async (req, res) => {
         message: "Unauthorized",
       });
     }
+
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email })
-    await User.findByIdAndUpdate(req.params.id, req.body);
+
+    const { name, email, phone, address } = req.body;
+    if (!name || !email || !phone || !address) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid input",
+      });
+    }
+
+    const user = await User.findOne({ email: decoded.email });
+    if (!user.isAdmin && user.email !== decoded.email) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email: decoded.email, _id: req.params.id },
+      { name,email, phone, address },
+      { new: true }
+    );
+
     res.status(200).json({
       success: true,
       message: "User updated successfully",
+      user: updatedUser,
     });
   } catch (error) {
     res.status(500).json({
@@ -164,34 +211,7 @@ exports.deleteUser = async (req, res) => {
   try {
     const token = req.headers.authentication;
     if (!token) {
-      res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email })
-    if (!user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden",
-      });
-    }
-    await User.findByIdAndRemove(req.params.id);
-    res.status(200).json({ success: true, message: "User deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "An error occurred while deleting user" });
-  }
-};
-
-//get all users
-
-exports.getAllUsers = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: "Unauthorized",
       });
@@ -205,12 +225,47 @@ exports.getAllUsers = async (req, res) => {
         message: "Forbidden",
       });
     }
-    const users = await User.find({ isAdmin: false });
+    const deletedUser = await User.findOneAndDelete({ _id: req.params.id });
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    res.status(200).json({ success: true, message: "User deleted successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "An error occurred while deleting user" });
+  }
+};
+
+//get all users
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+    const users = await User.find({ isAdmin: false }).select('-password');
     res.status(200).json({
       success: true,
       users,
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
@@ -221,7 +276,7 @@ exports.getUser = async (req, res) => {
   try {
     const token = req.headers.authentication;
     if (!token) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: "Unauthorized",
       });

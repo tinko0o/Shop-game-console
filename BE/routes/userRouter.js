@@ -7,6 +7,6 @@ router.put("/changepassword/:id",userController.changePassword);
 router.put("/update/:id", userController.updateUser);
 router.delete("/delete/:id", userController.deleteUser);
 router.get("/",userController.getAllUsers);
-router.get("/find/:id",userController.getUses);
+router.get("/find/:id",userController.getUser);
 
 module.exports = router;
