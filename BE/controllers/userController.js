@@ -93,7 +93,7 @@ exports.login = async (req, res) => {
 
     res.json({
       success: true,
-      user,
+      data: user,
       token,
     });
   } catch (error) {
