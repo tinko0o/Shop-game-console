@@ -79,7 +79,12 @@ exports.login = async (req, res) => {
   );
   res.json({
     success: true,
-    user,
+    data:{
+      idUser:user._id,
+      email:user.email,
+      username:user.name,
+      admin:user.isAdmin,
+    },
     token,
   });
 };
@@ -236,6 +241,39 @@ exports.getAllUsers = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+//check Admin
+exports.checkAuthorization =async (req,res)=>{
+  try{
+    const token = req.headers.authentication;
+    if(!token){
+      return res.status(200).JSON({
+        success:false,
+        message:"UnAuthorization"
+      });
+    }
+    const key =process.env.JWT_SEC;
+    const user = jwt.verify(token,key);
+    const email = user.email;
+    if(user){
+      const users = await User.findOne({email});
+      res.status(200).json({
+        success:true,
+        data: users.isAdmin,
+      });
+    }else{
+      res.status(200).json({
+        success:false,
+        message:"UnAuthorization"
+      });
+    }
+  }
+  catch(err){
+    res.status(500).json({
+      success:false,
+      state:"UnAuthorization",
+    });
   }
 };
 

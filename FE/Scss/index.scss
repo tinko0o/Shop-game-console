@@ -1,0 +1,169 @@
+body {
+    font-family: "Poppins", sans-serif;
+    width: 100vw;
+  }
+
+header{
+    .container{
+        .nav-top{
+            height: 50px;
+            padding: 5px 0;
+            position: relative;
+            display: flex;
+            .logo-search{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .logo-icon{
+                    display: flex;
+                    align-items: center;
+                    img{
+                        width: 40px;
+                        // height: 30px;
+                        display: inline-block;
+                    }
+                    p{
+                        font-weight: 600;
+                        text-align: center;
+                        font-size: 24px;
+                        margin: 0 30px 0 5px;
+                        color: #222;
+                    }
+                }
+            form{
+                max-width: 700px;
+                background: #eee;
+                border: none;
+                border-radius: 50px;
+                padding: 12px 15px;
+                margin: 8px 0;
+                // width: 100%;
+                transition: 0.3s;
+                input{
+                    flex:1;
+                    // height: 40px;
+                    &:focus {
+                        &::placeholder {
+                          opacity: 0;
+                        }
+                      }
+                    &::placeholder {
+                        font-size: 14px;
+                        padding-left: 5px;
+                        transition: 0.3s;
+                      }
+                    &:hover{
+                        scale: 1.02;
+                    }
+                }
+                .submit {
+                    width: 25px;
+                    height: 25px;
+                    display: inline-block;
+                  }  
+            }
+            }  
+            .nav-action{
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                .cart{
+                    position: relative;
+                    height: 30px;
+                    width: 30px;
+                    font-size: 25px;
+                    color: #706c6c;
+                    cursor: pointer;
+                    transition: 0.5s;
+                    &:hover{
+                        color: #222;
+                    }
+                    .quantities-cart{
+                        position: absolute;
+                        width: 18px;
+                        height: 18px;
+                        color: #FFF;
+                        border-radius:50% ;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background-color: #706c6c;
+                        font-size: 13px;
+                        top: -10px;
+                        right: -5px;
+                    }
+                }
+                .wall {
+                    width: 2px;
+                    height: 30px;
+                    background-color: #666;
+                    margin: 0 15px;
+                  }
+                .user{
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+                    cursor: pointer;
+                    // &:hover {
+                    //   .dropdown-user {
+                    //     opacity: 1;
+                    //     visibility: visible;
+                    //     top: calc(100% + 5px);
+                    //   }
+                    // }
+                    // .dropdown-user {
+                    //   width: 120px;
+                    //   position: absolute;
+                    //   background-color: #f1f2f6;
+                    //   opacity: 0;
+                    //   visibility: hidden;
+                    //   transition: all 0.3s ease;
+                    //   top: calc(100% + 15px);
+                    //   z-index: 100;
+                    //   box-shadow: rgba(100, 100, 111, 0.4s) 0px 7px 29px 0px;
+                    //   padding: 0;
+                    //   margin: 0;
+                    //   border-radius: 3px;
+                    //   overflow: hidden;
+                    //   li {
+                    //     text-align: center;
+                    //     width: 100%;
+                    //     color: #333;
+                    //     padding: 5px 10px;
+                    //     font-size: 16px;
+                    //     font-weight: 500;
+                    //     cursor: pointer;
+                    //     transition: 0.3s;
+                    //     &:hover {
+                    //       background-color: #666;
+                    //       color: #fff;
+                    //       a {
+                    //         color: #fff;
+                    //       }
+                    //     }
+                    //   }
+                    // }
+                    i {
+                      font-size: 24px;
+                      margin-right: 10px;
+                    }
+                    a {
+                      font-size: 18px;
+                      font-weight: 600;
+                      color: #666;
+                      transition: 0.3s;
+                      &:hover {
+                        color: #222;
+                      }
+                    }
+                    span {
+                      font-weight: 500;
+                      margin: 0 3px;
+                    }
+                }
+            }
+        }
+    }
+}
