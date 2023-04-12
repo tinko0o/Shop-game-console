@@ -49,12 +49,6 @@ exports.updateProduct = async (req, res) => {
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
     const user = await User.findOne({ email: decoded.email })
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -88,12 +82,6 @@ exports.deleteProduct = async (req, res) => {
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
     const user = await User.findOne({ email: decoded.email })
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid user",
-      });
-    }
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -120,3 +108,17 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
+//get product
+
+exports.getProduct = async (req,res) =>{
+  try{
+    const product = await Product.findById(req.params.id);
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  }catch(err){
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+}

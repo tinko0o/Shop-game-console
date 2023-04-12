@@ -46,7 +46,7 @@ async function login(data){
         JSON.stringify({data:data.data , token:data.token})
       );
       // window.location.replace("./index.html");
-      alert("login Success")
+      // alert("login Success")
     }
     // checkAdmin
     const User = JSON.parse(localStorage.getItem("loginUser"));

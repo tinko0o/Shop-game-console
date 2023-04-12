@@ -8,7 +8,7 @@ router.put("/update/:id", userController.updateUser);
 router.delete("/delete/:id", userController.deleteUser);
 router.get("/getall",userController.getAllUsers);
 // router.get("/admins",userController.getAllAdmins);
-// router.get("/find/:id",userController.getUser);
 router.get("/check",userController.checkAuthorization);
+// router.get("/find/:id",userController.getUses);
 
 module.exports = router;
