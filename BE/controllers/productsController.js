@@ -9,7 +9,7 @@ exports.addProduct = async (req, res) => {
   try {
     const token = req.headers.authentication;
     if (!token) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: "Unauthorized",
       });
@@ -27,11 +27,12 @@ exports.addProduct = async (req, res) => {
     const newProduct = await product.save();
     res.status(200).json({
       success: true,
-      message: "success",
-      newProduct,
+      message: "Product added successfully",
+      data: newProduct,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "An error occurred while adding product" });
+    console.error(err);
+    res.status(500).json({ success: false, message: "An error occurred while adding the product" });
   }
 }
 
@@ -48,22 +49,30 @@ exports.updateProduct = async (req, res) => {
     }
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email })
+    const user = await User.findOne({ email: decoded.email });
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
         message: "Forbidden",
       });
     }
-    await Product.findByIdAndUpdate(req.params.id, req.body);
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
     res.status(200).json({
       success: true,
       message: "Product updated successfully",
+      data: updatedProduct,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: "An error occurred while updating product",
+      message: "An error occurred while updating the product",
     });
   }
 };
@@ -74,23 +83,23 @@ exports.deleteProduct = async (req, res) => {
   try {
     const token = req.headers.authentication;
     if (!token) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: "Unauthorized",
       });
     }
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email })
+    const user = await User.findOne({ email: decoded.email });
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
         message: "Forbidden",
       });
     }
-    await Product.findByIdAndRemove(req.params.id);
-    res.status(200).json({ success: true, message: "product deleted successfully" });
-  } catch (err) {
+    await Product.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: "Product deleted successfully" });
+  } catch (error) {
     res.status(500).json({ success: false, message: "An error occurred while deleting product" });
   }
 };
@@ -99,9 +108,33 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const page = parseInt(req.query.page) || 1; // Get the page number from the query string or default to page 1
+    const limit = parseInt(req.query.limit) || 10; // Get the limit from the query string or default to 10 items per page
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Product.countDocuments();
+
+    const products = await Product.find().skip(startIndex).limit(limit);
+
+    const pagination = {};
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
     res.status(200).json({
       success: true,
+      count: products.length,
+      pagination,
       products,
     });
   } catch (err) {
