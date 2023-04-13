@@ -50,7 +50,7 @@ async function login(data){
     }
     // checkAdmin
     const User = JSON.parse(localStorage.getItem("loginUser"));
-    console.log(User.data.admin)
+    // console.log(User.data.admin)
     if(User.data.admin){
       window.location.replace("./admin.html");
     }

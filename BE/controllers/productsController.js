@@ -111,14 +111,56 @@ exports.getAllProducts = async (req, res) => {
 
 //get product
 
-exports.getProduct = async (req,res) =>{
-  try{
-    const product = await Product.findById(req.params.id);
-    res.status(200).json({
-      success: true,
-      product,
-    });
-  }catch(err){
-    res.status(500).json({ success: false, message: "Something went wrong" });
+// exports.getProduct = async (req,res) =>{
+//   try{
+//     const product = await Product.findById(req.params.id);
+//     res.status(200).json({
+//       success: true,
+//       product,
+//     });
+//   }catch(err){
+//     res.status(500).json({ success: false, message: "Something went wrong" });
+//   }
+// }
+
+exports.getProduct = async (req, res) => {
+  // const skip = req.query.skip ? Number(req.query.skip) : 0;
+  const limit = req.query.limit ? Number(req.query.limit) : 0;
+  const page = req.query.page ? Number(req.query.page) * limit - limit : 0;
+  const name = req.headers.search;
+  if (name) {
+    try {
+      const product = await Product.find();
+      const findData = product.filter((val) => {
+        return val.name.toLowerCase().includes(name.toLowerCase());
+      });
+      if (findData.length !== 0) {
+        const getLinit = findData.slice(page, page + limit);
+
+        return res.status(200).json({
+          success: true,
+          data: getLinit,
+          length: findData.length,
+        });
+      } else {
+        return res
+          .status(200)
+          .json({ success: false, state: "Input not found!" });
+      }
+    } catch (err) {
+      res.status(500).json({ success: false, state: "Something wrong!" });
+    }
+  } else {
+    try {
+      const lengthALLProduct = await Product.count();
+      const products = await Product.find().skip(page).limit(limit);
+      res.status(200).json({
+        success: true,
+        data: products,
+        length: lengthALLProduct,
+      });
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
-}
+};
