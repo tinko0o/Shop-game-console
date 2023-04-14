@@ -144,19 +144,19 @@ exports.getAllProducts = async (req, res) => {
 
 //get product
 
-// exports.getProduct = async (req,res) =>{
-//   try{
-//     const product = await Product.findById(req.params.id);
-//     res.status(200).json({
-//       success: true,
-//       product,
-//     });
-//   }catch(err){
-//     res.status(500).json({ success: false, message: "Something went wrong" });
-//   }
-// }
+exports.getProduct = async (req,res) =>{
+  try{
+    const product = await Product.findById(req.params.id);
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  }catch(err){
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+}
 
-exports.getProduct = async (req, res) => {
+exports.getProducts = async (req, res) => {
   // const skip = req.query.skip ? Number(req.query.skip) : 0;
   const limit = req.query.limit ? Number(req.query.limit) : 0;
   const page = req.query.page ? Number(req.query.page) * limit - limit : 0;

@@ -7,8 +7,6 @@ const UserSchema = new mongoose.Schema({
     phone: { type: String, require: true },
     address: { type: String, require: true },
     isAdmin: { type: Boolean, default: false },
-    cart: { type: Array, require: true, },
-    order: { type: Array, require: true, },
 },
     {
         timestamps: true,
