@@ -149,7 +149,7 @@ exports.getProduct = async (req,res) =>{
     const product = await Product.findById(req.params.id);
     res.status(200).json({
       success: true,
-      product,
+      data:product,
     });
   }catch(err){
     res.status(500).json({ success: false, message: "Something went wrong" });

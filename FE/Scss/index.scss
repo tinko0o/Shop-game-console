@@ -1,8 +1,47 @@
 body {
     font-family: "Poppins", sans-serif;
     width: 100vw;
+    // position: relative;
+
   }
 
+  .scroll-top {
+    position: fixed;
+    z-index: 100;
+    right: 15px;
+    bottom: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    button {
+      width: 45px;
+      height: 45px;
+      background-color: #57606f;
+      border-radius: 50%;
+      box-shadow: rgba(149, 157, 165, 0.7) 0px 8px 24px;
+      transition: all 0.3s ease;
+
+      i {
+        display: inline-block;
+        color: #fff;
+        font-size: 35px;
+        line-height: 50px;
+        transition: 0.3s;
+      }
+      &:hover{
+        box-shadow: rgba(22, 23, 25, 0.7) 0px 8px 30px;
+        i{
+          color: #907fdb;
+        }
+      }
+    }
+  }
+  .active-scroll-top {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-10px);
+  }
+  
 header{
     .container{
         .nav-top{
@@ -233,6 +272,7 @@ section{
         .product-name{
           // padding: 0 5px;
           text-align: center;
+          font-size: 20px;
         }
       }
     }
@@ -246,6 +286,7 @@ section{
   margin: 0 auto;
   ul {
     li {
+      opacity: 0.7;
       width: 100%;
       padding: 0;
       cursor: pointer;
@@ -280,8 +321,19 @@ section{
       }
       &:nth-child(2) {
         border-left: 1px solid #666;
+        border-top-left-radius:15px ;
+        border-bottom-left-radius:15px ;
+        overflow: hidden;
       }
+      &:nth-child(5){
+        border-left: 1px solid #666;
+        border-top-right-radius:15px ;
+        border-bottom-right-radius:15px ;
+        overflow: hidden;
+      }
+
       &.active {
+        opacity: 1;
         a {
           background-color: #666;
           color: #fff;
@@ -293,23 +345,35 @@ section{
       border: none;
       border-bottom-left-radius: 3px;
       border-top-left-radius: 3px;
-      background-color: #ffbe76;
+      // background-color: #766551;
       transition: 0.3s;
+      color: #eee;
+      i{
+        color: #333;
+        font-size: 25px;
+      }
       &:hover {
-        background-color: #ffbe76;
-        color: #fff;
+        // background-color: #9f9c95;
+        color: #333;
+        opacity: 1;
       }
     }
     .next {
-      margin-left: 3px;
+      margin-right: 3px;
       border: none;
-      border-bottom-right-radius: 3px;
-      border-top-right-radius: 3px;
-      background-color: #ffbe76;
+      border-bottom-left-radius: 3px;
+      border-top-left-radius: 3px;
+      // background-color: #766551;
       transition: 0.3s;
+      color: #eee;
+      i{
+        color: #333;
+        font-size: 25px;
+      }
       &:hover {
-        background-color: #ffbe76;
-        color: #fff;
+        // background-color: #9f9c95;
+        color: #333;
+        opacity: 1;
       }
     }
   }
