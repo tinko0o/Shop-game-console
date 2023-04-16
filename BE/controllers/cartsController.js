@@ -64,7 +64,7 @@ exports.addCart = async (req, res) => {
                         updatedProducts[checkProduct].quantity += req.body.quantity;
                         await Cart.findOneAndUpdate(
                             { _id: cart._id },
-                            { products: updatedProducts }
+                            { products: updatedProducts, total: cart.total + product.price * req.body.quantity }
                         );
                     } else {
                         const newProduct = {
