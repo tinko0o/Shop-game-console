@@ -14,7 +14,7 @@ mongoose
     .connect(process.env.DB_URL)
     .then(() =>
         console.log("connect success"))
-    .catch((error) => {
+    .catch((err) => {
         console.log(err);
     });
 
