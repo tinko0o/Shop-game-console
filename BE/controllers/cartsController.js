@@ -155,6 +155,46 @@ exports.updateCart = async (req, res) => {
   }
 };
 
+//get amount of products
+
+exports.getAmountCart = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+    const cart = await Cart.findOne({ userId: user._id })
+    if (!cart) {
+      return res.status(200).json({
+        success: true,
+        data: null,
+      });
+    }
+    let amount = 0;
+    cart.products.forEach((products)=>{
+      amount += products.quantity
+    });
+    res.status(200).json({
+      success: true,
+      data: amount,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "something went wrong" });
+  }
+};
+
 //get user cart
 
 exports.getUserCart = async (req, res) => {
