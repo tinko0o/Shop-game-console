@@ -1,0 +1,363 @@
+.alert {
+  position: fixed;
+  z-index: 1300;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.alert i {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 20px;
+  width: 25px;
+  height: 25px;
+  color: #fff;
+  line-height: 25px;
+  border-radius: 50%;
+}
+.alert.alert-primary i {
+  background-color: #0a58ca;
+}
+.alert.alert-danger i {
+  background-color: #b02a37;
+}
+.alert.get-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  width: 100vw;
+}
+
+header {
+  margin: 10px 0;
+}
+header .container .nav-top {
+  position: relative;
+  display: flex;
+}
+header .container .nav-top .logo-search {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+header .container .nav-top .logo-search .logo-icon {
+  display: flex;
+  align-items: center;
+}
+header .container .nav-top .logo-search .logo-icon img {
+  width: 40px;
+  display: inline-block;
+}
+header .container .nav-top .logo-search .logo-icon p {
+  font-weight: 600;
+  text-align: center;
+  font-size: 24px;
+  margin: 0 30px 0 5px;
+  color: #222;
+  text-decoration: none !important;
+}
+header .container .nav-top .logo-search form {
+  max-width: 700px;
+  background: #eee;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 15px;
+  margin: 8px 0;
+  transition: 0.3s;
+  flex: 1;
+  display: flex;
+}
+header .container .nav-top .logo-search form input {
+  width: 90%;
+  display: block;
+}
+header .container .nav-top .logo-search form input:focus::-moz-placeholder {
+  opacity: 0;
+}
+header .container .nav-top .logo-search form input:focus::placeholder {
+  opacity: 0;
+}
+header .container .nav-top .logo-search form input::-moz-placeholder {
+  font-size: 14px;
+  padding-left: 5px;
+  -moz-transition: 0.3s;
+  transition: 0.3s;
+}
+header .container .nav-top .logo-search form input::placeholder {
+  font-size: 14px;
+  padding-left: 5px;
+  transition: 0.3s;
+}
+header .container .nav-top .logo-search form input:hover {
+  scale: 1.02;
+}
+header .container .nav-top .logo-search form .submit {
+  width: 25px;
+  height: 25px;
+  display: block;
+  flex: 1;
+}
+header .container .nav-top .nav-action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+header .container .nav-top .nav-action .cart {
+  position: relative;
+  height: 30px;
+  width: 30px;
+  font-size: 25px;
+  color: #706c6c;
+  cursor: pointer;
+  transition: 0.5s;
+}
+header .container .nav-top .nav-action .cart:hover {
+  color: #222;
+}
+header .container .nav-top .nav-action .cart .quantities-cart {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #706c6c;
+  font-size: 13px;
+  top: -10px;
+  right: -5px;
+}
+header .container .nav-top .nav-action .wall {
+  width: 2px;
+  height: 30px;
+  background-color: #666;
+  margin: 0 15px;
+}
+header .container .nav-top .nav-action .user {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+}
+header .container .nav-top .nav-action .user:hover .dropdown-user {
+  opacity: 1;
+  visibility: visible;
+}
+header .container .nav-top .nav-action .user .dropdown-user {
+  position: absolute;
+  top: 100%;
+  z-index: 10;
+  box-shadow: 0px 2px 8px 0px #888888;
+  background-color: #fcfdfd;
+  border-radius: 2px;
+  padding: 10px;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+header .container .nav-top .nav-action .user .dropdown-user li {
+  text-align: center;
+  width: 100%;
+  color: #333;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+header .container .nav-top .nav-action .user .dropdown-user li:hover {
+  background-color: #333;
+  color: #fff;
+}
+header .container .nav-top .nav-action .user .dropdown-user li:hover a {
+  color: #fff;
+}
+header .container .nav-top .nav-action .user i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+header .container .nav-top .nav-action .user a {
+  font-size: 18px;
+  font-weight: 600;
+  color: #666;
+  transition: 0.3s;
+}
+header .container .nav-top .nav-action .user a:hover {
+  color: #222;
+}
+header .container .nav-top .nav-action .user span {
+  font-weight: 500;
+  margin: 0 3px;
+}
+
+.cart .product-main .head-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cart .product-main .head-action .total {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cart .product-main .head-action .total h2 {
+  margin-right: 20px;
+  margin-bottom: 0;
+}
+.cart .product-main .head-action .total .total-text {
+  font-size: 30px;
+  font-weight: 500;
+}
+.cart .product-main .head-action .action-cart {
+  position: relative;
+}
+.cart .product-main .head-action .action-cart .btn {
+  background-color: #868383;
+  font-weight: 600;
+  color: #fff;
+  transition: 0.3s;
+}
+.cart .product-main .head-action .action-cart .btn:hover {
+  background-color: #222;
+  transform: scale(1.1);
+}
+.cart .product-main .head-action .action-cart .model-detele-all {
+  display: block;
+  position: absolute;
+  bottom: -61px;
+  border-radius: 5px;
+  background-color: #cac6c6;
+  display: flex;
+  width: 110%;
+  justify-content: space-between;
+  padding: 10px;
+  opacity: 0;
+  visibility: hidden;
+}
+.cart .product-main .head-action .action-cart .model-detele-all.active {
+  opacity: 1;
+  visibility: visible;
+}
+.cart .product-main .head-action .action-cart .model-detele-all p {
+  color: #222;
+  font-weight: 600;
+  margin: 0;
+  padding: 8px 0;
+}
+.cart .product-main .head-action .action-cart .model-detele-all .btn-sure {
+  margin: 0 2px;
+  height: 40px;
+  color: #020202;
+}
+.cart .product-main .head-action .action-cart .model-detele-all #yes {
+  background-color: #90e5ac;
+}
+.cart .product-main .head-action .action-cart .model-detele-all #no {
+  background-color: #f45858;
+}
+.cart .product-main table {
+  margin: 10px 0;
+  width: 100%;
+}
+.cart .product-main table thead tr th {
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cart .product-main table tbody tr {
+  border-bottom: 2px solid #e5e5e5;
+}
+.cart .product-main table tbody tr th {
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 60px 0 0 10px;
+}
+.cart .product-main table tbody tr th:first-child {
+  padding: 0;
+}
+.cart .product-main table tbody tr th .img {
+  width: 100px;
+}
+.cart .product-main table tbody tr th .img img {
+  width: 150px;
+}
+.cart .product-main table tbody tr th .quantity-product {
+  transform: translateY(-10px);
+  width: 120px;
+  height: 50px;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 5px;
+}
+.cart .product-main table tbody tr th .quantity-product button {
+  height: 100%;
+  flex: 1;
+  font-size: 18px;
+  transition: 0.2s;
+  font-weight: 500;
+}
+.cart .product-main table tbody tr th .quantity-product button:hover {
+  color: #ff4757;
+}
+.cart .product-main table tbody tr th .quantity-product input {
+  font-size: 18px;
+  width: 50px;
+  height: 100%;
+  text-align: center;
+}
+.cart .product-main table tbody tr th .delete {
+  width: 35px;
+  height: 35px;
+  font-size: 20px;
+  transition: 0.2s;
+}
+.cart .product-main table tbody tr th .delete:hover {
+  color: #ea2b2b;
+}
+.cart .product-main table tbody tr th .delete i {
+  line-height: 30px;
+}
+.cart .wrapper-payment {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+}
+.cart .wrapper-payment hr {
+  width: 1200px;
+}
+.cart .wrapper-payment .payment {
+  display: block;
+  padding: auto;
+}
+.cart .wrapper-payment .payment button {
+  display: block;
+  margin-left: 80%;
+  height: 45px;
+  background-color: #514bf5;
+  color: #fff;
+  font-family: 800;
+  transition: 0.3s;
+}
+.cart .wrapper-payment .payment button:hover {
+  transform: scale(1.1);
+}/*# sourceMappingURL=cart.css.map */

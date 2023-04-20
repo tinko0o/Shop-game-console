@@ -161,6 +161,7 @@ exports.getProducts = async (req, res) => {
   const limit = req.query.limit ? Number(req.query.limit) : 0;
   const page = req.query.page ? Number(req.query.page) * limit - limit : 0;
   const name = req.headers.search;
+  const type = req.headers.type;
   if (name) {
     try {
       const product = await Product.find();
@@ -183,7 +184,33 @@ exports.getProducts = async (req, res) => {
     } catch (err) {
       res.status(500).json({ success: false, state: "Something wrong!" });
     }
-  } else {
+  }
+  // 
+  else 
+  if(type){
+    try {
+      const product = await Product.find();
+      const findDataType = product.filter((val) => {
+        return val.type.toLowerCase().includes(type.toLowerCase());
+      });
+      if (findDataType.length !== 0) {
+        const getLinit = findDataType.slice(page, page + limit);
+        return res.status(200).json({
+          success: true,
+          data: getLinit,
+          length: findDataType.length,
+        });
+      } else {
+        return res
+          .status(200)
+          .json({ success: false, state: "Input not found!" });
+      }
+    } catch (err) {
+      res.status(500).json({ success: false, state: "Something wrong!" });
+    }
+  }
+  //
+  else {
     try {
       const lengthALLProduct = await Product.count();
       const products = await Product.find().skip(page).limit(limit);

@@ -1,0 +1,40 @@
+.alert {
+  position: fixed;
+  z-index: 1300;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  i {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+    width: 25px;
+    height: 25px;
+    color: #fff;
+    line-height: 25px;
+    border-radius: 50%;
+  }
+  &.alert-primary {
+    i {
+      background-color: #0a58ca;
+    }
+  }
+  &.alert-danger {
+    i {
+      background-color: #b02a37;
+    }
+  }
+  &.get-active {
+    opacity: 1;
+    visibility: visible;
+  }
+}

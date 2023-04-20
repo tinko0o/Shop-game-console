@@ -1,8 +1,27 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
+const alertSuccess = $(".alert-primary");
+const alertDanger = $(".alert-danger");
 const User = JSON.parse(localStorage.getItem("loginUser"));
 const http = "http://localhost:8080/api/";
 const userID = User?.data.idUser;
+
+//alert
+function alertFullil() {
+  alertSuccess.children[0].textContent = `Add successfuly`;
+  alertSuccess.classList.add("get-active");
+  setTimeout(() => {
+    alertSuccess.classList.remove("get-active");
+  }, 1000);
+}
+
+function alertFail() {
+  alertDanger.children[0].textContent = `Something fail!`;
+  alertDanger.classList.add("get-active");
+  setTimeout(() => {
+    alertDanger.classList.remove("get-active");
+  }, 1000);
+}
 
 function getSearchParameters() {
     var prmstr = window.location.search.substring(1);
@@ -69,5 +88,39 @@ window.addEventListener("load",function(){
         quantity++;
         quantityInput.value = quantity;
       }})
-
+      //add-cart
+      const btnAddCart = $(".add-cart");
+      btnAddCart.addEventListener("click",function(e){
+        const _id =getSearchParameters().idpd ;
+        const quantity=parseInt(quantityInput.value); 
+        console.log(quantity )
+        // const dataPoduct={
+        //   id:dataPoductID,
+        //   quantity:1,
+        // };
+        fetch(`${http}carts/add`,{
+          headers:{
+            "Content-type": "application/json; charset=UTF-8",
+            authentication: User.token,                         
+          },
+          method:"post",
+          body: JSON.stringify({_id,quantity})
+        })
+        .then((data)=>data.json())
+        .then((data)=>{
+          console.log(data)
+          if(data.success)
+          {
+            alertFullil();
+          }
+          else{
+            alertFail();
+          }
+        })
+        .catch(()=>{
+          alertFail();
+        })
+      
+      });
+     
 })

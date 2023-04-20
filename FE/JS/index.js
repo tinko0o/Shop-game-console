@@ -1,15 +1,19 @@
 // const { json } = require("body-parser");
 // const { join } = require("path");
 // const { default: header } = require("./header");
-// import header from "./header";
+// import head from "./header";
+
+// const { json } = require("body-parser");
+
 // import debounce from 'lodash';
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 const User = JSON.parse(localStorage.getItem("loginUser"));
 const http = "http://localhost:8080/api/";
-const userID = User?.data.idUser;
-
-
+const userID = User?.data._id;
+const alertSuccess = $(".alert-primary");
+const alertDanger = $(".alert-danger");
+const cartQuantities = $(".quantities-cart");
 function header(){
     //show user
     if (User) {
@@ -22,42 +26,84 @@ function header(){
             <li class="logout">Logout</li>
         </ul>
         `;
-
         // btn log-out
         const logoff = $(".logout");
         logoff.addEventListener("click", function () {
           localStorage.removeItem("loginUser");
           window.location.reload();
         });
+
     }
 }
+// UPdate Quantity Cart
+function U_quantityCart(){
+  fetch(`${http}carts/amount`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User.token,                         
+    },
+    // method:"post",
+    // body: JSON.stringify({_id,quantity:1})
+  })
+  .then((data)=>data.json())
+  .then((data)=>{
+    if(data.success)
+    {
+      cartQuantities.innerHTML = data?.data;
+    }
+    else{
+      header().logoff.click();
+    }
+  })
+  .catch(()=>{
+    alertFail();
+  })
+}
+//alert
+function alertFullil() {
+  alertSuccess.children[0].textContent = `Add successfuly`;
+  alertSuccess.classList.add("get-active");
+  setTimeout(() => {
+    alertSuccess.classList.remove("get-active");
+  }, 1000);
+}
 
+function alertFail() {
+  alertDanger.children[0].textContent = `Something fail!`;
+  alertDanger.classList.add("get-active");
+  setTimeout(() => {
+    alertDanger.classList.remove("get-active");
+  }, 1000);
+}
 // scroll
 function scroll(){
   const eScrollTop = $(".scroll-top");
-  // const windowScroll = window.pageYOffset;
-  // if (windowScroll >= 120) {
+  const navBottom = $(".nav-bottom")
+  const windowScroll = window.pageYOffset;
+  if (windowScroll >= 120) {
     eScrollTop.classList.add("active-scroll-top");
-  // } else {
-  //   eScrollTop.classList.remove("active-scroll-top");
-  // }
-  // if (windowScroll >= 100) {
-  //   formSearch.classList.remove("form-scroll");
-  //   navTop.classList.add("nav-down");
-  //   header.style.paddingTop = "74px";
-  // } else {
-  //   formSearch.classList.add("form-scroll");
-  //   navTop.classList.remove("nav-down");
-  //   header.style.paddingTop = "0";
-  // }
+  } else {
+    eScrollTop.classList.remove("active-scroll-top");
+  }
+  if (windowScroll >= 100) {
+    navBottom.classList.add("nav-down");
+    // header.style.paddingTop = "74px";
+  } else {
+    navBottom.classList.remove("nav-down");
+    // header.style.paddingTop = "0";
+  }
   eScrollTop.onclick = function (e) {
     document.documentElement.scrollTop = 0;
   };
 }
+window.addEventListener("scroll",function(){
+  scroll();
+})
 
 window.addEventListener("load",function(){
     header();
     scroll();
+    U_quantityCart();
     const navPage = $(".pagination");
     const products = {
       pageInto: 1,
@@ -194,6 +240,26 @@ window.addEventListener("load",function(){
         //     spinner(false);
         //   });
       },
+      product_type: async function (page = 1, type, limit = 8) {
+        const checkType = type ? type : "";
+        await fetch(`${http}products?page=${page}&limit=${limit}`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            type: checkType,
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            this.render(data);
+            // this.page(page, limit,0);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+        //   .finally(() => {
+        //     spinner(false);
+        //   });
+      },
       
         render: function (data) {
         // if (data.success) {
@@ -222,22 +288,72 @@ window.addEventListener("load",function(){
         //     $(".wrapper-products").innerHTML = data.state;
         // }
         },
+        
         handlerEvent: function(){
             const pagination = $(".pagination")
             const wrapperDetail = $(".wrapper-products");
             const searchInput = $(".form-search");
+            const nav_dropdown = $(".nav-dropdown")
             const _this = this;
+            //click category (type)
 
+            const ps5_device = $("#ps5-device");
+            const ps5_game = $("#ps5-game");
+            ps5_game.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "game ps5";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto, type,50 );
+                pagination.remove();
+                // console.log(_this.product_type)
+            }          
+            
+            // click detail image
             wrapperDetail.onclick= function(e){
-                e.preventDefault();
-                const detailImg = e.target.closest(".detail-img");
-                const detailName = e.target.closest(".product-name");
+              e.preventDefault();
+              const detailImg = e.target.closest(".detail-img");
+              const detailName = e.target.closest(".product-name");
+              const btnAddCart = e.target.closest(".add-cart");
                 const detail = detailImg;
                 if (detail) {
                     const idProduct = detail.dataset.id;
                     window.location.href = `./detail.html?idpd=${idProduct}`;
                   }
-            }
+                  if(btnAddCart){
+                    const _id = btnAddCart.dataset.id;
+                      // const dataPoduct={
+                      //   id:dataPoductID,
+                      //   quantity:1,
+                      // };
+                      fetch(`${http}carts/add`,{
+                        headers:{
+                          "Content-type": "application/json; charset=UTF-8",
+                          authentication: User.token,                         
+                        },
+                        method:"post",
+                        body: JSON.stringify({_id,quantity:1})
+                      })
+                      .then((data)=>data.json())
+                      .then((data)=>{
+                        console.log(data)
+                        if(data.success)
+                        {
+                          alertFullil();
+                          U_quantityCart();
+                        }
+                        else{
+                          alertFail();
+                        }
+                      })
+                      .catch(()=>{
+                        alertFail();
+                      })
+                    
+                  }
+
+            };
 
 
             //pagination
