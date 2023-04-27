@@ -3,12 +3,16 @@ const userController = require("../controllers/userController")
 
 router.post("/register",userController.register);
 router.post("/login",userController.login);
-router.put("/changepassword/:id",userController.changePassword);
-router.put("/update/:id", userController.updateUser);
+
+//user
+router.put("/user/changepassword/",userController.changePassword);
+router.put("/user/update/", userController.updateUser);
+router.get("/user",userController.getUser);
+
+//admin
+router.get("",userController.getAllUsers);
+router.get("/:id",userController.getUserWhenAdmin);
+router.get("/edit/:id",userController.editUser);
 router.delete("/delete/:id", userController.deleteUser);
-router.get("/getall",userController.getAllUsers);
-// router.get("/admins",userController.getAllAdmins);
-router.get("/check",userController.checkAuthorization);
-// router.get("/find/:id",userController.getUses);
 
 module.exports = router;

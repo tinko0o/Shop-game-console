@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
 
-const OrdderSchema = new mongoose.Schema(
+const OrderSchema = new mongoose.Schema(
     {
         userId: { type: String, require: true },
         products: {
             type: Array,
             require: true,
         },
-
+        total: {type: Number, require: true},
+        phone: {type: Number, require: true},
+        address: {type: String, require: true},
     },
     {
         timestamps: true,
         collection: "orders",
     }
 );
-module.exports = mongoose.model("order", UserSchema);
+module.exports = mongoose.model("order", OrderSchema);

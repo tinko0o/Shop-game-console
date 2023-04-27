@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 //register
 
 exports.register = async (req, res) => {
-  const { name, email, password, phone, address } = req.body;
+  const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({
       success: false,
@@ -81,7 +81,6 @@ exports.login = async (req, res) => {
     const key = process.env.JWT_SEC;
     const token = await jwt.sign(
       {
-        userId: user._id,
         email: user.email,
         username: user.username,
       },
@@ -101,8 +100,6 @@ exports.login = async (req, res) => {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
-
-
 
 //Change password
 
@@ -125,6 +122,12 @@ exports.changePassword = async (req, res) => {
       });
     }
     const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      })
+    }
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({
         success: false,
@@ -134,7 +137,7 @@ exports.changePassword = async (req, res) => {
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: "Passwords do not match",
+        message: "Confirm passwords do not match",
       });
     }
     const salt = bcrypt.genSaltSync(12);
@@ -144,10 +147,9 @@ exports.changePassword = async (req, res) => {
       { password: hashedPassword },
       { new: true }
     );
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Password changed successfully",
-      user: updatedUser,
     });
   } catch (err) {
     console.log(err);
@@ -166,38 +168,183 @@ exports.updateUser = async (req, res) => {
         message: "Unauthorized",
       });
     }
-
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
-
-    const { name, email, phone, address } = req.body;
-    if (!name || !email || !phone || !address) {
+    const { name, phone, address } = req.body;
+    if (!name || !phone || !address) {
       return res.status(400).json({
         success: false,
         message: "Invalid input",
       });
     }
+    const user = await User.findOneAndUpdate(
+      { email: decoded.email }, 
+      { name, phone, address },
+      { new: true });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: user,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
 
+//get user
+
+exports.getUser = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
     const user = await User.findOne({ email: decoded.email });
-    if (!user.isAdmin && user.email !== decoded.email) {
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      data: user,
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
+//get all users
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
         message: "Forbidden",
       });
     }
+    const users = await User.find({ email: { $ne: decoded.email } });
+    return res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
 
-    const updatedUser = await User.findOneAndUpdate(
-      { email: decoded.email, _id: req.params.id },
-      { name,email, phone, address },
-      { new: true }
-    );
+//get user when is admin
 
-    res.status(200).json({
+exports.getUserWhenAdmin = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+    const userFound = await User.findById(req.params.id);
+    if(!userFound)
+    {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      data: userFound,
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
+//edit user
+
+exports.editUser = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({email: decoded.email});
+    if(!user.isAdmin)
+    {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+    const { name, phone, address } = req.body;
+    if (!name || !phone || !address) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid input",
+      });
+    }
+    const editedUser = await User.findOneAndUpdate(
+      { email: decoded.email }, 
+      { name, phone, address },
+      { new: true });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
       success: true,
       message: "User updated successfully",
-      user: updatedUser,
+      data: editedUser,
     });
-  } catch (error) {
+  } catch (err) {
+    console.log(err);
     res.status(500).json({
       success: false,
       message: "Something went wrong",
@@ -225,110 +372,52 @@ exports.deleteUser = async (req, res) => {
         message: "Forbidden",
       });
     }
-    const deletedUser = await User.findOneAndDelete({ _id: req.params.id });
+    const deletedUser = await User.findByIdAndDelete({ _id: req.params.id });
     if (!deletedUser) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
-    res.status(200).json({ success: true, message: "User deleted successfully" });
+    return res.status(200).json({ success: true, message: "User deleted successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ success: false, message: "An error occurred while deleting user" });
   }
 };
 
-//get all users
+// CODE YOU, YOU TỰ FIX VÀ TỰ GẮN
 
-exports.getAllUsers = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden",
-      });
-    }
-    const users = await User.find({ isAdmin: false }).select('-password');
-    res.status(200).json({
-      success: true,
-      users,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
-  }
-};
 //check Admin
-exports.checkAuthorization =async (req,res)=>{
-  try{
-    const token = req.headers.authentication;
-    if(!token){
-      return res.status(200).JSON({
-        success:false,
-        message:"UnAuthorization"
-      });
-    }
-    const key =process.env.JWT_SEC;
-    const user = jwt.verify(token,key);
-    const email = user.email;
-    if(user){
-      const users = await User.findOne({email});
-      res.status(200).json({
-        success:true,
-        data: users.isAdmin,
-      });
-    }else{
-      res.status(200).json({
-        success:false,
-        message:"UnAuthorization"
-      });
-    }
-  }
-  catch(err){
-    res.status(500).json({
-      success:false,
-      state:"UnAuthorization",
-    });
-  }
-};
-
-//get user
-
-exports.getUser = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user.isAdmin) {
-      return res.status(403).json({
-        success: false,
-        message: "Forbidden",
-      });
-    }
-    const userFind = await User.findById(req.params.id);
-    res.status(200).json({
-      success: true,
-      userFind,
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Something went wrong" });
-  }
-};
+// exports.checkAuthorization =async (req,res)=>{
+//   try{
+//     const token = req.headers.authentication;
+//     if(!token){
+//       return res.status(200).JSON({
+//         success:false,
+//         message:"UnAuthorization"
+//       });
+//     }
+//     const key =process.env.JWT_SEC;
+//     const user = jwt.verify(token,key);
+//     const email = user.email;
+//     if(user){
+//       const users = await User.findOne({email});
+//       res.status(200).json({
+//         success:true,
+//         data: users.isAdmin,
+//       });
+//     }else{
+//       res.status(200).json({
+//         success:false,
+//         message:"UnAuthorization"
+//       });
+//     }
+//   }
+//   catch(err){
+//     res.status(500).json({
+//       success:false,
+//       state:"UnAuthorization",
+//     });
+//   }
+// };

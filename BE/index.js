@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
 const productRouter = require("./routes/productRouter");
 const cartRouter = require("./routes/cartRouter");
+const orderRouter = require("./routes/oderRouter");
 const bodyParser = require("body-parser");
 const cors = require('cors')
 dotenv.config();
@@ -23,21 +24,22 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
-    });
+});
 app.use(express.json());
 app.use(
     bodyParser.urlencoded({
-      extended: true,
+        extended: true,
     })
-  );
+);
 app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
-app.use("/api/carts",cartRouter);
+app.use("/api/carts", cartRouter);
+app.use("/api/oders", orderRouter);
 
 app.listen(process.env.PORT || 8000, () => {
-    console.log("Server is runing! port:"+process.env.PORT);
+    console.log("Server is runing! port:" + process.env.PORT);
 })
 //hehe
