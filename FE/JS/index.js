@@ -1,7 +1,7 @@
 // const { json } = require("body-parser");
 // const { join } = require("path");
 // const { default: header } = require("./header");
-// import head from "./header";
+import head from "./header.js";
 
 // const { json } = require("body-parser");
 
@@ -14,6 +14,18 @@ const userID = User?.data._id;
 const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
 const cartQuantities = $(".quantities-cart");
+
+//formatCurrency
+function formatCurrency(price, symbol = "đ") {
+  var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
+  var priceWithCommas = price.toLocaleString();
+  var arParts = String(priceWithCommas).split(DecimalSeparator);
+  var intPart = arParts[0];
+  var decPart = arParts.length > 1 ? arParts[1] : '';
+  decPart = (decPart + '000').substr(0, 3);
+  return intPart + symbol;
+}
+//header
 function header(){
     //show user
     if (User) {
@@ -21,10 +33,43 @@ function header(){
         // console.log(User.data?.name)
         showUser.innerHTML = `<i class="fa-solid fa-user"></i> ${User.data?.name}
         <ul class="dropdown-user">
-            <li class="profile">Your profile</li>
-            <li class="purchase"><a href="./puchase.html">Purchase</a></li>
-            <li class="logout">Logout</li>
-        </ul>
+        <li class="profile">
+          <div class="btn-group dropstart">
+            <button type="button" class=" dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Your profile
+            </button>
+            <ul class="dropdown-menu">
+
+              <li>Name: ${User.data?.name}</li>
+              <li>Email:${User.data?.email}</li>
+              <li>phone:023234234</li>
+              <li class="Change">Change Password
+                <div class="dropdown-pass">
+                  <form action="#">
+                    <input type="text"placeholder="Old Password">
+                    <input type="text"placeholder="New Password">
+                    <input type="text"placeholder="Repeat new Password">
+                    <button class="btn btn-dark btn-changePass" type="submit">Change</button>
+                  </form> 
+                </div>
+              </li>
+              <li>
+                <div class="btn-group dropstart">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Edit Profile
+                  </button>
+                  <ul class="dropdown-menu">
+
+                    Edit
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="purchase"><a href="./puchase.html">Purchase</a></li>
+        <li class="logout">Logout</li>
+    </ul>
         `;
         // btn log-out
         const logoff = $(".logout");
@@ -40,7 +85,7 @@ function U_quantityCart(){
   fetch(`${http}carts/amount`,{
     headers:{
       "Content-type": "application/json; charset=UTF-8",
-      authentication: User.token,                         
+      authentication: User?.token,                         
     },
     // method:"post",
     // body: JSON.stringify({_id,quantity:1})
@@ -80,17 +125,18 @@ function scroll(){
   const eScrollTop = $(".scroll-top");
   const navBottom = $(".nav-bottom")
   const windowScroll = window.pageYOffset;
+  const header = $("header")
   if (windowScroll >= 120) {
     eScrollTop.classList.add("active-scroll-top");
   } else {
     eScrollTop.classList.remove("active-scroll-top");
   }
-  if (windowScroll >= 100) {
+  if (windowScroll >= 120) {
     navBottom.classList.add("nav-down");
-    // header.style.paddingTop = "74px";
+    header.style.paddingTop = "74px";
   } else {
     navBottom.classList.remove("nav-down");
-    // header.style.paddingTop = "0";
+    header.style.paddingTop = "0";
   }
   eScrollTop.onclick = function (e) {
     document.documentElement.scrollTop = 0;
@@ -104,6 +150,7 @@ window.addEventListener("load",function(){
     header();
     scroll();
     U_quantityCart();
+    // head()
     const navPage = $(".pagination");
     const products = {
       pageInto: 1,
@@ -251,7 +298,7 @@ window.addEventListener("load",function(){
           .then((data) => data.json())
           .then((data) => {
             this.render(data);
-            // this.page(page, limit,0);
+            this.page(page, limit,0);
           })
           .catch((err) => {
             console.log(err);
@@ -276,7 +323,7 @@ window.addEventListener("load",function(){
                 <button data-id=${val._id} class="add-cart">Add to cart</button>
                 </div>
                 <div class="content">
-                <p class="price">${val.price}</p>
+                <p class="price">${formatCurrency(val.price)}</p>
                 <h4 class="product-name">${val.name}</h4>
                 </div>
             </div>
@@ -337,7 +384,7 @@ window.addEventListener("load",function(){
                       })
                       .then((data)=>data.json())
                       .then((data)=>{
-                        console.log(data)
+                        // console.log(data)
                         if(data.success)
                         {
                           alertFullil();
