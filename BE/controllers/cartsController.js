@@ -25,7 +25,7 @@ exports.addCart = async (req, res) => {
       });
     }
     else {
-      const product = await Product.findById({ _id: req.body._id });
+      const product = await Product.findById({ _id: req.body.id });
       if (!product) {
         return res.status(404).json({
           success: false,
@@ -36,10 +36,10 @@ exports.addCart = async (req, res) => {
         const cart = await Cart.findOne({ userId: user._id });
         if (!cart && req.body) {
           const newCart = new Cart({
-            userId: user._id,
+            userId: user.id,
             products: [
               {
-                _id: req.body._id,
+                id: req.body.id,
                 name: product.name,
                 img: product.img,
                 type: product.type,
@@ -57,18 +57,18 @@ exports.addCart = async (req, res) => {
         }
         else {
           const checkProduct = cart.products.findIndex(
-            (product) => product._id == req.body._id
+            (product) => product.id == req.body.id
           );
           if (checkProduct >= 0) {
             const updatedProducts = [...cart.products];
             updatedProducts[checkProduct].quantity += req.body.quantity;
-            await Cart.findOneAndUpdate(
-              { _id: cart._id },
+            await Cart.findByIdAndUpdate(
+              { _id: cart.id },
               { products: updatedProducts, total: cart.total + product.price * req.body.quantity }
             );
           } else {
             const newProduct = {
-              _id: product._id,
+              id: product.id,
               name: product.name,
               img: product.img,
               type: product.type,
@@ -76,8 +76,8 @@ exports.addCart = async (req, res) => {
               quantity: req.body.quantity,
             };
             const updatedProducts = [...cart.products, newProduct];
-            await Cart.findOneAndUpdate(
-              { _id: cart._id },
+            await Cart.findByIdAndUpdate(
+              { _id: cart.id },
               { products: updatedProducts, total: cart.total + product.price * req.body.quantity }
             );
           }
@@ -93,7 +93,7 @@ exports.addCart = async (req, res) => {
   }
 };
 
-//edit product quantity
+//update product quantity
 
 exports.updateCart = async (req, res) => {
   try {
@@ -121,7 +121,7 @@ exports.updateCart = async (req, res) => {
       });
     }
     const productId = req.params.id;
-    const product = cart.products.find((product) => String(product._id) === productId);
+    const product = cart.products.find((product) => String(product.id) === productId);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -135,16 +135,16 @@ exports.updateCart = async (req, res) => {
         message: "Quantity must be at least 1",
       });
     }
-    const productIndex = cart.products.findIndex((product) => String(product._id) === productId);
+    const productIndex = cart.products.findIndex((product) => String(product.id) === productId);
     const updatedProducts = [...cart.products];
     const oldQuantity = updatedProducts[productIndex].quantity;
     updatedProducts[productIndex].quantity = newQuantity;
     const newTotal = cart.total - (oldQuantity * product.price) + (newQuantity * product.price);
-    await Cart.findOneAndUpdate(
-      { _id: cart._id },
+    await Cart.findByIdAndUpdate(
+      { _id: cart.id },
       { products: updatedProducts, total: newTotal }
     );
-    const updatedCart = await Cart.findById(cart._id);
+    const updatedCart = await Cart.findById(cart.id);
     return res.status(200).json({
       success: true,
       data: updatedCart,
@@ -152,6 +152,129 @@ exports.updateCart = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
+//delete cart products
+
+exports.deleteCartProducts = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+    const cart = await Cart.findOne({ userId: user._id });
+    if (!cart) {
+      return res.status(200).json({
+        success: true,
+        data: null,
+      });
+    }
+    const productId = req.params.id;
+    const products = cart.products.filter(val => val.id !== productId);
+    const deletedProduct = cart.products.find(val => val.id === productId);
+    const deletedQuantity = deletedProduct.price * deletedProduct.quantity;
+    const newTotal = cart.total - deletedQuantity;
+    if (products.length === 0) {
+      await Cart.findOneAndDelete({ userId: user._id });
+      return res.status(200).json({
+        success: true,
+        message: "Cart deleted successfully"
+      });
+    }
+    await Cart.findOneAndUpdate({ userId: user._id }, {products, total: newTotal});
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted from cart successfully"
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "something went wrong" });
+  }
+};
+
+//delete cart
+
+exports.deleteCart = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+    const cart = await Cart.findOneAndDelete({ userId: user._id });
+    if (!cart) {
+      return res.status(200).json({
+        success: true,
+        data: null,
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: null,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "something went wrong" });
+  }
+};
+
+//get cart
+
+exports.getCart = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+    const cart = await Cart.findOne({ userId: user._id })
+    if (!cart) {
+      return res.status(200).json({
+        success: true,
+        data: null,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: cart,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "something went wrong" });
   }
 };
 
@@ -195,38 +318,3 @@ exports.getAmountCart = async (req, res) => {
   }
 };
 
-//get user cart
-
-exports.getUserCart = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-    const cart = await Cart.findOne({ userId: user._id })
-    if (!cart) {
-      return res.status(200).json({
-        success: true,
-        data: null,
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: cart,
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "something went wrong" });
-  }
-};
