@@ -57,7 +57,7 @@ function renderContent (data){
 window.addEventListener("load",function(){
     //render html
     const {idpd} = getSearchParameters();
-    fetch(`${http}products/find/${idpd}`)
+    fetch(`${http}products/${idpd}`)
     .then((data)=>data.json())
     .then((data)=>{
         renderContent(data.data);
@@ -91,7 +91,7 @@ window.addEventListener("load",function(){
       //add-cart
       const btnAddCart = $(".add-cart");
       btnAddCart.addEventListener("click",function(e){
-        const _id =getSearchParameters().idpd ;
+        const id =getSearchParameters().idpd ;
         const quantity=parseInt(quantityInput.value); 
         console.log(quantity )
         // const dataPoduct={
@@ -104,7 +104,7 @@ window.addEventListener("load",function(){
             authentication: User.token,                         
           },
           method:"post",
-          body: JSON.stringify({_id,quantity})
+          body: JSON.stringify({id,quantity})
         })
         .then((data)=>data.json())
         .then((data)=>{

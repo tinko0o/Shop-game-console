@@ -154,4 +154,42 @@ img {
 }
 .content-action .add-cart:hover {
   background-color: #f0932b;
+}
+
+.Wrap-cmt .container {
+  width: 70%;
+}
+.Wrap-cmt .container .addcmt .txt {
+  width: 100%;
+  height: 70px;
+  border-radius: 7px;
+  padding: 10px;
+}
+.Wrap-cmt .container .addcmt button {
+  display: block;
+  background-color: #f0a651;
+  width: 100px;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 700;
+  transition: 0.3s;
+}
+.Wrap-cmt .container .addcmt button:hover {
+  background-color: #f0932b;
+}
+.Wrap-cmt .container .comment-list .list-cmt {
+  padding: 0;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt {
+  font-size: 18px;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt {
+  margin-top: 5px;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-top p {
+  margin: 0;
+  font-weight: bold;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-content p {
+  margin: 0;
 }/*# sourceMappingURL=detail.css.map */

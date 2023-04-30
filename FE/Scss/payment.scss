@@ -1,0 +1,98 @@
+body {
+    font-family: "Poppins", sans-serif;
+  }
+
+.f-checkout{
+    display: flex;
+    .user-checkout{
+        max-height: 450px;
+        .input-group{
+                display: block;
+                margin: 10px 0;
+            label{
+                display: block;
+                font-size: 20px;
+                // font-weight: 600;
+            }
+            input{
+                display: block;
+                padding: 7px;
+                border: 1px solid #bdb5b5;
+                width: 100%;
+                font-size: 20px;
+            }
+        }
+        hr{
+            margin-top: 50px;
+        }
+        .sub-total{
+            .total{
+                display: flex;
+                align-items: center;
+                h3{
+                    margin: 0;
+                }
+                .subtotal-detail{
+                    font-size: 25px;
+                    font-weight: 600;
+                    color: #f13b3b;
+                    margin-left: 5px;
+                }
+            }
+            .btn-submit{
+                display: block;
+                // margin: auto;
+                text-align: center;
+                width: 100%;
+                height: 40px;
+                background-color: #202020;
+                color: #fff;
+                font-size: 20px;
+                font-weight: 700;
+                transition: 0.2s;
+                border-radius: 5px;
+                &:hover{
+                    background-color: #3b3a3a;
+                }
+            }
+        }
+    }
+    .product-checkout{
+        .title-product{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            padding: 0 20px;
+            p{
+                margin-bottom: 0;
+            }
+        }
+        .products{
+            max-height: 450px;
+            overflow: auto;
+            padding: 5px;
+            .product{
+                // background-color: black;
+                height: 160px;
+                display: flex;
+                img{
+                    width: 200px;
+                    height: 100%;
+                }
+                .p-name{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    padding: 20px 10px 30px 10px;
+                    flex:1
+                }
+                .p-total{
+                    width: auto;
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}

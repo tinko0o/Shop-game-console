@@ -1,18 +1,18 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 const User = JSON.parse(localStorage.getItem("loginUser"));
+const alertSuccess = $(".alert-primary");
+const alertDanger = $(".alert-danger");
 const http = "http://localhost:8080/api/";
 let getDataProduct = {};
 //reset /empty value input
-function resetModal() {
-  formProduct.elements["img"].value = "";
-  formProduct.elements["name"].value = "";
-  formProduct.elements["type"].value = "";
-  formProduct.elements["manufacturer"].value = "";
-  formProduct.elements["price"].value = "";
-  formProduct.elements["description"].value = "";
-  getDataProduct = {};
-
+function resetProduct(data) {
+     this.img = $("#p-img").value = "";
+     this.name = $("#p-name").value = "";
+     this.manufacturer = $("#p-manufac").value = "";  
+     this.type = $("#p-type").value = "";
+     this.price = $("#p-price").value = "";
+     this.description = $("#p-descript").value = "";
 }
 
 //console.log
@@ -28,6 +28,22 @@ function formatCurrency(price, symbol = "đ") {
   var decPart = arParts.length > 1 ? arParts[1] : '';
   decPart = (decPart + '000').substr(0, 3);
   return intPart + symbol;
+}
+//alert
+function alertFullil(message="success") {
+  alertSuccess.children[0].textContent = `${message}`;
+  alertSuccess.classList.add("get-active");
+  setTimeout(() => {
+    alertSuccess.classList.remove("get-active");
+  }, 1000);
+}
+
+function alertFail(message="Something fail!") {
+  alertDanger.children[0].textContent = `${message}`;
+  alertDanger.classList.add("get-active");
+  setTimeout(() => {
+    alertDanger.classList.remove("get-active");
+  }, 1000);
 }
 //Render
 function renderProduct(data){
@@ -77,7 +93,6 @@ async function product(page = 1, search, limit = 100) {
           .then((data) => data.json())
           .then((data) => {
             renderProduct(data);
-            // this.page(page, limit, data.length);
           })
           .catch((err) => {
             console.log(err);
@@ -86,7 +101,29 @@ async function product(page = 1, search, limit = 100) {
         //     spinner(false);
         //   });
     }
-
+//add new product
+async function addProduct(data){
+  await fetch(`${http}products/add`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,                         
+    },
+      method: "POST",
+      body: JSON.stringify(data)
+  })
+  .then((res)=>res.json())
+  .then((res)=>{
+    if(!res.success){
+      alertFail(res.message);
+    }else{
+      alertFullil("add success")
+    }
+})
+  .catch((err)=>{
+    alertFail();
+    log(err);
+  })
+}
 
 document.addEventListener("DOMContentLoaded", function (event) {
   product();
@@ -188,10 +225,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
         const type = $("#p-type").value;
         const price = $("#p-price").value;
         const description = $("#p-descript").value;
+
         const data = {
           img,name,type,manufacturer,price,description
         }
+        resetProduct(data);
         log(data)
+        addProduct(data);
+          setTimeout(() => {
+            product();
+          }, 1000);
     }
     if(btnEditProduct){
       log("hehe")
@@ -201,19 +244,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
   }
-// const formProduct = e.target.closest(".wrapper-product");
-// formProduct.submit=function(e){
-//   e.preventDefault();
-//   const img = this.elements["img"].value;
-//   const name = this.elements["name"].value;
-//   const manufacturer = this.elements["manufacturer"].value;  
-//   const type = this.elements["type"].value;
-//   const price = this.elements["price"].value;
-//   const description = this.elements["description"].value;
-//   const data = {
-//     img,name,type,manufacturer,price,description
-//   }
-// }
+
 
   btnAddNewProduct.onclick = function (e) {
     this.setAttribute("disabled","disabled");

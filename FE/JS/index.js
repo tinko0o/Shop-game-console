@@ -82,7 +82,7 @@ function header(){
 }
 // UPdate Quantity Cart
 function U_quantityCart(){
-  fetch(`${http}carts/amount`,{
+  fetch(`${http}carts/cart/amount`,{
     headers:{
       "Content-type": "application/json; charset=UTF-8",
       authentication: User?.token,                         
@@ -369,7 +369,7 @@ window.addEventListener("load",function(){
                     window.location.href = `./detail.html?idpd=${idProduct}`;
                   }
                   if(btnAddCart){
-                    const _id = btnAddCart.dataset.id;
+                    const id = btnAddCart.dataset.id;
                       // const dataPoduct={
                       //   id:dataPoductID,
                       //   quantity:1,
@@ -380,7 +380,7 @@ window.addEventListener("load",function(){
                           authentication: User.token,                         
                         },
                         method:"post",
-                        body: JSON.stringify({_id,quantity:1})
+                        body: JSON.stringify({id,quantity:1})
                       })
                       .then((data)=>data.json())
                       .then((data)=>{

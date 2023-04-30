@@ -101,7 +101,7 @@ function renderCart(data){
 }
 
 async function getCart(){
-    await fetch(`${http}carts/get`,{
+    await fetch(`${http}carts/cart`,{
         headers: {                     
         "Content-type": "application/json; charset=UTF-8",
         authentication: User.token,},
@@ -123,7 +123,7 @@ async function updateCart(id,quantity){
           //   id:dataPoductID,
           //   quantity:1,
           // };
-          fetch(`${http}carts/update/${id}`,{
+          fetch(`${http}carts/cart/update/${id}`,{
             headers:{
               "Content-type": "application/json; charset=UTF-8",
               authentication: User.token,                         
@@ -156,7 +156,7 @@ window.addEventListener("load",function(){
     addCart.addEventListener("change", function (e) {
         const quantityInput = e.target.closest(".quantity");
         const index = quantityInput.dataset.id;
-        const id = dataCart[index]._id;
+        const id = dataCart[index].id;
         console.log(id)
         if(quantityInput){
             console.log(quantityInput.value)
@@ -181,7 +181,7 @@ window.addEventListener("load",function(){
       const plus = e.target.closest(".plus");
       if (sub) {
         const index = sub.dataset.id;
-        const id = dataCart[index]._id;
+        const id = dataCart[index].id;
         if (dataCart[index].quantity > 1) {
           dataCart[index].quantity--;
           // sub.nextElementSibling.value = dataCart[index].quantity;
@@ -190,7 +190,7 @@ window.addEventListener("load",function(){
       }
       if (plus) {
         const index = plus.dataset.id;
-        const id = dataCart[index]._id;
+        const id = dataCart[index].id;
         if (dataCart[index].quantity < 100) {
           dataCart[index].quantity++;
           // plus.nextElementSibling.value = dataCart[index].quantity;
