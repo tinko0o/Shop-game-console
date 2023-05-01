@@ -8,7 +8,6 @@ const CartSchema = new mongoose.Schema(
             require: true,
         },
         total: {type: Number, default: 0},
-
     },
     {
         timestamps: true,
