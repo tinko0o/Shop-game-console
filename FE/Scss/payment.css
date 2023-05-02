@@ -1,0 +1,91 @@
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.f-checkout {
+  display: flex;
+}
+.f-checkout .user-checkout {
+  max-height: 450px;
+}
+.f-checkout .user-checkout .input-group {
+  display: block;
+  margin: 10px 0;
+}
+.f-checkout .user-checkout .input-group label {
+  display: block;
+  font-size: 20px;
+}
+.f-checkout .user-checkout .input-group input {
+  display: block;
+  padding: 7px;
+  border: 1px solid #bdb5b5;
+  width: 100%;
+  font-size: 20px;
+}
+.f-checkout .user-checkout hr {
+  margin-top: 50px;
+}
+.f-checkout .user-checkout .sub-total .total {
+  display: flex;
+  align-items: center;
+}
+.f-checkout .user-checkout .sub-total .total h3 {
+  margin: 0;
+}
+.f-checkout .user-checkout .sub-total .total .subtotal-detail {
+  font-size: 25px;
+  font-weight: 600;
+  color: #f13b3b;
+  margin-left: 5px;
+}
+.f-checkout .user-checkout .sub-total .btn-submit {
+  display: block;
+  text-align: center;
+  width: 100%;
+  height: 40px;
+  background-color: #202020;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  transition: 0.2s;
+  border-radius: 5px;
+}
+.f-checkout .user-checkout .sub-total .btn-submit:hover {
+  background-color: #3b3a3a;
+}
+.f-checkout .product-checkout .title-product {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  padding: 0 20px;
+}
+.f-checkout .product-checkout .title-product p {
+  margin-bottom: 0;
+}
+.f-checkout .product-checkout .products {
+  max-height: 450px;
+  overflow: auto;
+  padding: 5px;
+}
+.f-checkout .product-checkout .products .product {
+  height: 160px;
+  display: flex;
+}
+.f-checkout .product-checkout .products .product img {
+  width: 200px;
+  height: 100%;
+}
+.f-checkout .product-checkout .products .product .p-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 10px 30px 10px;
+  flex: 1;
+}
+.f-checkout .product-checkout .products .product .p-total {
+  width: auto;
+  font-size: 18px;
+  font-weight: 600;
+}/*# sourceMappingURL=payment.css.map */

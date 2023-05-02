@@ -7,6 +7,22 @@ const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
 let dataCart = [];
 
+
+//formatCurrency
+function formatCurrency(price, symbol = "đ") {
+  var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
+  var priceWithCommas = price.toLocaleString();
+  var arParts = String(priceWithCommas).split(DecimalSeparator);
+  var intPart = arParts[0];
+  var decPart = arParts.length > 1 ? arParts[1] : '';
+  decPart = (decPart + '000').substr(0, 3);
+  return intPart + symbol;
+}
+// const price = 1900;
+// console.log(formatCurrency(price))
+
+
+
 function header(){
     //show user
     if (User) {
@@ -48,7 +64,6 @@ function alertFail() {
 function renderCart(data){
     const html = data.data.products.map((val,index) => {
         let total = val.quantity*val.price;
-        // console.log(val._id)
         return `
         <tr class="product-item">
         <th>
@@ -62,31 +77,31 @@ function renderCart(data){
             </div>
         </th>
         <th>
-            ${val.price}
+            ${formatCurrency(val.price)}
         </th>
         <th>
 
             <div class="quantity-product">
                 <button data-id="${index}" class="sub">-</button>
-                <input class="quantity" data-id="${val._id}" type="number" value="${val.quantity}" min="1" max="100">
+                <input class="quantity" data-id="${index}" type="number" value="${val.quantity}" min="1" max="100">
                 <button data-id="${index}" class="plus">+</button>
             </div>
         </th>
-        <th>${total}</th>
+        <th>${formatCurrency(total)}</th>
         <th>
             <button class="delete">
-                <i class="fa-solid fa-trash"></i>
+            <i class="fa-solid fa-xmark"></i>
             </button>
         </th>
     </tr>
         `
     });
     $("#add-to-cart").innerHTML = html.join("");
-    $(".total-text").innerHTML = `Total: ${data.data.total}`;
+    $(".total-text").innerHTML = `Total: ${formatCurrency(data.data.total)}`;
 }
 
 async function getCart(){
-    await fetch(`${http}carts/get`,{
+    await fetch(`${http}carts/cart`,{
         headers: {                     
         "Content-type": "application/json; charset=UTF-8",
         authentication: User.token,},
@@ -108,7 +123,7 @@ async function updateCart(id,quantity){
           //   id:dataPoductID,
           //   quantity:1,
           // };
-          fetch(`${http}carts/update/${id}`,{
+          fetch(`${http}carts/cart/update/${id}`,{
             headers:{
               "Content-type": "application/json; charset=UTF-8",
               authentication: User.token,                         
@@ -140,14 +155,15 @@ window.addEventListener("load",function(){
     const addCart = $("#add-to-cart");
     addCart.addEventListener("change", function (e) {
         const quantityInput = e.target.closest(".quantity");
-        const id = quantityInput.dataset.id;
+        const index = quantityInput.dataset.id;
+        const id = dataCart[index].id;
         console.log(id)
         if(quantityInput){
             console.log(quantityInput.value)
             if (+quantityInput.value >= 1 && +quantityInput.value <= 100) {
-                updateCart(id,quantityInput.value);
+              dataCart[index].quantity= quantityInput.value; 
+                updateCart(id,parseInt(quantityInput.value));
                 alertFullil();
-                // quantity=+quantityInput.value;
             }
             else{
               alertDanger.children[0].textContent = "The input must be less than 100";
@@ -165,7 +181,7 @@ window.addEventListener("load",function(){
       const plus = e.target.closest(".plus");
       if (sub) {
         const index = sub.dataset.id;
-        const id = dataCart[index]._id;
+        const id = dataCart[index].id;
         if (dataCart[index].quantity > 1) {
           dataCart[index].quantity--;
           // sub.nextElementSibling.value = dataCart[index].quantity;
@@ -174,7 +190,7 @@ window.addEventListener("load",function(){
       }
       if (plus) {
         const index = plus.dataset.id;
-        const id = dataCart[index]._id;
+        const id = dataCart[index].id;
         if (dataCart[index].quantity < 100) {
           dataCart[index].quantity++;
           // plus.nextElementSibling.value = dataCart[index].quantity;
