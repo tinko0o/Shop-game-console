@@ -2,16 +2,17 @@ const mongoose = require("mongoose");
 
 const RatingSchema = new mongoose.Schema(
     {
-        prductId: {type: String, require: true},
+        productId: {type: String, require: true},
         users: {
             type: Array,
             require: false,
         },
-        rating: {type: Number, default: 0, Min: 0, Max: 5}
+        avgRating: {type: Number, default: 0.0},
+        totalRating: {type: Number, default: 0}
     },
     {
         timestamps: true,
-        collection: "products",
+        collection: "ratings",
     }
 );
 module.exports = mongoose.model("rating", RatingSchema);

@@ -152,11 +152,38 @@ exports.getAllProducts = async (req, res) => {
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const products = await Product.find()
-      .sort(sort)
-      .skip(startIndex)
-      .limit(limit)
-      .exec();
+    const products = await Product.aggregate([
+      {
+        $lookup: {
+          from: 'ratings',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'rating',
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          manufacturer: 1,
+          type: 1,
+          release_date: 1,
+          description: 1,
+          price: 1,
+          img: 1,
+          avgRating: { $ifNull: [{ $avg: "$rating.avgRating" }, 0] },
+          total: { $ifNull: [{ $sum: "$rating.total" }, 0] },
+        },
+      },
+      {
+        $sort: { [sort]: -1 },
+      },
+      {
+        $skip: startIndex,
+      },
+      {
+        $limit: limit,
+      },
+    ]);
 
     const total = await Product.countDocuments();
 
