@@ -1,0 +1,26 @@
+.container {
+  padding: 0 20% 0 20%;
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+.container img {
+  width: 500px;
+  display: block;
+  margin: auto;
+}
+.container h1 {
+  font-size: 40px;
+}
+.container p {
+  font-size: 20px;
+}
+.container .btn-back {
+  font-size: 20px;
+  border-radius: 4px;
+  transition: 0.4s;
+  height: 40px;
+}
+.container .btn-back:hover {
+  background-color: antiquewhite;
+}/*# sourceMappingURL=thank.css.map */

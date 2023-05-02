@@ -9,6 +9,7 @@ let getDataProduct = {};
 function resetProduct(data) {
      this.img = $("#p-img").value = "";
      this.name = $("#p-name").value = "";
+     this.date = $("#p-r_date").value = "";
      this.manufacturer = $("#p-manufac").value = "";  
      this.type = $("#p-type").value = "";
      this.price = $("#p-price").value = "";
@@ -60,6 +61,7 @@ function renderProduct(data){
                                    ${val.name}
                                 </div>
                             </th>
+                            <th>${val.release_date}</th>
                             <th> ${val.type} </th>
                             <th> ${val.manufacturer} </th>
                             <th> ${formatCurrency(val.price)} </th>
@@ -221,15 +223,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
     if(btnAdd){
         const img = $("#p-img").value;
         const name = $("#p-name").value;
+        const release_date = $("#p-r_date").value;
         const manufacturer = $("#p-manufac").value;  
         const type = $("#p-type").value;
         const price = $("#p-price").value;
         const description = $("#p-descript").value;
 
         const data = {
-          img,name,type,manufacturer,price,description
+          img,name,release_date,type,manufacturer,price,description
         }
-        resetProduct(data);
+        // resetProduct(data);
         log(data)
         addProduct(data);
           setTimeout(() => {
@@ -253,6 +256,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         <form class="wrapper-product" action="#">
         <td><input id="p-img" type="text" class="form-control" name="img" placeholder="Link Image"></td>
         <td><input id="p-name" type="text" class="form-control" name="name" placeholder="Name Product"></td>
+        <td><input id="p-r_date" type="text" class="form-control" name="release_date" placeholder="release_date"></td>
         <td><input id="p-type" type="text" class="form-control" name="type" placeholder="Type"></td>
         <td><input id="p-manufac" type="text" class="form-control" name="manufacturer" placeholder="Manufacturer"></td>
         <td><input id="p-price" type="text" class="form-control" name="price" placeholder="Price"></td>

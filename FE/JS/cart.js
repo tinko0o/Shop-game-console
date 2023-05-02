@@ -45,23 +45,24 @@ function header(){
     }
 }
 //alert
-function alertFullil() {
-  alertSuccess.children[0].textContent = `Add successfuly`;
+function alertFullil(message="success") {
+  alertSuccess.children[0].textContent = `${message}`;
   alertSuccess.classList.add("get-active");
   setTimeout(() => {
     alertSuccess.classList.remove("get-active");
-  }, 1000);
+  }, 1500);
 }
 
-function alertFail() {
-  alertDanger.children[0].textContent = `Something fail!`;
+function alertFail(message="Something fail!") {
+  alertDanger.children[0].textContent = `${message}`;
   alertDanger.classList.add("get-active");
   setTimeout(() => {
     alertDanger.classList.remove("get-active");
-  }, 1000);
+  }, 1500);
 }
 //render cart
 function renderCart(data){
+  if(data.data != null){
     const html = data.data.products.map((val,index) => {
         let total = val.quantity*val.price;
         return `
@@ -89,15 +90,22 @@ function renderCart(data){
         </th>
         <th>${formatCurrency(total)}</th>
         <th>
-            <button class="delete">
+            <button data-id="${val.id}" class="delete">
             <i class="fa-solid fa-xmark"></i>
             </button>
         </th>
     </tr>
         `
     });
+
     $("#add-to-cart").innerHTML = html.join("");
     $(".total-text").innerHTML = `Total: ${formatCurrency(data.data.total)}`;
+  }
+  else{
+      $("#add-to-cart").innerHTML = "no product in cart";
+      $(".total-text").innerHTML = "0d";
+      
+    }
 }
 
 async function getCart(){
@@ -110,8 +118,33 @@ async function getCart(){
     })
     .then((data) => data.json())
     .then((data) => {
+      if(data.data === null){
+        renderCart(data);
+
+      }else{
         dataCart = [...data.data.products];
         renderCart(data);
+      }
+        // console.log(dataCart)
+    })
+}
+//delete cart
+async function deleteCart(id){
+    await fetch(`${http}carts/cart/delete/${id}`,{
+        headers: {                     
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User.token,},
+        method:"delete",
+        
+    })
+    .then((data) => data.json())
+    .then((data) => {
+      if(data.success){
+        alertFullil(data.message)
+        getCart();
+      }else{
+        alertFail(data.message)
+      }
         // console.log(dataCart)
     })
 }
@@ -179,6 +212,7 @@ window.addEventListener("load",function(){
       const quantity = $(".quantity");
       const sub = e.target.closest(".sub");
       const plus = e.target.closest(".plus");
+      const del = e.target.closest(".delete")
       if (sub) {
         const index = sub.dataset.id;
         const id = dataCart[index].id;
@@ -196,6 +230,20 @@ window.addEventListener("load",function(){
           // plus.nextElementSibling.value = dataCart[index].quantity;
           updateCart(id,dataCart[index].quantity)
         }
+      }
+      if(del){
+        const id = del.dataset.id;
+        console.log(id)
+        deleteCart(id);
+      }
+    })
+    const btnCheckout= $(".checkout")
+    btnCheckout.addEventListener("click",function(e){
+      if(dataCart.length != 0){
+        window.location.replace("./payment.html")
+      }
+      else{
+        alertFail("gio hang trong")
       }
     })
 })

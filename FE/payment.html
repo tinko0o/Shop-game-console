@@ -12,6 +12,41 @@
     <title>Payment</title>
 </head>
 <body>
+        <div class="alert alert-danger" role="alert">
+          <span>Something was wrong</span> <i class="fa-solid fa-exclamation"></i>
+      </div>
+      <div class="alert alert-primary" role="alert">
+          <span>A simple danger alert with</span> <i class="fa-solid fa-check"></i>
+      </div>
+    <header>
+        <div class="container">
+            <div class="row nav-top">
+                <div class=" col col-lg-7 col-md-6 col-xs-6 logo-search">
+                    <a href="./index.html" class="logo-icon">
+                        <img src="./img/logo.jpg" alt="logo">
+                        <p>HAT</p>
+                    </a>
+                    <!-- <form class="form-search " action="#">
+                        <input name="search" type="text" placeholder="Search...">
+                        <button class="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form> -->
+                </div>
+                <div class="col col-lg-5 col-md-6 col-xs-6 nav-action">
+                    <!-- <a href="#" class="cart">
+                        <i class="fa-sharp fa-solid fa-cart-shopping"></i>
+                        <p class="quantities-cart">0</p>
+                    </a>
+                    <div class="wall"></div> -->
+                    <div class="user">
+                        <i class="fa-solid fa-user"></i>
+                        <a href="./Login.html" class="login">login</a>
+                        <span class="wall-space"> / </span>
+                        <a href="./Login.html" class="register">Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="checkout">
         <div class="container">
             <form action="#" class="f-checkout row">
@@ -19,19 +54,19 @@
                     <h2>Your address</h2>
                     <div class="input-group">
                         <label for="u-name">Name</label>
-                        <input id="u-name" name="name" type="text">
-                    </div>
-                    <div class="input-group">
-                        <label for="u-phone">phone</label>
-                        <input id="full-name" name="phone" type="text">
+                        <input id="u-name" required name="name" type="text">
                     </div>
                     <div class="input-group">
                         <label for="u-email">email</label>
-                        <input id="full-name" name="email" type="text">
+                        <input id="u-email" required name="email" type="text">
+                    </div>
+                    <div class="input-group">
+                        <label for="u-phone">phone</label>
+                        <input id="u-phone" required name="phone" type="text">
                     </div>
                     <div class="input-group">
                         <label for="u-address">your address</label>
-                        <input id="address" name="address" type="text">
+                        <input id="u-address" required name="address" type="text">
                     </div>
                     <hr>
                     <div class="sub-total">
@@ -87,4 +122,5 @@
         </div>
     </div>
 </body>
+<script src="./JS/payment.js" type="module"></script>
 </html>
