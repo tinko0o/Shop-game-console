@@ -3,6 +3,7 @@ const { json } = require("body-parser");
 const jwt = require("jsonwebtoken");
 const Product = require("../models/productModel");
 const Rating = require("../models/ratingModel");
+const Order = require("../models/orderModel");
 
 
 //add rating
@@ -25,11 +26,26 @@ exports.addRating = async (req, res) => {
         message: 'User not found',
       });
     }
+
     const product = await Product.findById({ _id: req.body.id });
     if (!product) {
       return res.status(404).json({
         success: false,
         message: 'Product not found',
+      });
+    }
+    const orders = await Order.find({ userId: user.id });
+    if (!orders) {
+      return res.status(400).json({
+        success: false,
+        message: "You need to have at least one order to rate a product",
+      });
+    }
+    const isProductInOrder = orders.some(order => order.products.some(product => product.id.toString() === req.body.id.toString()));
+    if (!isProductInOrder) {
+      return res.status(400).json({
+        success: false,
+        message: "You can only rate products that you have ordered",
       });
     }
     const rating = req.body.rating;
@@ -52,7 +68,7 @@ exports.addRating = async (req, res) => {
           },
         ],
         avgRating: req.body.rating,
-        total: 1
+        totalRating: 1
       })
       await newRating.save();
       return res.status(200).json({
@@ -76,6 +92,13 @@ exports.addRating = async (req, res) => {
           email: user.email,
           rating: rating,
         };
+        const isProductInOrder = orders.some(order => order.products.some(product => product.id.toString() === req.body.id.toString()));
+        if (!isProductInOrder) {
+          return res.status(400).json({
+            success: false,
+            message: "You can only rate products that you have ordered",
+          });
+        }
         const updatedUsers = [...foundRating.users, newRating];
         const sumOfRatings = updatedUsers.reduce((acc, cur) => acc + cur.rating, 0);
         const totalRating = updatedUsers.length;
