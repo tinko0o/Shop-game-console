@@ -1,10 +1,10 @@
-// const router = require("express").Router();
-// const CommentController = require("../controllers/commentController");
+const router = require("express").Router();
+const CommentController = require("../controllers/commentController");
 
-// //user
-// router.post("/add",CommentController.addComment);
-// router.get("/",CommentController.getAllComments);
+//user
+router.post("/add",CommentController.addComment);
+router.get("/:productId",CommentController.getComments);
 
-// //admin
+//admin
 
-// module.exports = router;
+module.exports = router;

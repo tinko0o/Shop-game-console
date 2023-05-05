@@ -6,7 +6,7 @@ const productRouter = require("./routes/productRouter");
 const cartRouter = require("./routes/cartRouter");
 const orderRouter = require("./routes/oderRouter");
 const ratingRouter = require("./routes/ratingRouter");
-const commetRouter = require("./routes/commentRouter");
+const commentRouter = require("./routes/commentRouter");
 const bodyParser = require("body-parser");
 const cors = require('cors')
 dotenv.config();
@@ -41,7 +41,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/oders", orderRouter);
 app.use("/api/ratings",ratingRouter);
-// app.use("/api/comments",commetRouter);
+app.use("/api/comments",commentRouter);
 
 app.listen(process.env.PORT || 8000, () => {
     console.log("Server is runing! port:" + process.env.PORT);
