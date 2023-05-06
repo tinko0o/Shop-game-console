@@ -147,32 +147,27 @@ exports.getProduct = async (req, res) => {
 
 //get all product
 
-//Để sắp xếp theo thuộc tính tăng dần thì dùng /api/products?sort=Thuộc tính
-//Ví dụ: /api/products?sort=price để sắp xếp theo giá tăng dần.
-//Để sắp xếp theo thuộc tính giảm dần thì dùng /api/products?sort=-Thuộc tính
-//Ví dụ: /api/products?sort=-price để sắp xếp theo giá giảm dần.
+//Để sắp xếp theo thuộc tính tăng dần thì dùng /api/products?sortBy=Thuộc tính
+//Ví dụ: /api/products?sortBy=price:asc để sắp xếp theo giá tăng dần.
+//Để sắp xếp theo thuộc tính giảm dần thì dùng /api/products?sortBy=-Thuộc tính
+//Ví dụ: /api/products?sortBy=-price:desc để sắp xếp theo giá giảm dần.
 
 exports.getAllProducts = async (req, res) => {
   try {
-    // Pagination options
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skipIndex = (page - 1) * limit;
-
-    // Sorting options
     const sort = {};
     if (req.query.sortBy) {
       const parts = req.query.sortBy.split(':');
       sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
     }
-
-    const products = await Product.find()
+    const type = req.query.type;
+    const products = await Product.find(type ? { type } : {})
       .sort(sort)
       .skip(skipIndex)
       .limit(limit)
-      .lean(); // convert to plain JS object
-
-    // Get ratings for each product and calculate avgRating and totalRating
+      .lean();
     const productIds = products.map(product => product._id);
     const ratings = await Rating.find({ productId: { $in: productIds } }).lean();
     const ratingMap = {};

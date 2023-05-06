@@ -75,31 +75,35 @@ exports.addComment = async (req, res) => {
   //get product comments
 
   exports.getComments = async (req, res) => {
-    try {
-      const productId = req.params.productId;
-  
-      const comments = await Comment.find({ productId: productId });
-  
-      const replies = await Comment.find({ productId: productId, parentCommentId: { $ne: null } });
-  
-      const commentsWithReplies = comments.map(comment => {
+  try {
+    const productId = req.params.productId;
+
+    const comments = await Comment.find({ productId: productId });
+
+    const replies = await Comment.find({ productId: productId, parentCommentId: { $ne: null } });
+
+    const commentsWithReplies = comments
+      .map(comment => {
         const commentData = comment.toObject();
         commentData.replies = replies.filter(reply => String(reply.parentCommentId) === String(comment._id));
         return commentData;
-      });
+      })
+      .sort((a, b) => b.createdAt - a.createdAt); // Sort in descending order by default.
+
+    res.status(200).json({
+      success: true,
+      comments: commentsWithReplies,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong. Please try again later.",
+    });
+  }
+};
+
   
-      res.status(200).json({
-        success: true,
-        comments: commentsWithReplies,
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({
-        success: false,
-        message: "Something went wrong. Please try again later.",
-      });
-    }
-  };
 
 
 
