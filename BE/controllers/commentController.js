@@ -37,61 +37,50 @@ exports.addComment = async (req, res) => {
         message: "orders not found",
       });
     }
-    const parentCommentId = req.body.parentCommentId || null;
+
+    let parentCommentId = null;
     let repliedToUsername = null;
-    if (parentCommentId !== null) {
-      const parentComment = await Comment.findById(parentCommentId);
+
+    if (req.body.parentCommentId !== undefined) {
+      const parentComment = await Comment.findById(req.body.parentCommentId);
       if (!parentComment) {
         return res.status(404).json({
           success: false,
           message: 'Parent comment not found',
         });
       }
-      repliedToUsername = parentComment.name;
-      if (parentComment.userId.toString() === user.id.toString()) {
-        // exclude @username mention for comments made by the same user
-        repliedToUsername = null;
+
+      if (parentComment.parentCommentId === null) { // parentComment is a top-level comment
+        parentCommentId = parentComment._id;
+      } else { // parentComment is a reply to a comment
+        parentCommentId = parentComment.parentCommentId;
+      }
+
+      if (parentComment.userId.toString() !== user.id.toString()) {
+        repliedToUsername = parentComment.name;
       }
     }
+
     const isAdmin = user.isAdmin;
     const isProductInOrder = orders.some(order => order.products.some(product => product.id.toString() === req.body.productId.toString()));
-    if (!isProductInOrder) {
-      const newComment = new Comment({
-        productId: req.body.productId,
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        comment: req.body.comment,
-        parentCommentId: parentCommentId,
-        repliedToUsername: repliedToUsername,
-        isAdmin: isAdmin,
-      });
-      await newComment.save();
-      return res.status(200).json({
-        success: true,
-        message: 'Comment added successfully',
-        data: newComment,
-      });
-    }
-    else {
-      const newComment = new Comment({
-        productId: req.body.productId,
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        comment: req.body.comment,
-        parentCommentId: parentCommentId,
-        repliedToUsername: repliedToUsername,
-        isAdmin: isAdmin,
-        purchased: true,
-      });
-      await newComment.save();
-      return res.status(200).json({
-        success: true,
-        message: 'Comment added successfully',
-        data: newComment,
-      });
-    }
+    const newComment = new Comment({
+      productId: req.body.productId,
+      userId: user.id,
+      name: user.name,
+      email: user.email,
+      comment: req.body.comment,
+      parentCommentId: parentCommentId,
+      repliedToUsername: repliedToUsername,
+      isAdmin: isAdmin,
+      purchased: isProductInOrder,
+    });
+    await newComment.save();
+    return res.status(200).json({
+      success: true,
+      message: 'Comment added successfully',
+      data: newComment,
+    });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -100,6 +89,7 @@ exports.addComment = async (req, res) => {
     });
   }
 };
+
 
 
 //delete product comments 1
@@ -160,26 +150,28 @@ exports.deleteComment = async (req, res) => {
 exports.getComments = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const comments = await Comment.find({ productId: productId });
+    const comments = await Comment.find({ productId: productId }).sort({ createdAt: -1 });
     const commentsWithReplies = [];
 
-    // First loop to get main comments and replies
+    
     for (const comment of comments) {
-      const commentData = comment.toObject();
-      const replies = comments.filter(reply => String(reply.parentCommentId) === String(comment._id));
-      commentData.replies = [];
+      if (!comment.parentCommentId) {
+        const commentData = comment.toObject();
+        const replies = comments.filter(reply => String(reply.parentCommentId) === String(comment._id));
+        commentData.replies = [];
 
-      // Second loop to get replies to main comments
-      for (const reply of replies) {
-        const replyData = reply.toObject();
-        const replyReplies = comments.filter(replyReply => String(replyReply.parentCommentId) === String(reply._id));
-        replyData.replies = replyReplies.map(replyReply => {
-          const replyReplyData = replyReply.toObject();
-          return replyReplyData;
-        });
-        commentData.replies.push(replyData);
+        
+        for (const reply of replies) {
+          const replyData = reply.toObject();
+          const replyReplies = comments.filter(replyReply => String(replyReply.parentCommentId) === String(reply._id));
+          replyData.replies = replyReplies.map(replyReply => {
+            const replyReplyData = replyReply.toObject();
+            return replyReplyData;
+          });
+          commentData.replies.push(replyData);
+        }
+        commentsWithReplies.push(commentData);
       }
-      commentsWithReplies.push(commentData);
     }
 
     res.status(200).json({
@@ -195,131 +187,3 @@ exports.getComments = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-// i don't want it like this :
-
-// {
-//   "success": true,
-//   "comments": [
-//       {
-//           "_id": "64577a321b5b9cf3721576b0",
-//           "productId": "64474ff0a238c536a71088b2",
-//           "userId": "644726e5c975183b8afa4fc9",
-//           "name": "user01",
-//           "email": "user01@gmail.com",
-//           "comment": "Đây là bình luận cha của user01",
-//           "parentCommentId": null,
-//           "repliedToUsername": null,
-//           "isAdmin": false,
-//           "purchased": true,
-//           "createdAt": "2023-05-07T10:15:14.748Z",
-//           "updatedAt": "2023-05-07T10:15:14.748Z",
-//           "__v": 0,
-//           "replies": [
-//               {
-//                   "_id": "64577acf1b5b9cf3721576b7",
-//                   "productId": "64474ff0a238c536a71088b2",
-//                   "userId": "6450cf8ced27b7382a6a0bfe",
-//                   "name": "user02",
-//                   "email": "user02@gmail.com",
-//                   "comment": "Đây là bình luận con của user02 trả lời user01",
-//                   "parentCommentId": "64577a321b5b9cf3721576b0",
-//                   "repliedToUsername": "user01",
-//                   "isAdmin": false,
-//                   "purchased": true,
-//                   "createdAt": "2023-05-07T10:17:51.764Z",
-//                   "updatedAt": "2023-05-07T10:17:51.764Z",
-//                   "__v": 0,
-//                   "replies": [
-//                       {
-//                           "_id": "6457909e442d6c7049db3bf4",
-//                           "productId": "64474ff0a238c536a71088b2",
-//                           "userId": "6447abde378c43e767c9e66c",
-//                           "name": "TestUser",
-//                           "email": "test@gmail",
-//                           "comment": "Đây là bình luận con của user02 trả lời user02",
-//                           "parentCommentId": "64577acf1b5b9cf3721576b7",
-//                           "repliedToUsername": "user02",
-//                           "isAdmin": true,
-//                           "purchased": true,
-//                           "createdAt": "2023-05-07T11:50:54.764Z",
-//                           "updatedAt": "2023-05-07T11:50:54.764Z",
-//                           "__v": 0,
-//                           "replies": []
-//                       }
-//                   ]
-//               },
-//       }
-              
-//   ],
-//   "total": 3
-// }
-
-// i wan't its like this:
-
-// {
-//   "success": true,
-//   "comments": [
-//       {
-//           "_id": "64577a321b5b9cf3721576b0",
-//           "productId": "64474ff0a238c536a71088b2",
-//           "userId": "644726e5c975183b8afa4fc9",
-//           "name": "user01",
-//           "email": "user01@gmail.com",
-//           "comment": "Đây là bình luận cha của user01",
-//           "parentCommentId": null,
-//           "repliedToUsername": null,
-//           "isAdmin": false,
-//           "purchased": true,
-//           "createdAt": "2023-05-07T10:15:14.748Z",
-//           "updatedAt": "2023-05-07T10:15:14.748Z",
-//           "__v": 0,
-//           "replies": [
-//               {
-//                   "_id": "64577acf1b5b9cf3721576b7",
-//                   "productId": "64474ff0a238c536a71088b2",
-//                   "userId": "6450cf8ced27b7382a6a0bfe",
-//                   "name": "user02",
-//                   "email": "user02@gmail.com",
-//                   "comment": "Đây là bình luận con của user02 trả lời user01",
-//                   "parentCommentId": "64577a321b5b9cf3721576b0",
-//                   "repliedToUsername": "user01",
-//                   "isAdmin": false,
-//                   "purchased": true,
-//                   "createdAt": "2023-05-07T10:17:51.764Z",
-//                   "updatedAt": "2023-05-07T10:17:51.764Z",
-//                   "__v": 0,
-//                   "replies": []
-//               },
-//               {
-//                 "_id": "6457909e442d6c7049db3bf4",
-//                 "productId": "64474ff0a238c536a71088b2",
-//                 "userId": "6447abde378c43e767c9e66c",
-//                 "name": "TestUser",
-//                 "email": "test@gmail",
-//                 "comment": "Đây là bình luận con của user02 trả lời user02",
-//                 "parentCommentId": "64577acf1b5b9cf3721576b7",
-//                 "repliedToUsername": "user02",
-//                 "isAdmin": true,
-//                 "purchased": true,
-//                 "createdAt": "2023-05-07T11:50:54.764Z",
-//                 "updatedAt": "2023-05-07T11:50:54.764Z",
-//                 "__v": 0,
-//                 "replies": []
-//             }
-//           ]
-//       }
-              
-//     ],
-//   "total": 3
-// }
-
