@@ -161,28 +161,25 @@ exports.getComments = async (req, res) => {
   try {
     const productId = req.params.productId;
     const comments = await Comment.find({ productId: productId });
-    const replies = await Comment.find({ productId: productId, parentCommentId: { $ne: null } });
-    const commentsWithReplies = comments
-      .filter(comment => !comment.parentCommentId) // Only include main comments.
-      .map(comment => {
+    const commentsWithReplies = [];
+
+    for (const comment of comments) {
+      if (!comment.parentCommentId) {
         const commentData = comment.toObject();
-        commentData.replies = replies.filter(reply => String(reply.parentCommentId) === String(comment._id));
-        return commentData;
-      })
-      .sort((a, b) => b.createdAt - a.createdAt); // Sort in descending order by default.
-    const mainComments = comments.filter(comment => !comment.parentCommentId);
-    const replyCount = replies.length;
-    const mainCommentCount = mainComments.length;
-    let totalCommentCount = mainCommentCount;
-    for (let i = 0; i < mainCommentCount; i++) {
-      const comment = mainComments[i];
-      const matchingReplies = replies.filter(reply => String(reply.parentCommentId) === String(comment._id));
-      totalCommentCount += matchingReplies.length;
+        const replies = comments.filter(reply => String(reply.parentCommentId) === String(comment._id));
+        commentData.replies = replies.map(reply => {
+          const replyData = reply.toObject();
+          replyData.replies = comments.filter(replyReply => String(replyReply.parentCommentId) === String(reply._id));
+          return replyData;
+        });
+        commentsWithReplies.push(commentData);
+      }
     }
+
     res.status(200).json({
       success: true,
       comments: commentsWithReplies,
-      total: totalCommentCount,
+      total: comments.length,
     });
   } catch (err) {
     console.error(err);
@@ -192,6 +189,7 @@ exports.getComments = async (req, res) => {
     });
   }
 };
+
 
 
 
