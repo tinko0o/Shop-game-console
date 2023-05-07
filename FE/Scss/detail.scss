@@ -166,7 +166,222 @@ img{
                         }
                     }
                 }
+                .cmt-command{
+                  // margin-left: 10px;
+                  a{
+                    color: #222;
+                    transition: 0.3s;
+                    &:hover{
+                      color: #f52c2c;
+                    }
+                  }
+                }
             }
         }
     }
   }
+  header{
+    .container{
+        .nav-top{
+            height: 50px;
+            padding: 5px 0;
+            position: relative;
+            display: flex;
+            .logo-search{
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                .logo-icon{
+                    display: flex;
+                    align-items: center;
+                    img{
+                        width: 40px;
+                        // height: 30px;
+                        display: inline-block;
+                    }
+                    p{
+                        font-weight: 600;
+                        text-align: center;
+                        font-size: 24px;
+                        margin: 0 30px 0 5px;
+                        color: #222;
+                    }
+                }
+            form{
+                max-width: 700px;
+                background: #eee;
+                border: none;
+                border-radius: 50px;
+                padding: 12px 15px;
+                margin: 8px 0;
+                transition: 0.3s;
+                flex:1;
+                display: flex;
+                input{
+                  width: 90%;
+                    // height: 40px;
+                    display: block;
+                    &:focus {
+                        &::placeholder {
+                          opacity: 0;
+                        }
+                      }
+                    &::placeholder {
+                        font-size: 14px;
+                        padding-left: 5px;
+                        transition: 0.3s;
+                      }
+                    &:hover{
+                        scale: 1.02;
+                    }
+                }
+                .submit {
+                    width: 25px;
+                    height: 25px;
+                    display:block;
+                    flex: 1;
+                  }  
+            }
+            }  
+            .nav-action{
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                .cart{
+                    position: relative;
+                    height: 30px;
+                    width: 30px;
+                    font-size: 25px;
+                    color: #706c6c;
+                    cursor: pointer;
+                    transition: 0.5s;
+                    &:hover{
+                        color: #222;
+                    }
+                    .quantities-cart{
+                        position: absolute;
+                        width: 18px;
+                        height: 18px;
+                        color: #f52c2c;
+                        border-radius:50% ;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        // background-color: #706c6c;
+                        // border: #222 1px solid;
+                        font-size: 13px;
+                        font-weight: 700;
+                        top: -10px;
+                        right: -7px;
+                    }
+                }
+                .wall {
+                    width: 2px;
+                    height: 30px;
+                    background-color: #666;
+                    margin: 0 15px;
+                  }
+                .user{
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+                    cursor: pointer;
+                    &:hover{
+                      .dropdown-user{
+                        opacity: 1;
+                        visibility: visible;
+                      }
+                    }
+                    .dropdown-user{
+                      position: absolute;
+                      top: calc(100%) ;
+                      z-index: 10;
+                      box-shadow: 0px 2px 8px 0px #888888;
+                      background-color: #fcfdfd;
+                      border-radius: 2px;
+                      padding: 10px;
+                      margin: 0;
+                      // overflow: hidden;
+                      opacity: 0;
+                      visibility: hidden;
+                      transition: all 0.3s ease;                     
+                      li{
+                        text-align: center;
+                        width: 100%;
+                        color: #333;
+                        padding: 5px 10px;
+                        font-size: 16px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: 0.3s;
+                        &:hover{
+                          background-color: #333;
+                          color: #fff;
+                          a{
+                            color: #fff;
+                          }
+                        }
+                      }
+                      .profile{
+                        &:hover{
+                          .dropdown-toggle{
+                            color: #eee;
+                          }
+                        }
+                        li{
+                          position: relative;
+                        }
+                        .Change{
+                          &:hover{
+                            .dropdown-pass{
+                              visibility: visible;
+                              opacity: 1;
+                            }
+                          }
+                          .dropdown-pass{
+                            display: block;
+                            visibility: hidden;
+                            opacity: 0;
+                            position: absolute;
+                            top: 0;
+                            left: -120%;
+                            background-color: #eee;
+                            input{
+                              display: block;
+                              padding: 5px;
+                            }
+                            &:hover{
+                              background-color: none !important;
+                              li{
+                                background-color: none;
+                              }
+                            }
+                          }
+
+                        }
+                      }
+                    }
+                    i {
+                      font-size: 24px;
+                      margin-right: 10px;
+                    }
+                    a {
+                      font-size: 18px;
+                      font-weight: 600;
+                      color: #666;
+                      transition: 0.3s;
+                      &:hover {
+                        color: #222;
+                      }
+                    }
+                    span {
+                      font-weight: 500;
+                      margin: 0 3px;
+                    }
+                }
+            }
+        }
+    }
+}

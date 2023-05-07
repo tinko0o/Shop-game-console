@@ -42,7 +42,7 @@ function header(){
 
               <li>Name: ${User.data?.name}</li>
               <li>Email:${User.data?.email}</li>
-              <li>phone:023234234</li>
+              <li>phone:${User.data?.phone}</li>
               <li class="Change">Change Password
                 <div class="dropdown-pass">
                   <form action="#">
@@ -67,7 +67,7 @@ function header(){
             </ul>
           </div>
         </li>
-        <li class="purchase"><a href="./puchase.html">Purchase</a></li>
+        <li class="purchase"><a href="./purchase.html">Purchase</a></li>
         <li class="logout">Logout</li>
     </ul>
         `;

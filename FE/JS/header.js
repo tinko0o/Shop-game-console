@@ -44,7 +44,7 @@ export function header(){
             </ul>
           </div>
         </li>
-        <li class="purchase"><a href="./puchase.html">Purchase</a></li>
+        <li class="purchase"><a href="./purchase.html">Purchase</a></li>
         <li class="logout">Logout</li>
     </ul>
         `;
