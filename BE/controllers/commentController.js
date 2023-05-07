@@ -73,7 +73,7 @@ exports.addComment = async (req, res) => {
         data: newComment,
       });
     }
-    else{
+    else {
       const newComment = new Comment({
         productId: req.body.productId,
         userId: user.id,
@@ -155,69 +155,13 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
-//delete product comments 2
-
-exports.deleteComment = async (req, res) => {
-  try {
-    const token = req.headers.authentication;
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Unauthorized',
-      });
-    }
-    const key = process.env.JWT_SEC;
-    const decoded = jwt.verify(token, key);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'User not found or invalid token',
-      });
-    }
-    const comment = await Comment.findById(req.params.commentId);
-    if (!comment) {
-      return res.status(404).json({
-        success: false,
-        message: 'Comment not found',
-      });
-    }
-    if (comment.userId.toString() !== user.id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'You are not authorized to delete this comment',
-      });
-    }
-    if (comment.parentCommentId === null) {
-      await Comment.deleteMany({ parentCommentId: comment._id });
-    } else {
-      await Comment.updateMany({ parentCommentId: comment._id }, { parentCommentId: null });
-    }
-    await Comment.findByIdAndDelete(req.params.commentId);
-    return res.status(200).json({
-      success: true,
-      message: 'Comment deleted successfully',
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      success: false,
-      message: 'Something went wrong. Please try again later.',
-    });
-  }
-};
-
-
 //get product comments
 
 exports.getComments = async (req, res) => {
   try {
     const productId = req.params.productId;
-
     const comments = await Comment.find({ productId: productId });
-
     const replies = await Comment.find({ productId: productId, parentCommentId: { $ne: null } });
-
     const commentsWithReplies = comments
       .filter(comment => !comment.parentCommentId) // Only include main comments.
       .map(comment => {
@@ -226,10 +170,19 @@ exports.getComments = async (req, res) => {
         return commentData;
       })
       .sort((a, b) => b.createdAt - a.createdAt); // Sort in descending order by default.
-
+    const mainComments = comments.filter(comment => !comment.parentCommentId);
+    const replyCount = replies.length;
+    const mainCommentCount = mainComments.length;
+    let totalCommentCount = mainCommentCount;
+    for (let i = 0; i < mainCommentCount; i++) {
+      const comment = mainComments[i];
+      const matchingReplies = replies.filter(reply => String(reply.parentCommentId) === String(comment._id));
+      totalCommentCount += matchingReplies.length;
+    }
     res.status(200).json({
       success: true,
       comments: commentsWithReplies,
+      total: totalCommentCount,
     });
   } catch (err) {
     console.error(err);
@@ -239,6 +192,7 @@ exports.getComments = async (req, res) => {
     });
   }
 };
+
 
 
 
