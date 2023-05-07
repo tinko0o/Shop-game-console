@@ -9,6 +9,9 @@ const CommentSchema = new mongoose.Schema(
     comment: { type: String, require: true },
     parentCommentId: { type: String, default: null },
     repliedToUsername: { type: String, default: null },
+    isAdmin: {type: Boolean, default: false},
+    purchased: {type: Boolean, default: false},
+    
   },
   {
     timestamps: true,
