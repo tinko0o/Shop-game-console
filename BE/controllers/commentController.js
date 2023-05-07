@@ -163,17 +163,23 @@ exports.getComments = async (req, res) => {
     const comments = await Comment.find({ productId: productId });
     const commentsWithReplies = [];
 
+    // First loop to get main comments and replies
     for (const comment of comments) {
-      if (!comment.parentCommentId) {
-        const commentData = comment.toObject();
-        const replies = comments.filter(reply => String(reply.parentCommentId) === String(comment._id));
-        commentData.replies = replies.map(reply => {
-          const replyData = reply.toObject();
-          replyData.replies = comments.filter(replyReply => String(replyReply.parentCommentId) === String(reply._id));
-          return replyData;
+      const commentData = comment.toObject();
+      const replies = comments.filter(reply => String(reply.parentCommentId) === String(comment._id));
+      commentData.replies = [];
+
+      // Second loop to get replies to main comments
+      for (const reply of replies) {
+        const replyData = reply.toObject();
+        const replyReplies = comments.filter(replyReply => String(replyReply.parentCommentId) === String(reply._id));
+        replyData.replies = replyReplies.map(replyReply => {
+          const replyReplyData = replyReply.toObject();
+          return replyReplyData;
         });
-        commentsWithReplies.push(commentData);
+        commentData.replies.push(replyData);
       }
+      commentsWithReplies.push(commentData);
     }
 
     res.status(200).json({
@@ -196,4 +202,124 @@ exports.getComments = async (req, res) => {
 
 
 
+
+
+
+// i don't want it like this :
+
+// {
+//   "success": true,
+//   "comments": [
+//       {
+//           "_id": "64577a321b5b9cf3721576b0",
+//           "productId": "64474ff0a238c536a71088b2",
+//           "userId": "644726e5c975183b8afa4fc9",
+//           "name": "user01",
+//           "email": "user01@gmail.com",
+//           "comment": "Đây là bình luận cha của user01",
+//           "parentCommentId": null,
+//           "repliedToUsername": null,
+//           "isAdmin": false,
+//           "purchased": true,
+//           "createdAt": "2023-05-07T10:15:14.748Z",
+//           "updatedAt": "2023-05-07T10:15:14.748Z",
+//           "__v": 0,
+//           "replies": [
+//               {
+//                   "_id": "64577acf1b5b9cf3721576b7",
+//                   "productId": "64474ff0a238c536a71088b2",
+//                   "userId": "6450cf8ced27b7382a6a0bfe",
+//                   "name": "user02",
+//                   "email": "user02@gmail.com",
+//                   "comment": "Đây là bình luận con của user02 trả lời user01",
+//                   "parentCommentId": "64577a321b5b9cf3721576b0",
+//                   "repliedToUsername": "user01",
+//                   "isAdmin": false,
+//                   "purchased": true,
+//                   "createdAt": "2023-05-07T10:17:51.764Z",
+//                   "updatedAt": "2023-05-07T10:17:51.764Z",
+//                   "__v": 0,
+//                   "replies": [
+//                       {
+//                           "_id": "6457909e442d6c7049db3bf4",
+//                           "productId": "64474ff0a238c536a71088b2",
+//                           "userId": "6447abde378c43e767c9e66c",
+//                           "name": "TestUser",
+//                           "email": "test@gmail",
+//                           "comment": "Đây là bình luận con của user02 trả lời user02",
+//                           "parentCommentId": "64577acf1b5b9cf3721576b7",
+//                           "repliedToUsername": "user02",
+//                           "isAdmin": true,
+//                           "purchased": true,
+//                           "createdAt": "2023-05-07T11:50:54.764Z",
+//                           "updatedAt": "2023-05-07T11:50:54.764Z",
+//                           "__v": 0,
+//                           "replies": []
+//                       }
+//                   ]
+//               },
+//       }
+              
+//   ],
+//   "total": 3
+// }
+
+// i wan't its like this:
+
+// {
+//   "success": true,
+//   "comments": [
+//       {
+//           "_id": "64577a321b5b9cf3721576b0",
+//           "productId": "64474ff0a238c536a71088b2",
+//           "userId": "644726e5c975183b8afa4fc9",
+//           "name": "user01",
+//           "email": "user01@gmail.com",
+//           "comment": "Đây là bình luận cha của user01",
+//           "parentCommentId": null,
+//           "repliedToUsername": null,
+//           "isAdmin": false,
+//           "purchased": true,
+//           "createdAt": "2023-05-07T10:15:14.748Z",
+//           "updatedAt": "2023-05-07T10:15:14.748Z",
+//           "__v": 0,
+//           "replies": [
+//               {
+//                   "_id": "64577acf1b5b9cf3721576b7",
+//                   "productId": "64474ff0a238c536a71088b2",
+//                   "userId": "6450cf8ced27b7382a6a0bfe",
+//                   "name": "user02",
+//                   "email": "user02@gmail.com",
+//                   "comment": "Đây là bình luận con của user02 trả lời user01",
+//                   "parentCommentId": "64577a321b5b9cf3721576b0",
+//                   "repliedToUsername": "user01",
+//                   "isAdmin": false,
+//                   "purchased": true,
+//                   "createdAt": "2023-05-07T10:17:51.764Z",
+//                   "updatedAt": "2023-05-07T10:17:51.764Z",
+//                   "__v": 0,
+//                   "replies": []
+//               },
+//               {
+//                 "_id": "6457909e442d6c7049db3bf4",
+//                 "productId": "64474ff0a238c536a71088b2",
+//                 "userId": "6447abde378c43e767c9e66c",
+//                 "name": "TestUser",
+//                 "email": "test@gmail",
+//                 "comment": "Đây là bình luận con của user02 trả lời user02",
+//                 "parentCommentId": "64577acf1b5b9cf3721576b7",
+//                 "repliedToUsername": "user02",
+//                 "isAdmin": true,
+//                 "purchased": true,
+//                 "createdAt": "2023-05-07T11:50:54.764Z",
+//                 "updatedAt": "2023-05-07T11:50:54.764Z",
+//                 "__v": 0,
+//                 "replies": []
+//             }
+//           ]
+//       }
+              
+//     ],
+//   "total": 3
+// }
 
