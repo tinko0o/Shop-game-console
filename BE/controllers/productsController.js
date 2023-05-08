@@ -156,63 +156,47 @@ exports.getAllProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skipIndex = (page - 1) * limit;
-    const sort = { createdAt: -1 }; // Sort by newest products by default
-    if (req.query.sortBy) {
-      const parts = req.query.sortBy.split(':');
-      sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Product.countDocuments();
+
+    const sortBy = req.query.sortBy || "createdAt:desc"; // default to sort by createdAt in descending order
+    const [sortField, sortOrder] = sortBy.split(":");
+    const sortObj = {};
+    sortObj[sortField] = sortOrder === "desc" ? -1 : 1;
+
+    const products = await Product.find()
+      .sort(sortObj)
+      .skip(startIndex)
+      .limit(limit);
+
+    const pagination = {};
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit,
+        sortBy: sortBy,
+      };
     }
-    const type = req.query.type;
-    const [products, count] = await Promise.all([
-      Product.find(type ? { type } : {})
-        .sort(sort)
-        .skip(skipIndex)
-        .limit(limit)
-        .lean(),
-      Product.countDocuments(type ? { type } : {})
-    ]);
-    const productIds = products.map(product => product._id);
-    const ratings = await Rating.find({ productId: { $in: productIds } }).lean();
-    const ratingMap = {};
-    ratings.forEach(rating => {
-      ratingMap[rating.productId] = rating;
-    });
-    products.forEach(product => {
-      const rating = ratingMap[product._id];
-      if (rating) {
-        product.avgRating = rating.avgRating;
-        product.totalRating = rating.totalRating;
-      } else {
-        product.avgRating = 0.0;
-        product.totalRating = 0;
-      }
-    });
 
-    const totalPages = Math.ceil(count / limit);
-    const nextPage = page < totalPages ? page + 1 : null;
-    const prevPage = page > 1 ? page - 1 : null;
-
-    const pagination = {
-      totalPages,
-      nextPage,
-      prevPage,
-      currentPage: page,
-      totalCount: count,
-      limit,
-    };
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit,
+        sortBy: sortBy,
+      };
+    }
 
     res.status(200).json({
       success: true,
-      data: products,
+      count: products.length,
       pagination,
+      data: products,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
-
-
 
 
 //search for a product
