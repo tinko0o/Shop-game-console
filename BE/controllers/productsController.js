@@ -154,14 +154,21 @@ exports.getProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Product.countDocuments();
+
     const sortBy = req.query.sortBy || "createdAt:desc"; // default to sort by createdAt in descending order
     const [sortField, sortOrder] = sortBy.split(":");
     const sortObj = {};
     sortObj[sortField] = sortOrder === "desc" ? -1 : 1;
 
     const products = await Product.find()
-      .sort(sortObj);
-
+      .sort(sortObj)
+      .skip(startIndex)
+      .limit(limit);
     const productIds = products.map((product) => product._id);
     const ratings = await Rating.find({ productId: { $in: productIds } });
     const ratingMap = {};
@@ -180,16 +187,33 @@ exports.getAllProducts = async (req, res) => {
       };
     });
 
+    const pagination = {};
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit,
+        sortBy: sortBy,
+      };
+    }
+
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit,
+        sortBy: sortBy,
+      };
+    }
+
     res.status(200).json({
       success: true,
       count: productsWithRating.length,
+      pagination,
       data: productsWithRating,
     });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
-
 
 
 
