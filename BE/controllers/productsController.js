@@ -152,68 +152,134 @@ exports.getProduct = async (req, res) => {
 //Để sắp xếp theo thuộc tính giảm dần thì dùng /api/products?sortBy=-Thuộc tính
 //Ví dụ: /api/products?sortBy=-price:desc để sắp xếp theo giá giảm dần.
 
+
 exports.getAllProducts = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+    const page = req.query.page ? Number(req.query.page) : 1;
     const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const total = await Product.countDocuments();
+    const name = req.headers.search;
+    const type = req.headers.type;
+    let sortObj = {};
 
-    const sortBy = req.query.sortBy || "createdAt:desc"; // default to sort by createdAt in descending order
-    const [sortField, sortOrder] = sortBy.split(":");
-    const sortObj = {};
-    sortObj[sortField] = sortOrder === "desc" ? -1 : 1;
-
-    const products = await Product.find()
-      .sort(sortObj)
-      .skip(startIndex)
-      .limit(limit);
-    const productIds = products.map((product) => product._id);
-    const ratings = await Rating.find({ productId: { $in: productIds } });
-    const ratingMap = {};
-    ratings.forEach((rating) => {
-      ratingMap[rating.productId] = rating;
-    });
-
-    const productsWithRating = products.map((product) => {
-      const rating = ratingMap[product._id];
-      const avgRating = rating ? rating.avgRating : 0;
-      const totalRating = rating ? rating.totalRating : 0;
-      return {
-        ...product.toJSON(),
-        avgRating,
-        totalRating,
-      };
-    });
-
-    const pagination = {};
-    if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit: limit,
-        sortBy: sortBy,
-      };
+    if (req.query.sortBy) {
+      const [sortField, sortOrder] = req.query.sortBy.split(":");
+      sortObj[sortField] = sortOrder === "desc" ? -1 : 1;
+    } else {
+      sortObj = { createdAt: -1 }; // default to sort by createdAt in descending order
     }
 
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit: limit,
-        sortBy: sortBy,
-      };
+    if (name) {
+      const product = await Product.find();
+      const findData = product.filter((val) => {
+        return val.name.toLowerCase().includes(name.toLowerCase());
+      });
+      if (findData.length !== 0) {
+        const getLimit = findData.sort(sortObj).slice(startIndex, startIndex + limit);
+        return res.status(200).json({
+          success: true,
+          data: getLimit,
+          length: findData.length,
+        });
+      } else {
+        return res
+          .status(200)
+          .json({ success: false, state: "Input not found!" });
+      }
+    } else if (type) {
+      const product = await Product.find();
+      const findDataType = product.filter((val) => {
+        return val.type.toLowerCase().includes(type.toLowerCase());
+      });
+      if (findDataType.length !== 0) {
+        const getLimit = findDataType.sort(sortObj).slice(startIndex, startIndex + limit);
+        return res.status(200).json({
+          success: true,
+          data: getLimit,
+          length: findDataType.length,
+        });
+      } else {
+        return res
+          .status(200)
+          .json({ success: false, state: "Input not found!" });
+      }
+    } else {
+      const lengthALLProduct = await Product.countDocuments();
+      const products = await Product.find().sort({ createdAt: -1 }).skip(startIndex).limit(limit);
+      res.status(200).json({
+        success: true,
+        data: products,
+        length: lengthALLProduct,
+      });
     }
-
-    res.status(200).json({
-      success: true,
-      count: productsWithRating.length,
-      pagination,
-      data: productsWithRating,
-    });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
+
+// exports.getAllProducts = async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const startIndex = (page - 1) * limit;
+//     const endIndex = page * limit;
+//     const total = await Product.countDocuments();
+
+//     const sortBy = req.query.sortBy || "createdAt:desc"; // default to sort by createdAt in descending order
+//     const [sortField, sortOrder] = sortBy.split(":");
+//     const sortObj = {};
+//     sortObj[sortField] = sortOrder === "desc" ? -1 : 1;
+
+//     const products = await Product.find()
+//       .sort(sortObj)
+//       .skip(startIndex)
+//       .limit(limit);
+//     const productIds = products.map((product) => product._id);
+//     const ratings = await Rating.find({ productId: { $in: productIds } });
+//     const ratingMap = {};
+//     ratings.forEach((rating) => {
+//       ratingMap[rating.productId] = rating;
+//     });
+
+//     const productsWithRating = products.map((product) => {
+//       const rating = ratingMap[product._id];
+//       const avgRating = rating ? rating.avgRating : 0;
+//       const totalRating = rating ? rating.totalRating : 0;
+//       return {
+//         ...product.toJSON(),
+//         avgRating,
+//         totalRating,
+//       };
+//     });
+
+//     const pagination = {};
+//     if (endIndex < total) {
+//       pagination.next = {
+//         page: page + 1,
+//         limit: limit,
+//         sortBy: sortBy,
+//       };
+//     }
+
+//     if (startIndex > 0) {
+//       pagination.prev = {
+//         page: page - 1,
+//         limit: limit,
+//         sortBy: sortBy,
+//       };
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       count: productsWithRating.length,
+//       pagination,
+//       data: productsWithRating,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: "Something went wrong" });
+//   }
+// };
 
 
 
@@ -257,76 +323,77 @@ exports.searchProducts = async (req, res) => {
 
 
 
+
 //CODE YOU DƯỚI, YOU TỰ FIX VỚI GẮN
 
-exports.getAllProducts = async (req, res) => {
-  // const skip = req.query.skip ? Number(req.query.skip) : 0;
-  const limit = req.query.limit ? Number(req.query.limit) : 0;
-  const page = req.query.page ? Number(req.query.page) * limit - limit : 0;
-  const name = req.headers.search;
-  const type = req.headers.type;
-  if (name) {
-    try {
-      const product = await Product.find();
-      const findData = product.filter((val) => {
-        return val.name.toLowerCase().includes(name.toLowerCase());
-      });
-      if (findData.length !== 0) {
-        const getLinit = findData.slice(page, page + limit);
+// exports.getAllProducts = async (req, res) => {
+//   // const skip = req.query.skip ? Number(req.query.skip) : 0;
+//   const limit = req.query.limit ? Number(req.query.limit) : 0;
+//   const page = req.query.page ? Number(req.query.page) * limit - limit : 0;
+//   const name = req.headers.search;
+//   const type = req.headers.type;
+//   if (name) {
+//     try {
+//       const product = await Product.find();
+//       const findData = product.filter((val) => {
+//         return val.name.toLowerCase().includes(name.toLowerCase());
+//       });
+//       if (findData.length !== 0) {
+//         const getLinit = findData.slice(page, page + limit);
 
-        return res.status(200).json({
-          success: true,
-          data: getLinit,
-          length: findData.length,
-        });
-      } else {
-        return res
-          .status(200)
-          .json({ success: false, state: "Input not found!" });
-      }
-    } catch (err) {
-      res.status(500).json({ success: false, state: "Something wrong!" });
-    }
-  }
-  //
-  else
-    if (type) {
-      try {
-        const product = await Product.find();
-        const findDataType = product.filter((val) => {
-          return val.type.toLowerCase().includes(type.toLowerCase());
-        });
-        if (findDataType.length !== 0) {
-          const getLinit = findDataType.slice(page, page + limit);
-          return res.status(200).json({
-            success: true,
-            data: getLinit,
-            length: findDataType.length,
-          });
-        } else {
-          return res
-            .status(200)
-            .json({ success: false, state: "Input not found!" });
-        }
-      } catch (err) {
-        res.status(500).json({ success: false, state: "Something wrong!" });
-      }
-    }
-    //
-    else {
-      try {
-        const lengthALLProduct = await Product.count();
-        const products = await Product.find().skip(page).limit(limit);
-        res.status(200).json({
-          success: true,
-          data: products,
-          length: lengthALLProduct,
-        });
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    }
-};
+//         return res.status(200).json({
+//           success: true,
+//           data: getLinit,
+//           length: findData.length,
+//         });
+//       } else {
+//         return res
+//           .status(200)
+//           .json({ success: false, state: "Input not found!" });
+//       }
+//     } catch (err) {
+//       res.status(500).json({ success: false, state: "Something wrong!" });
+//     }
+//   }
+//   //
+//   else
+//     if (type) {
+//       try {
+//         const product = await Product.find();
+//         const findDataType = product.filter((val) => {
+//           return val.type.toLowerCase().includes(type.toLowerCase());
+//         });
+//         if (findDataType.length !== 0) {
+//           const getLinit = findDataType.slice(page, page + limit);
+//           return res.status(200).json({
+//             success: true,
+//             data: getLinit,
+//             length: findDataType.length,
+//           });
+//         } else {
+//           return res
+//             .status(200)
+//             .json({ success: false, state: "Input not found!" });
+//         }
+//       } catch (err) {
+//         res.status(500).json({ success: false, state: "Something wrong!" });
+//       }
+//     }
+//     //
+//     else {
+//       try {
+//         const lengthALLProduct = await Product.count();
+//         const products = await Product.find().skip(page).limit(limit);
+//         res.status(200).json({
+//           success: true,
+//           data: products,
+//           length: lengthALLProduct,
+//         });
+//       } catch (err) {
+//         res.status(500).json(err);
+//       }
+//     }
+// };
 
 
 //get all products
