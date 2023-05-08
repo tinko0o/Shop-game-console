@@ -497,4 +497,9 @@ section .wrapper-products .product .content .product-name {
 .page-navigation ul .next:hover {
   color: #333;
   opacity: 1;
+}
+
+.select-soft .form-select {
+  width: 15%;
+  margin-left: 85%;
 }/*# sourceMappingURL=index.css.map */

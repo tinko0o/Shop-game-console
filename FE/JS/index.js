@@ -272,11 +272,12 @@ window.addEventListener("load",function(){
         await fetch(`${http}products?page=${page}&limit=${limit}`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
-            search: checkSearch,
+            // search: checkSearch,
           },
         })
           .then((data) => data.json())
           .then((data) => {
+            console.log(data)
             this.render(data);
             this.page(page, limit, data.length);
           })
