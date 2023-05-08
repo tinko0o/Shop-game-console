@@ -160,62 +160,32 @@ exports.getAllProducts = async (req, res) => {
     const startIndex = (page - 1) * limit;
     const name = req.headers.search;
     const type = req.headers.type;
-    let sortObj = {};
+    const sortBy = req.query.sortBy || "createdAt:desc";
 
-    if (req.query.sortBy) {
-      const [sortField, sortOrder] = req.query.sortBy.split(":");
-      sortObj[sortField] = sortOrder === "desc" ? -1 : 1;
-    } else {
-      sortObj = { createdAt: -1 }; // default to sort by createdAt in descending order
-    }
+    const [sortField, sortOrder] = sortBy.split(":");
+    const sortObj = { [sortField]: sortOrder === "desc" ? -1 : 1 };
 
-    if (name) {
-      const product = await Product.find();
-      const findData = product.filter((val) => {
-        return val.name.toLowerCase().includes(name.toLowerCase());
-      });
-      if (findData.length !== 0) {
-        const getLimit = findData.sort(sortObj).slice(startIndex, startIndex + limit);
-        return res.status(200).json({
-          success: true,
-          data: getLimit,
-          length: findData.length,
-        });
-      } else {
-        return res
-          .status(200)
-          .json({ success: false, state: "Input not found!" });
-      }
-    } else if (type) {
-      const product = await Product.find();
-      const findDataType = product.filter((val) => {
-        return val.type.toLowerCase().includes(type.toLowerCase());
-      });
-      if (findDataType.length !== 0) {
-        const getLimit = findDataType.sort(sortObj).slice(startIndex, startIndex + limit);
-        return res.status(200).json({
-          success: true,
-          data: getLimit,
-          length: findDataType.length,
-        });
-      } else {
-        return res
-          .status(200)
-          .json({ success: false, state: "Input not found!" });
-      }
-    } else {
-      const lengthALLProduct = await Product.countDocuments();
-      const products = await Product.find().sort({ createdAt: -1 }).skip(startIndex).limit(limit);
-      res.status(200).json({
-        success: true,
-        data: products,
-        length: lengthALLProduct,
-      });
-    }
+    const query = {};
+    if (name) query.name = new RegExp(name, "i");
+    if (type) query.type = new RegExp(type, "i");
+
+    const lengthAllProduct = await Product.countDocuments(query);
+    const products = await Product.find(query)
+      .sort(sortObj)
+      .skip(startIndex)
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      data: products,
+      length: lengthAllProduct,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
+
 
 
 // exports.getAllProducts = async (req, res) => {
