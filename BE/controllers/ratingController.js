@@ -84,7 +84,9 @@ exports.addRating = async (req, res) => {
         updatedUsers[checkUser].rating = req.body.rating;
         const sumOfRatings = updatedUsers.reduce((acc, cur) => acc + cur.rating, 0);
         const totalRating = updatedUsers.length;
-        await foundRating.updateOne({ users: updatedUsers, avgRating: Number((sumOfRatings / totalRating).toFixed(1)), total: totalRating });
+        const roundedAvgRating = Math.round((sumOfRatings / totalRating) * 2) / 2;
+        await foundRating.updateOne({ users: updatedUsers, avgRating: roundedAvgRating, totalRating: totalRating });
+
       } else {
         const newRating = {
           id: user.id,
@@ -102,7 +104,9 @@ exports.addRating = async (req, res) => {
         const updatedUsers = [...foundRating.users, newRating];
         const sumOfRatings = updatedUsers.reduce((acc, cur) => acc + cur.rating, 0);
         const totalRating = updatedUsers.length;
-        await foundRating.updateOne({ users: updatedUsers, avgRating: Number((sumOfRatings / totalRating).toFixed(1)), total: totalRating });
+        const roundedAvgRating = Math.round((sumOfRatings / totalRating) * 2) / 2;
+        await foundRating.updateOne({ users: updatedUsers, avgRating: roundedAvgRating, totalRating: totalRating });
+
       }
       return res.status(200).json({
         success: true,
@@ -114,6 +118,3 @@ exports.addRating = async (req, res) => {
     res.status(500).json({ success: false, message: "something went wrong" });
   }
 };
-
-
-

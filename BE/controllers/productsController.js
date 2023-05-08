@@ -169,6 +169,23 @@ exports.getAllProducts = async (req, res) => {
       .sort(sortObj)
       .skip(startIndex)
       .limit(limit);
+    const productIds = products.map((product) => product._id);
+    const ratings = await Rating.find({ productId: { $in: productIds } });
+    const ratingMap = {};
+    ratings.forEach((rating) => {
+      ratingMap[rating.productId] = rating;
+    });
+
+    const productsWithRating = products.map((product) => {
+      const rating = ratingMap[product._id];
+      const avgRating = rating ? rating.avgRating : 0;
+      const totalRating = rating ? rating.totalRating : 0;
+      return {
+        ...product.toJSON(),
+        avgRating,
+        totalRating,
+      };
+    });
 
     const pagination = {};
     if (endIndex < total) {
@@ -189,14 +206,15 @@ exports.getAllProducts = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      count: products.length,
+      count: productsWithRating.length,
       pagination,
-      data: products,
+      data: productsWithRating,
     });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
 
 
 //search for a product
