@@ -170,18 +170,20 @@ exports.updateUser = async (req, res) => {
     }
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
-    const { name, phone, address } = req.body;
-    if (!name || !phone || !address) {
+    const {phone, address } = req.body;
+    if (!phone || !address) {
       return res.status(400).json({
         success: false,
         message: "Invalid input",
       });
     }
-    const user = await User.findOneAndUpdate(
+    const { city, district, wards,  streetAndHouseNumber } = address;
+    const updatedUser = await User.findOneAndUpdate(
       { email: decoded.email }, 
-      { name, phone, address },
-      { new: true });
-    if (!user) {
+      { phone, address: { city, district, wards, streetAndHouseNumber } },
+      { new: true }
+    );
+    if (!updatedUser) {
       return res.status(404).json({
         success: false,
         message: "User not found",
@@ -190,7 +192,7 @@ exports.updateUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "User updated successfully",
-      data: user,
+      data: updatedUser,
     });
   } catch (err) {
     console.log(err);

@@ -10,6 +10,10 @@ const OrderSchema = new mongoose.Schema(
         total: {type: Number, require: true},
         name: {type: String, require: true},
         phone: {type: String, require: true},
+        city: { type: String, require: true },
+        district: { type: String, require: true },
+        wards: { type: String, require: true },
+        streetAndHouseNumber: {type: String, require: true},
         address: {type: String, require: true},
     },
     {

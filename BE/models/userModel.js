@@ -5,7 +5,12 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, require: true, unique: true },
     password: { type: String, require: true },
     phone: { type: String, require: true },
-    address: { type: String, require: true },
+    address: {
+        city: { type: String, require: true },
+        district: { type: String, require: true },
+        wards: { type: String, require: true },
+        streetAndHouseNumber: {type: String, require: true},
+    },
     isAdmin: { type: Boolean, default: false },
 },
     {

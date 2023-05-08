@@ -50,9 +50,9 @@ exports.addComment = async (req, res) => {
         });
       }
 
-      if (parentComment.parentCommentId === null) { // parentComment is a top-level comment
+      if (parentComment.parentCommentId === null) {
         parentCommentId = parentComment._id;
-      } else { // parentComment is a reply to a comment
+      } else {
         parentCommentId = parentComment.parentCommentId;
       }
 

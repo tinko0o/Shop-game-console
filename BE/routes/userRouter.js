@@ -1,13 +1,13 @@
 const router = require("express").Router();
 const userController = require("../controllers/userController")
 
-router.post("/register",userController.register);
-router.post("/login",userController.login);
+router.post("/register",userController.register); //ok
+router.post("/login",userController.login); //ok
 
 //user
-router.put("/user/changepassword/",userController.changePassword);
-router.put("/user/update/", userController.updateUser);
-router.get("/user",userController.getUser);
+router.put("/user/changepassword/",userController.changePassword); //ok
+router.put("/user/update/", userController.updateUser); //ok
+router.get("/user",userController.getUser); //ok
 
 //admin
 router.get("",userController.getAllUsers);
