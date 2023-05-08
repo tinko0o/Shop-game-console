@@ -44,9 +44,21 @@
   margin: auto;
 }
 
+.p-5 {
+  padding: 10px 50px !important;
+}
+
+.stars-rating .filled {
+  color: #f0932b;
+}
+
 .description-container {
   position: relative;
   /* height: 900px; */
+}
+
+.image {
+  margin: auto;
 }
 
 .main-description1 {
@@ -79,6 +91,7 @@
 .product-title {
   font-size: 1.1rem;
   font-weight: bold;
+  margin: 0 !important;
 }
 
 .product-price {
@@ -109,8 +122,12 @@ img {
   width: 100%;
 }
 
+.description {
+  max-height: 400px;
+  overflow: auto;
+}
+
 .content-action {
-  margin-bottom: 50px;
   display: flex;
   justify-content: start;
   align-items: center;
@@ -177,6 +194,10 @@ img {
 .Wrap-cmt .container .addcmt button:hover {
   background-color: #f0932b;
 }
+.Wrap-cmt .container .comment-list {
+  max-height: 2000px;
+  overflow: auto;
+}
 .Wrap-cmt .container .comment-list .list-cmt {
   padding: 0;
 }
@@ -192,6 +213,23 @@ img {
 }
 .Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-content p {
   margin: 0;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .l-rep .rep .cmt-top-name {
+  display: flex;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .l-rep .rep .cmt-top-name p {
+  margin-right: 5px;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .l-rep .rep .cmt-top-name .p-admin {
+  font-weight: 400;
+  color: #f0932b;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .l-rep .rep .cmt-top-name .p-purchase {
+  font-weight: 400;
+  color: #6ef04e;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .l-rep .rep .cmt-content a {
+  margin-right: 5px;
 }
 .Wrap-cmt .container .comment-list .list-cmt .cmt-command a {
   color: #222;

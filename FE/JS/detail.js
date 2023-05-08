@@ -48,10 +48,14 @@ function renderCmt(data){
           <li class="rep">
         <div class="main-cmt">
             <div class="cmt-top">
-                <p class="cmt-top-name">${v.name}${v.isAdmin?"_Admin":""}${v.purchased?"_purchased":""}</p>
+                <div class="cmt-top-name">
+                <p class="p-name">${v.name}</p>
+                <p class="p-admin">${v.isAdmin?"Admin":""}</p> 
+                <p class="p-purchase">${v.purchased?"purchased":""}</p>               
+                </div>
             </div>
             <div class="cmt-content">
-                <p class="cmt-text"><a href="#">@${v.repliedToUsername}</a>${v.comment}</p>
+                <p class="cmt-text"><a href="#">${v.repliedToUsername?`@${v.repliedToUsername}`:""}</a>${v.comment}</p>
             </div>
             <div class="cmt-command">
                 <button class="btn-rep" data-id="${v._id}" data-parent="${v.parentCommentId}">Reply</button>
@@ -106,10 +110,19 @@ async function getComment() {
 function renderContent (data){
     const html_img=`<img class="img-fluid details-img" src="${data.img}" alt="">`
     const html_name = `                          
-    <p class="product-category mb-0">${data.manufacturer}</p>
+    <p class="product-category mb-0">${data.manufacturer} <strong>${data.type}</strong></p>
     <h3>${data.name}</h3>
+    <p><strong>Ngày ra mắt:</strong>${ formattedDate(data.release_date)}</p>
+    <div class="stars-rating">
+        <i class="fa-sharp fa-solid fa-star"></i>
+        <i class="fa-sharp fa-solid fa-star"></i>
+        <i class="fa-sharp fa-solid fa-star"></i>
+        <i class="fa-sharp fa-solid fa-star"></i>
+        <i class="fa-sharp fa-solid fa-star"></i>
+        <span style="font-size: 18px;">${data.totalRating}</span>
+    </div>
     <hr>
-    <p class="product-price">${data.price}</p>`
+    <p class="product-price">${formatCurrency(data.price)}</p>`
     const html_description = `                            
     <p class="product-title mt-4 mb-1">About this product</p>
     <p class="product-description mb-4">
@@ -119,7 +132,16 @@ function renderContent (data){
     $(".description").innerHTML = html_description;
     $(".name").innerHTML = html_name;
 }
-
+function displayRating(rating = 0) {
+  const stars = $$('.fa-star');
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.classList.add('filled');
+    } else {
+      star.classList.remove('filled');
+    }
+  });
+}
 // UPdate Quantity Cart
 function U_quantityCart(){
   fetch(`${http}carts/cart/amount`,{
@@ -205,12 +227,16 @@ window.addEventListener("load",function(){
   header();
   U_quantityCart();
   getComment();
+
     //render html
     const {idpd} = getSearchParameters();
     fetch(`${http}products/${idpd}`)
     .then((data)=>data.json())
     .then((data)=>{
+      log(data);
         renderContent(data.data);
+        displayRating(data.data?.avgRating);
+
     });
     // + - sl quantity
     const sub = $(".sub");
