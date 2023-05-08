@@ -150,28 +150,19 @@ exports.deleteComment = async (req, res) => {
 exports.getComments = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const comments = await Comment.find({ productId: productId }).sort({ createdAt: -1 });
+    const comments = await Comment.find({ productId: productId, parentCommentId: null }).sort({ createdAt: -1 });
     const commentsWithReplies = [];
 
-    
     for (const comment of comments) {
-      if (!comment.parentCommentId) {
-        const commentData = comment.toObject();
-        const replies = comments.filter(reply => String(reply.parentCommentId) === String(comment._id));
-        commentData.replies = [];
+      const commentData = comment.toObject();
+      const replies = await Comment.find({ parentCommentId: comment._id }).sort({ createdAt: 1 });
+      commentData.replies = [];
 
-        
-        for (const reply of replies) {
-          const replyData = reply.toObject();
-          const replyReplies = comments.filter(replyReply => String(replyReply.parentCommentId) === String(reply._id));
-          replyData.replies = replyReplies.map(replyReply => {
-            const replyReplyData = replyReply.toObject();
-            return replyReplyData;
-          });
-          commentData.replies.push(replyData);
-        }
-        commentsWithReplies.push(commentData);
+      for (const reply of replies) {
+        const replyData = reply.toObject();
+        commentData.replies.push(replyData);
       }
+      commentsWithReplies.push(commentData);
     }
 
     res.status(200).json({
