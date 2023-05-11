@@ -23,6 +23,7 @@ async function getUser(){
       if(data.data === null){
         alertFail();
       }else{
+        log(data)
       localStorage.setItem(
         "loginUser",
         JSON.stringify({data:data.data , token:token})
@@ -31,17 +32,17 @@ async function getUser(){
     })
 }
 
-async function updateUser(data){
+async function updateUser(name,phone,address){
     await fetch(`${http}users/user/update`,{
         headers: {                     
-        "Content-type": "application/json; charset=UTF-8",
-        authentication: User.token,},
+        // "Content-type": "application/json; charset=UTF-8",
+        authentication: User.token},
         method:"put",
-        body: JSON.stringify(data)       
+        body: JSON.stringify(name,phone , address)       
     })
     .then((data) => data.json())
     .then((data) => {
-        // log(data)
+        log(data)
     })
 }
 async function getCart(){
@@ -62,12 +63,13 @@ async function getCart(){
       }
     })
 }
-async function oder(){
+async function oder(data){
     await fetch(`${http}oders/create`,{
         headers: {                     
         "Content-type": "application/json; charset=UTF-8",
         authentication: User.token,},
         method:"post",
+        body:JSON.stringify(data) 
         
     })
     .then((data) => data.json())
@@ -112,7 +114,10 @@ window.addEventListener("load",function(){
         $("#u-email").value= User.data?.email;
         $("#u-email").setAttribute("disabled","disabled")
         $("#u-phone").value= User.data?.phone?`${User.data?.phone}` :"";
-        $("#u-address").value= User.data?.address?`${User.data?.address}` :"";
+        $("#u-city").value= User.data?.address.city?`${User.data.address?.city}` :"";
+        $("#u-district").value= User.data?.address.district?`${User.data.address?.district}` :"";
+        $("#u-ward").value= User.data?.address.wards?`${User.data.address?.wards}` :"";
+        $("#u-street").value= User.data?.address.streetAndHouseNumber?`${User.data.address?.streetAndHouseNumber}` :"";
 
     }
     const form=$(".f-checkout")
@@ -120,12 +125,15 @@ window.addEventListener("load",function(){
         const name =this.elements["name"].value;
         const phone =this.elements["phone"].value;
         const email =this.elements["email"].value;
-        const address =this.elements["address"].value;
+        const city =this.elements["city"].value;
+        const district =this.elements["district"].value;
+        const wards =this.elements["ward"].value;
+        const streetAndHouseNumber =this.elements["street"].value;
         e.preventDefault()
-        const dataAdressUser = {name,phone,email,address}
+        const dataAdressUser = {name,phone,email,city,district,wards,streetAndHouseNumber}
         log(dataAdressUser)
-        updateUser(dataAdressUser);
-        getUser();
-        oder();
+        // updateUser(name,phone,dataAdressUser);
+        // getUser();
+        oder(dataAdressUser);
     })
 })

@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
- <nav>
+ <!-- <nav>
   <ul class="nav">
     <li class="nav-item">
       <a class="nav-link" href="#">Mục chính 1</a>
@@ -61,6 +61,84 @@
       </ul>
     </li>
   </ul>
- </nav>
+ </nav> -->
+ <form>
+  <label for="province">Tỉnh/Thành phố:</label>
+  <select id="province" name="province"></select>
+
+  <label for="district">Quận/Huyện:</label>
+  <select id="district" name="district"></select>
+
+  <label for="ward">Xã/Phường:</label>
+  <select id="ward" name="ward"></select>
+</form>
+
 </body>
 </html>
+
+<style>
+  form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  font-weight: bold;
+}
+
+select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+</style>
+<script>
+  const provinceSelect = document.getElementById("province");
+const districtSelect = document.getElementById("district");
+const wardSelect = document.getElementById("ward");
+
+function populateProvinces() {
+  // Lấy danh sách tỉnh/thành phố từ API hoặc cơ sở dữ liệu
+  const provinces = ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng"];
+  
+  // Thêm các tỉnh/thành phố vào select
+  for (let province of provinces) {
+    const option = document.createElement("option");
+    option.text = province;
+    provinceSelect.add(option);
+  }
+}
+
+function populateDistricts() {
+  // Lấy danh sách quận/huyện từ API hoặc cơ sở dữ liệu
+  const districts = ["Hoàn Kiếm", "Ba Đình", "Đống Đa", "Cầu Giấy", "Thanh Xuân"];
+  
+  // Thêm các quận/huyện vào select
+  for (let district of districts) {
+    const option = document.createElement("option");
+    option.text = district;
+    districtSelect.add(option);
+  }
+}
+
+function populateWards() {
+  // Lấy danh sách xã/phường từ API hoặc cơ sở dữ liệu
+  const wards = ["Phúc Xá", "Trúc Bạch", "Ngọc Hà", "Liễu Giai", "Yên Hòa"];
+  
+  // Thêm các xã/phường vào select
+  for (let ward of wards) {
+    const option = document.createElement("option");
+    option.text = ward;
+    wardSelect.add(option);
+  }
+}
+
+// Thực hiện việc điền dữ liệu vào các select khi trang được load
+populateProvinces();
+populateDistricts();
+populateWards();
+
+</script>

@@ -70,7 +70,11 @@ function renderCmt(data){
         <li class="cmt">
             <div class="main-cmt">
                 <div class="cmt-top">
-                    <p class="cmt-top-name">${val.name}</p>
+                  <div class="cmt-top-name">
+                  <p class="p-name">${val.name}</p>
+                  <p class="p-admin">${val.isAdmin?"Admin":""}</p> 
+                  <p class="p-purchase">${val.purchased?"purchased":""}</p>               
+                  </div>
                 </div>
                 <div class="cmt-content">
                     <p class="cmt-text">${val.comment}</p>

@@ -260,12 +260,12 @@ header{
         margin: 0;
         li{
           padding: 10px 0px;
-          width: 65px;
+          width: 80px;
           display: block;
           // height: 100%;
           cursor: pointer;
           text-align: center;
-          margin:0 5px;
+          // margin:0 5px;
           color: #fff;
           font-weight: 600;
           transition: 0.3s;
@@ -411,7 +411,7 @@ section{
 //pagiantion
 .page-navigation {
   width: 400px;
-  margin: 0 auto;
+  margin: 20px auto;
   ul {
     li {
       opacity: 0.7;
@@ -453,7 +453,7 @@ section{
         border-bottom-left-radius:15px ;
         overflow: hidden;
       }
-      &:nth-child(5){
+      &:nth-last-child(2){
         border-left: 1px solid #666;
         border-top-right-radius:15px ;
         border-bottom-right-radius:15px ;
@@ -488,6 +488,7 @@ section{
     }
     .next {
       margin-right: 3px;
+      // margin-left: 30%;
       border: none;
       border-bottom-left-radius: 3px;
       border-top-left-radius: 3px;
@@ -510,6 +511,7 @@ section{
 .select-soft{
   .form-select{
     width: 15%;
-    margin-left: 85%;
+    margin: 20px 0 20px 85%;
+    font-size: 17px;
   }
 }

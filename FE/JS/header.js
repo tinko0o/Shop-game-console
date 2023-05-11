@@ -83,3 +83,31 @@ export  function formatCurrency(price, symbol = "đ") {
   decPart = (decPart + '000').substr(0, 3);
   return intPart + symbol;
 }
+// UPdate Quantity Cart
+export function U_quantityCart(){
+  if(User){
+    fetch(`${http}carts/cart/amount`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      // method:"post",
+      // body: JSON.stringify({_id,quantity:1})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        cartQuantities.innerHTML = data?.data;
+      }
+      else{
+        header().logoff.click();
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+  }else{
+    cartQuantities.innerHTML = "";
+  }
+}

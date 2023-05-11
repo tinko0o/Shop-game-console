@@ -37,7 +37,7 @@
                     </form>
                 </div>
                 <div class="col col-lg-5 col-md-6 nav-action">
-                    <a href="./cart.html" class="cart">
+                    <a href="#" class="cart">
                         <i class="fa-sharp fa-solid fa-cart-shopping"></i>
                         <p class="quantities-cart">0</p>
                     </a>
@@ -93,35 +93,39 @@
             <nav class="row nav-bottom">
               <ul class="wrapper-nav">
                 <li><a href="./index.html">HOME</a></li>
-                <li>ALL</li>
+                <li id="all">ALL</li>
                 <li class="nav-bottom-dropdown">
                   PS5<i class="fa-solid fa-angle-down"></i>
                   <ul class="nav-dropdown">
                     <li id="ps5-device">PS5 Device</li>
                     <li id="ps5-game">PS5 Game</li>
+                    <li id="ps5-accessory">PS5 Phụ kiện</li>
                 </ul>
                 </li>
                 <li class="nav-bottom-dropdown">
                   PS4<i class="fa-solid fa-angle-down"></i>
                   <ul class="nav-dropdown">
-                    <li id="ps5-device">PS4 Device</li>
-                    <li id="ps5-game">PS4 Game</li>
+                    <li id="ps4-device">PS4 Device</li>
+                    <li id="ps4-game">PS4 Game</li>
+                    <li id="ps4-accessory">PS4 Phụ kiện</li>
                 </ul>
                 </li>
                 <li class="nav-bottom-dropdown">
                   XBOX<i class="fa-solid fa-angle-down"></i>
                   <ul class="nav-dropdown">
-                    <li >XBOX Device</li>
-                    <li >XBOX Game</li>
+                    <li id="xbox-device">XBOX Device</li>
+                    <li id="xbox-game">XBOX Game</li>                    
+                    <li id="xbox-accessory">XBOX Phụ kiện</li>
                 </ul>
                 </li>
-                <!-- <li class="nav-bottom-dropdown">
-                  Switch<i class="fa-solid fa-angle-down"></i>
+                <li class="nav-bottom-dropdown">
+                  SWITCH<i class="fa-solid fa-angle-down"></i>
                   <ul class="nav-dropdown">
-                    <li id="ps5-device">Switch Device</li>
-                    <li id="ps5-game">Switch Game</li>
+                    <li id="switch-device">SWITCH Device</li>
+                    <li id="switch-game">SWITCH Game</li>                    
+                    <li id="switch-accessory">SWITCH Phụ kiện</li>
                 </ul>
-                </li> -->
+                </li>
               </ul>
             </nav>
         </div>
@@ -170,11 +174,11 @@
     </div>
     <div class="select-soft">
       <div class="container">
-        <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-          <option selected>DEFAULT: mới nhất</option>
-          <option value="2">cũ nhất</option>
-          <option value="3">giá cao đến thấp</option>
-          <option value="3">giá thấp đến cao</option>
+        <select id="my-select" class="form-select form-select-sm" aria-label=".form-select-sm example">
+          <option value=""selected>DEFAULT: mới nhất</option>
+          <option value="createdAt:asc">cũ nhất</option>
+          <option value="price:desc">giá cao đến thấp</option>
+          <option value="price:asc">giá thấp đến cao</option>
         </select>
       </div>
     </div>

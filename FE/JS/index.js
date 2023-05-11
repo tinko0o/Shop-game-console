@@ -80,45 +80,57 @@ function header(){
 
     }
 }
+// check click cart
+$(".cart").addEventListener("click",function(){
+  if(User){
+    window.location.replace("./cart.html")
+  }else{
+    alertFail("You need login fist")
+  }
+})
 // UPdate Quantity Cart
 function U_quantityCart(){
-  fetch(`${http}carts/cart/amount`,{
-    headers:{
-      "Content-type": "application/json; charset=UTF-8",
-      authentication: User?.token,                         
-    },
-    // method:"post",
-    // body: JSON.stringify({_id,quantity:1})
-  })
-  .then((data)=>data.json())
-  .then((data)=>{
-    if(data.success)
-    {
-      cartQuantities.innerHTML = data?.data;
-    }
-    else{
-      header().logoff.click();
-    }
-  })
-  .catch(()=>{
-    alertFail();
-  })
+  if(User){
+    fetch(`${http}carts/cart/amount`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      // method:"post",
+      // body: JSON.stringify({_id,quantity:1})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        cartQuantities.innerHTML = data?.data;
+      }
+      else{
+        header().logoff.click();
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+  }else{
+    cartQuantities.innerHTML = "";
+  }
 }
 //alert
-function alertFullil() {
-  alertSuccess.children[0].textContent = `Add successfuly`;
+ function alertFullil(message="success") {
+  alertSuccess.children[0].textContent = `${message}`;
   alertSuccess.classList.add("get-active");
   setTimeout(() => {
     alertSuccess.classList.remove("get-active");
-  }, 1000);
+  }, 1500);
 }
 
-function alertFail() {
-  alertDanger.children[0].textContent = `Something fail!`;
+function alertFail(message="Something fail!") {
+  alertDanger.children[0].textContent = `${message}`;
   alertDanger.classList.add("get-active");
   setTimeout(() => {
     alertDanger.classList.remove("get-active");
-  }, 1000);
+  }, 1500);
 }
 // scroll
 function scroll(){
@@ -150,6 +162,7 @@ window.addEventListener("load",function(){
     header();
     scroll();
     U_quantityCart();
+
     // head()
     const navPage = $(".pagination");
     const products = {
@@ -267,7 +280,7 @@ window.addEventListener("load",function(){
     }
     },
 
-    product: async function (page = 1, search, limit = 8) {
+    product: async function (page = 1, search, limit = 16) {
         const checkSearch = search ? search : "";
         await fetch(`${http}products?page=${page}&limit=${limit}`, {
           headers: {
@@ -288,18 +301,19 @@ window.addEventListener("load",function(){
         //     spinner(false);
         //   });
       },
-      product_type: async function (page = 1, type, limit = 8) {
-        const checkType = type ? type : "";
-        await fetch(`${http}products?page=${page}&limit=${limit}`, {
+      product_type: async function (page = 1, sort, type="", limit = 16) {
+        const sortBy = sort ? sort : "";
+            // console.log("valu Soft" ,sortBy)
+        await fetch(`${http}products?limit=${limit}&sortBy=${sortBy}&page=${page}`, {
           headers: {
             "Content-type": "application/json; charset=UTF-8",
-            type: checkType,
+              type
           },
         })
           .then((data) => data.json())
           .then((data) => {
             this.render(data);
-            this.page(page, limit,0);
+            this.page(page, limit,data.length);
           })
           .catch((err) => {
             console.log(err);
@@ -343,21 +357,69 @@ window.addEventListener("load",function(){
             const searchInput = $(".form-search");
             const nav_dropdown = $(".nav-dropdown")
             const _this = this;
+            const select = document.getElementById("my-select");
+            let sort;
+            let typeClick;
+            select.addEventListener("change", function() {
+              const sortValue = this.options[select.selectedIndex].value ;
+              // console.log(value);
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto, sortValue,typeClick );
+                sort = sortValue;
+
+            });
             //click category (type)
 
             const ps5_device = $("#ps5-device");
             const ps5_game = $("#ps5-game");
+            const ps4_device = $("#ps4-device");
+            const ps4_game = $("#ps4-game");
+            const all =$("#all")
+            all.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
             ps5_game.onclick = function(e)
             {
               _this.product_type();
               e.preventDefault();  
                 const type = "game ps5";
                 _this.pageInto = 1;
-                _this.product_type(_this.pageInto, type,50 );
-                pagination.remove();
-                // console.log(_this.product_type)
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
             }          
-            
+            ps5_device.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Máy ps5";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
+            ps4_game.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "game ps4";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }          
+            ps4_device.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Máy ps4";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }           
             // click detail image
             wrapperDetail.onclick= function(e){
               e.preventDefault();

@@ -168,6 +168,20 @@ img{
                     .main-cmt{
                         margin-top: 5px;
                         .cmt-top{
+                              .cmt-top-name{
+                              display: flex;
+                              p{
+                                margin-right:5px;
+                              }
+                              .p-admin{
+                                font-weight: 400;
+                                color: #f0932b;
+                              }
+                              .p-purchase{
+                                font-weight: 400;
+                                color: #6ef04e;
+                              }
+                            }
                             p{
                                 margin: 0;
                                 font-weight: bold;

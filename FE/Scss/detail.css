@@ -207,6 +207,20 @@ img {
 .Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt {
   margin-top: 5px;
 }
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-top .cmt-top-name {
+  display: flex;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-top .cmt-top-name p {
+  margin-right: 5px;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-top .cmt-top-name .p-admin {
+  font-weight: 400;
+  color: #f0932b;
+}
+.Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-top .cmt-top-name .p-purchase {
+  font-weight: 400;
+  color: #6ef04e;
+}
 .Wrap-cmt .container .comment-list .list-cmt .cmt .main-cmt .cmt-top p {
   margin: 0;
   font-weight: bold;

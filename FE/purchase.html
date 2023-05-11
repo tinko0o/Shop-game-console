@@ -4,9 +4,136 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./Scss/resset.css">
+    <link rel="stylesheet" href="./fontawesome-free-6.1.2-web/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="./Scss/purchase.css">
     <title>purchase</title>
 </head>
 <body>
-    paasdasd
+    <!-- alert -->
+    <div class="alert alert-danger" role="alert">
+        <span>Something was wrong</span> <i class="fa-solid fa-exclamation"></i>
+    </div>
+    <div class="alert alert-primary" role="alert">
+        <span>A simple danger alert with</span> <i class="fa-solid fa-check"></i>
+    </div>
+<header>
+        <div class="container">
+            <div class="row nav-top">
+                <div class="col col-lg-7 col-md-6 logo-search">
+                    <a href="./index.html" class="logo-icon">
+                        <img src="./img/logo.jpg" alt="logo">
+                        <p>HAT</p>
+                    </a>
+                    <!-- <form class="form-search " action="#">
+                        <input name="search" type="text" placeholder="Search...">
+                        <button class="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form> -->
+                </div>
+                <div class="col col-lg-5 col-md-6 nav-action">
+                    <a href="./cart.html" class="cart">
+                        <i class="fa-sharp fa-solid fa-cart-shopping"></i>
+                        <p class="quantities-cart">0</p>
+                    </a>
+                    <div class="wall"></div>
+                    <div class="user">
+                        <i class="fa-solid fa-user"></i>
+                        <a href="./Login.html" class="login">login</a>
+                        <span class="wall-space"> / </span>
+                        <a href="./Login.html" class="register">Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="puchase">
+        <div class="container">
+            <h3>Your Purchased</h3>
+            <div class="purchased">
+                <div class="block">
+                    <div class="address">
+                        <div class="address-content">
+                            <p class="u-name"><strong>Name:</strong>User</p>
+                            <p class="p-address"><strong>Address:</strong>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                        </div>
+                        <div class="total">
+                            <p class="t-price"><strong>Totail:</strong>1000000</p>
+                            <p class="t-quantity"><strong>quantity:</strong>x5</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="products">
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+                            <div class="stars-rating">
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                            </div>
+                            <button class="btn ">Rating</button>
+                        </div>
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+                            <div class="stars-rating">
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                            </div>
+                            <button class="btn ">Rating</button>
+                        </div>
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+                            <div class="stars-rating">
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                            </div>
+                            <button class="btn ">Rating</button>
+                        </div>
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+                            <div class="stars-rating">
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                                <i class="fa-sharp fa-solid fa-star"></i>
+                            </div>
+                            <button class="btn ">Rating</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="./JS/purchase.js" type="module"></script>
 </html>
