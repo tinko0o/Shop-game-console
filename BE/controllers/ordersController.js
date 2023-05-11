@@ -85,7 +85,7 @@ exports.getOrders = async (req, res) => {
                 message: 'User not found',
             });
         }
-        const order = await Order.find({ userId: user._id })
+        const order = await Order.find({ userId: user._id }).sort({ createdAt: -1 })
         if (!order) {
             return res.status(401).json({
                 success: false,
