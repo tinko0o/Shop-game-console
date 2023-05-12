@@ -478,7 +478,7 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "Game%20XBOX%20SERIES%20X%7CS";
+                const type = "Game%20XBOX%20SERIES";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;
@@ -487,7 +487,7 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "M%C3%A1y%20XBOX%20SERIES%20X%7CS";
+                const type = "M%C3%A1y%20XBOX%20SERIES";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;
@@ -496,7 +496,7 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "Ph%E1%BB%A5%20ki%E1%BB%87n%20XBOX%20SERIES%20X%7CS";
+                const type = "Ph%E1%BB%A5%20Ki%E1%BB%87n%20XBOX%20SERIES";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;

@@ -158,7 +158,6 @@ exports.getAllProducts = async (req, res) => {
     const limit = req.query.limit ? Number(req.query.limit) : 10;
     const page = req.query.page ? Number(req.query.page) : 1;
     const startIndex = (page - 1) * limit;
-    const search = req.query.search;
     const type = req.headers.type ? decodeURIComponent(req.headers.type) : null;
     const sortBy = req.query.sortBy || "createdAt:desc";
 
@@ -166,7 +165,6 @@ exports.getAllProducts = async (req, res) => {
     const sortObj = { [sortField]: sortOrder === "desc" ? -1 : 1 };
 
     const query = {};
-    if (name) query.name = new RegExp(name, "i");
     if (type) query.type = new RegExp("^" + type + "$", "i");
 
     const lengthAllProduct = await Product.countDocuments(query);
@@ -174,8 +172,6 @@ exports.getAllProducts = async (req, res) => {
       .sort(sortObj)
       .skip(startIndex)
       .limit(limit);
-
-    // Get ratings for all products in one database query
     const ratingMap = await Rating.find({ productId: { $in: products.map((p) => p._id) } })
       .select("productId avgRating totalRating")
       .lean()
@@ -184,8 +180,6 @@ exports.getAllProducts = async (req, res) => {
       acc[curr.productId] = curr;
       return acc;
     }, {});
-
-    // Add avgRating and totalRating to each product
     const productsWithRating = products.map((p) => ({
       ...p.toJSON(),
       avgRating: ratingDict[p._id]?.avgRating || 0,
@@ -202,41 +196,55 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-
-//search for a product
+//search product
 
 exports.searchProducts = async (req, res) => {
   try {
-    const { name, manufacturer, type } = req.query;
-    const searchString = {};
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const startIndex = (page - 1) * limit;
+    const sortBy = req.query.sortBy || "createdAt:desc";
 
-    if (name) {
-      searchString.name = { $regex: new RegExp(name, "i") };
+    const [sortField, sortOrder] = sortBy.split(":");
+    const sortObj = { [sortField]: sortOrder === "desc" ? -1 : 1 };
+
+    const query = {};
+
+    if (req.body.name) {
+      query.name = new RegExp(req.body.name, "i");
     }
-
-    if (manufacturer) {
-      searchString.manufacturer = { $regex: new RegExp(manufacturer, "i") };
+    if (req.body.manufacturer){
+      query.manufacturer = new RegExp(req.body.manufacturer, "i");
     }
-
-    if (type) {
-      searchString.type = { $regex: new RegExp(type, "i") };
+    if (req.body.description){
+      query.description = new RegExp(req.body.description, "i");
     }
+    const lengthAllProduct = await Product.countDocuments(query);
+    const products = await Product.find(query)
+      .sort(sortObj)
+      .skip(startIndex)
+      .limit(limit);
+    const ratingMap = await Rating.find({ productId: { $in: products.map((p) => p._id) } })
+      .select("productId avgRating totalRating")
+      .lean()
+      .exec();
+    const ratingDict = ratingMap.reduce((acc, curr) => {
+      acc[curr.productId] = curr;
+      return acc;
+    }, {});
+    const productsWithRating = products.map((p) => ({
+      ...p.toJSON(),
+      avgRating: ratingDict[p._id]?.avgRating || 0,
+      totalRating: ratingDict[p._id]?.totalRating || 0,
+    }));
 
-    const products = await Product.find(searchString);
-
-    if (products.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      })
-    }
-
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      data: products,
+      data: productsWithRating,
+      length: lengthAllProduct,
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
-}
+};
+

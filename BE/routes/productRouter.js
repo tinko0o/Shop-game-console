@@ -1,9 +1,11 @@
 const router = require("express").Router();
 const productController = require("../controllers/productsController")
 
-router.get("/:id",productController.getProduct);
 router.get("",productController.getAllProducts);
-router.get("/searchedProducts/search",productController.searchProducts);
+router.get("/search",productController.searchProducts);
+router.get("/:id",productController.getProduct);
+
+
 
 //user
 
