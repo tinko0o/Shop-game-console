@@ -158,8 +158,8 @@ exports.getAllProducts = async (req, res) => {
     const limit = req.query.limit ? Number(req.query.limit) : 10;
     const page = req.query.page ? Number(req.query.page) : 1;
     const startIndex = (page - 1) * limit;
-    const name = req.headers.search;
-    const type = req.headers.type;
+    const search = req.query.search;
+    const type = req.headers.type ? decodeURIComponent(req.headers.type) : null;
     const sortBy = req.query.sortBy || "createdAt:desc";
 
     const [sortField, sortOrder] = sortBy.split(":");
@@ -167,7 +167,7 @@ exports.getAllProducts = async (req, res) => {
 
     const query = {};
     if (name) query.name = new RegExp(name, "i");
-    if (type) query.type = new RegExp(type, "i");
+    if (type) query.type = new RegExp("^" + type + "$", "i");
 
     const lengthAllProduct = await Product.countDocuments(query);
     const products = await Product.find(query)

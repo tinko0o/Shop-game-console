@@ -372,8 +372,17 @@ window.addEventListener("load",function(){
 
             const ps5_device = $("#ps5-device");
             const ps5_game = $("#ps5-game");
+            const ps5_accessory = $("#ps5-accessory");
             const ps4_device = $("#ps4-device");
             const ps4_game = $("#ps4-game");
+            const ps4_accessory = $("#ps4-accessory");
+            const xbox_device = $("#xbox-device");
+            const xbox_game = $("#xbox-game");
+            const xbox_accessory = $("#xbox-accessory");
+            const switch_device = $("#switch-device");
+            const switch_game = $("#switch-game");
+            const switch_accessory = $("#switch-accessory");
+
             const all =$("#all")
             all.onclick = function(e)
             {
@@ -388,7 +397,7 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "game ps5";
+                const type = "Game%20PS5";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;
@@ -397,7 +406,16 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "Máy ps5";
+                const type = "M%C3%A1y%20PS5";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
+            ps5_accessory.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Ph%E1%BB%A5%20ki%E1%BB%87n%20PS5";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;
@@ -406,7 +424,7 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "game ps4";
+                const type = "Game%20PS4";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;
@@ -415,11 +433,74 @@ window.addEventListener("load",function(){
             {
               _this.product_type();
               e.preventDefault();  
-                const type = "Máy ps4";
+                const type = "M%C3%A1y%20PS4";
                 _this.pageInto = 1;
                 _this.product_type(_this.pageInto,sort, type );
                 typeClick=type;
-            }           
+            }
+            ps4_accessory.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Ph%E1%BB%A5%20ki%E1%BB%87n%20PS4";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
+            switch_game.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Game%20Nintendo%20Switch";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }          
+            switch_device.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "M%C3%A1y%20Nintendo%20Switch";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
+            switch_accessory.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Ph%E1%BB%A5%20ki%E1%BB%87n%20Nintendo%20Switch";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
+            xbox_game.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Game%20XBOX%20SERIES%20X%7CS";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }          
+            xbox_device.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "M%C3%A1y%20XBOX%20SERIES%20X%7CS";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }
+            xbox_accessory.onclick = function(e)
+            {
+              _this.product_type();
+              e.preventDefault();  
+                const type = "Ph%E1%BB%A5%20ki%E1%BB%87n%20XBOX%20SERIES%20X%7CS";
+                _this.pageInto = 1;
+                _this.product_type(_this.pageInto,sort, type );
+                typeClick=type;
+            }                
             // click detail image
             wrapperDetail.onclick= function(e){
               e.preventDefault();
