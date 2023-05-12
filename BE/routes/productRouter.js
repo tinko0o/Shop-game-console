@@ -5,8 +5,6 @@ router.get("",productController.getAllProducts);
 router.get("/search",productController.searchProducts);
 router.get("/:id",productController.getProduct);
 
-
-
 //user
 
 

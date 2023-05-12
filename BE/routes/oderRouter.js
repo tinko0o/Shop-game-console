@@ -6,5 +6,6 @@ router.post("/create",oderController.createOrder); //ok
 router.get("",oderController.getOrders); //ok
 
 //admin
+router.get("/all-orders",oderController.getAllOrders);
 
 module.exports = router;

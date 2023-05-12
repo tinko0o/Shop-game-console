@@ -3,6 +3,7 @@ const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const jwt = require("jsonwebtoken");
+const SalesReport = require("../models/salesReportModel")
 const { isEmpty } = require("lodash");
 
 //create order with default information
@@ -32,7 +33,7 @@ exports.createOrder = async (req, res) => {
                 message: "Cart not found",
             });
         }
-        const {name, phone, city, district, wards, streetAndHouseNumber, address } = req.body;
+        const { name, phone, city, district, wards, streetAndHouseNumber, address } = req.body;
         const newOrder = new Order({
             userId: user._id,
             products: cart.products,
@@ -46,13 +47,27 @@ exports.createOrder = async (req, res) => {
         });
         newOrder.address = address || `${newOrder.streetAndHouseNumber}, ${newOrder.wards}, ${newOrder.district}, ${newOrder.city}`;
         if (isEmpty(newOrder.name) || isEmpty(newOrder.phone) || isEmpty(newOrder.city) || isEmpty(newOrder.district)
-        || isEmpty(newOrder.wards) || isEmpty(newOrder.streetAndHouseNumber) || isEmpty(newOrder.address)) {
+            || isEmpty(newOrder.wards) || isEmpty(newOrder.streetAndHouseNumber) || isEmpty(newOrder.address)) {
             return res.status(400).json({
                 success: false,
                 message: "Missing required fields",
             })
         }
         await newOrder.save();
+        const today = new Date();
+        const salesReportDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        let salesReport = await SalesReport.findOne({ date: salesReportDate });
+        if (!salesReport) {
+            salesReport = new SalesReport({
+                date: salesReportDate,
+                totalSales: newOrder.total,
+                numberOfOrder: 1
+            });
+        } else {
+            salesReport.totalSales += newOrder.total;
+            salesReport.numberOfOrder++;
+        }
+        await salesReport.save();
         await cart.deleteOne({ userId: user._id });
         return res.status(200).json({
             success: true,
@@ -65,7 +80,7 @@ exports.createOrder = async (req, res) => {
 };
 
 
-//get orders
+//get user orders
 
 exports.getOrders = async (req, res) => {
     try {
@@ -86,6 +101,44 @@ exports.getOrders = async (req, res) => {
             });
         }
         const order = await Order.find({ userId: user._id }).sort({ createdAt: -1 })
+        if (!order) {
+            return res.status(401).json({
+                success: false,
+                message: 'Order not found',
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            data: order,
+        })
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ success: false, message: "something went wrong" });
+    }
+}
+
+//get all orders by admin
+
+exports.getAllOrders = async (req, res) => {
+    try {
+        const token = req.headers.authentication;
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+        const key = process.env.JWT_SEC;
+        const decoded = jwt.verify(token, key);
+        const user = await User.findOne({ email: decoded.email });
+        if (!user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden",
+            });
+        }
+        const order = await Order.find().sort({ createdAt: -1 });
         if (!order) {
             return res.status(401).json({
                 success: false,

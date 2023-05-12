@@ -253,7 +253,7 @@ exports.getAllUsers = async (req, res) => {
         message: "Forbidden",
       });
     }
-    const users = await User.find({ email: { $ne: decoded.email } });
+    const users = await User.find({ email: { $ne: decoded.email },isAdmin: false});
     return res.status(200).json({
       success: true,
       data: users,
@@ -330,11 +330,13 @@ exports.editUser = async (req, res) => {
         message: "Invalid input",
       });
     }
-    const editedUser = await User.findOneAndUpdate(
+    const { city, district, wards,  streetAndHouseNumber } = address;
+    const updatedUser = await User.findOneAndUpdate(
       { email: decoded.email }, 
-      { name, phone, address },
-      { new: true });
-    if (!user) {
+      { phone, address: { city, district, wards, streetAndHouseNumber } },
+      { new: true }
+    );
+    if (!updatedUser) {
       return res.status(404).json({
         success: false,
         message: "User not found",
