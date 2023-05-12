@@ -187,7 +187,7 @@ exports.getAllProducts = async (req, res) => {
     }));
 
     res.status(200).json({
-      success: true,  
+      success: true,
       data: productsWithRating,
       length: lengthAllProduct,
     });
@@ -200,30 +200,20 @@ exports.getAllProducts = async (req, res) => {
 
 exports.searchProducts = async (req, res) => {
   try {
-    const limit = req.query.limit ? Number(req.query.limit) : 10;
-    const page = req.query.page ? Number(req.query.page) : 1;
-    const startIndex = (page - 1) * limit;
-    const sortBy = req.query.sortBy || "createdAt:desc";
-
-    const [sortField, sortOrder] = sortBy.split(":");
-    const sortObj = { [sortField]: sortOrder === "desc" ? -1 : 1 };
-
     const query = {};
-
     if (req.body.name) {
       query.name = new RegExp(req.body.name, "i");
     }
-    if (req.body.manufacturer){
+    if (req.body.manufacturer) {
       query.manufacturer = new RegExp(req.body.manufacturer, "i");
     }
-    if (req.body.description){
+    if (req.body.description) {
       query.description = new RegExp(req.body.description, "i");
     }
+
     const lengthAllProduct = await Product.countDocuments(query);
-    const products = await Product.find(query)
-      .sort(sortObj)
-      .skip(startIndex)
-      .limit(limit);
+    const products = await Product.find(query);
+
     const ratingMap = await Rating.find({ productId: { $in: products.map((p) => p._id) } })
       .select("productId avgRating totalRating")
       .lean()
@@ -247,4 +237,3 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
-
