@@ -204,12 +204,6 @@ exports.searchProducts = async (req, res) => {
     if (req.body.name) {
       query.name = new RegExp(req.body.name, "i");
     }
-    if (req.body.manufacturer) {
-      query.manufacturer = new RegExp(req.body.manufacturer, "i");
-    }
-    if (req.body.description) {
-      query.description = new RegExp(req.body.description, "i");
-    }
 
     const lengthAllProduct = await Product.countDocuments(query);
     const products = await Product.find(query);
@@ -237,3 +231,4 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
