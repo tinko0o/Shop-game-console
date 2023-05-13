@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const Rating = require("../models/ratingModel");
+const Comment = require("../models/commentModel");
 
 //add product
 
@@ -108,10 +109,14 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Product not found",
-      })
+      });
     }
+
+    await Comment.deleteMany({ productId: req.params.id });
+
     return res.status(200).json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "An error occurred while deleting product" });
   }
 };
