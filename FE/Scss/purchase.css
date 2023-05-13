@@ -249,4 +249,8 @@ header .container .nav-top .nav-action .user span {
 }
 .puchase .purchased .block .products .product .p-total {
   margin: 0;
+}
+
+.stars-rating .filled {
+  color: #f0932b;
 }/*# sourceMappingURL=purchase.css.map */

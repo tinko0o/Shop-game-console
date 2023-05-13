@@ -2,7 +2,7 @@ const router = require("express").Router();
 const productController = require("../controllers/productsController")
 
 router.get("",productController.getAllProducts);
-router.get("/search",productController.searchProducts);
+router.post("/search",productController.searchProducts);
 router.get("/:id",productController.getProduct);
 
 //user

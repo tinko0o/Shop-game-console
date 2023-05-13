@@ -318,9 +318,24 @@ window.addEventListener("load",function(){
           .catch((err) => {
             console.log(err);
           })
-        //   .finally(() => {
-        //     spinner(false);
-        //   });
+      },
+        search: async function (search) {
+          console.log(search)
+        await fetch(`${http}products/search`, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+          method:"get",
+          body:JSON.stringify({name:search})
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            console.log(data)
+            this.render(data);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       },
       
         render: function (data) {
@@ -585,7 +600,7 @@ window.addEventListener("load",function(){
                 const getInfo = this.elements["search"].value;
                 _this.searching = getInfo;
                 _this.pageInto = 1;
-                _this.product(_this.pageInto, _this.searching);
+                _this.search( _this.searching);
               };
         },
 
