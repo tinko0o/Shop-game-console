@@ -53,8 +53,10 @@ exports.createOrder = async (req, res) => {
                 message: "Missing required fields",
             })
         }
-        await newOrder.save();
-
+        let amount = 0;
+        cart.products.forEach((products) => {
+            amount += products.quantity
+        });
         const today = new Date();
         const salesReportDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         let salesReport = await SalesReport.findOne({ date: salesReportDate });
@@ -64,15 +66,20 @@ exports.createOrder = async (req, res) => {
                 totalSales: newOrder.total,
                 numberOfOrder: 1,
                 totalUsers: 1,
-                totalProducts: cart.products.length,
+                totalProducts: amount,
             });
         } else {
             salesReport.totalSales += newOrder.total;
             salesReport.numberOfOrder++;
-            salesReport.totalUsers++;
-            salesReport.totalProducts += cart.products.length;
+            const existingOrder = await Order.findOne({ userId: user._id, createdAt: { $gte: salesReportDate } });
+            if (!existingOrder) {
+                salesReport.totalUsers++;
+            }
+            salesReport.totalProducts += amount;
         }
+
         await salesReport.save();
+        await newOrder.save();
         await cart.deleteOne({ userId: user._id });
         return res.status(200).json({
             success: true,
@@ -83,6 +90,8 @@ exports.createOrder = async (req, res) => {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
 };
+
+
 
 
 //get user orders
