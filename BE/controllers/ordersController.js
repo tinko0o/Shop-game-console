@@ -54,6 +54,7 @@ exports.createOrder = async (req, res) => {
             })
         }
         await newOrder.save();
+
         const today = new Date();
         const salesReportDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         let salesReport = await SalesReport.findOne({ date: salesReportDate });
@@ -61,11 +62,15 @@ exports.createOrder = async (req, res) => {
             salesReport = new SalesReport({
                 date: salesReportDate,
                 totalSales: newOrder.total,
-                numberOfOrder: 1
+                numberOfOrder: 1,
+                totalUsers: 1,
+                totalProducts: cart.products.length,
             });
         } else {
             salesReport.totalSales += newOrder.total;
             salesReport.numberOfOrder++;
+            salesReport.totalUsers++;
+            salesReport.totalProducts += cart.products.length;
         }
         await salesReport.save();
         await cart.deleteOne({ userId: user._id });
