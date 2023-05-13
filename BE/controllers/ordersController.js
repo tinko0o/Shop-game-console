@@ -40,10 +40,10 @@ exports.createOrder = async (req, res) => {
             total: cart.total,
             name: name || user.name,
             phone: phone || user.phone,
-            city: city || user.address?.city,
-            district: district || user.address?.district,
-            wards: wards || user.address?.wards,
-            streetAndHouseNumber: streetAndHouseNumber || user.address?.streetAndHouseNumber,
+            city: city || user.city,
+            district: district || user.district,
+            wards: wards || user.wards,
+            streetAndHouseNumber: streetAndHouseNumber || user.streetAndHouseNumber,
         });
         newOrder.address = address || `${newOrder.streetAndHouseNumber}, ${newOrder.wards}, ${newOrder.district}, ${newOrder.city}`;
         if (isEmpty(newOrder.name) || isEmpty(newOrder.phone) || isEmpty(newOrder.city) || isEmpty(newOrder.district)

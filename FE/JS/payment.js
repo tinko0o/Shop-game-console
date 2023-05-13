@@ -114,11 +114,10 @@ window.addEventListener("load",function(){
         $("#u-email").value= User.data?.email;
         $("#u-email").setAttribute("disabled","disabled")
         $("#u-phone").value= User.data?.phone?`${User.data?.phone}` :"";
-        $("#u-city").value= User.data?.address.city?`${User.data.address?.city}` :"";
-        $("#u-district").value= User.data?.address.district?`${User.data.address?.district}` :"";
-        $("#u-ward").value= User.data?.address.wards?`${User.data.address?.wards}` :"";
-        $("#u-street").value= User.data?.address.streetAndHouseNumber?`${User.data.address?.streetAndHouseNumber}` :"";
-
+        $("#u-city").value= User.data?.city?`${User.data.city}` :"";
+        $("#u-district").value= User.data?.district?`${User.data.district}` :"";
+        $("#u-ward").value= User.data?.wards?`${User.data.wards}` :"";
+        $("#u-street").value= User.data?.streetAndHouseNumber?`${User.data.streetAndHouseNumber}` :"";
     }
     const form=$(".f-checkout")
     form.addEventListener("submit",function(e){
