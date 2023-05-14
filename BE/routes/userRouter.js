@@ -12,7 +12,7 @@ router.get("/user",userController.getUser); //ok
 //admin
 router.get("",userController.getAllUsers);
 router.get("/:id",userController.getUserWhenAdmin);
-router.get("/edit/:id",userController.editUser);
+router.put("/edit/:id",userController.editUser);
 router.delete("/delete/:id", userController.deleteUser);
 
 module.exports = router;

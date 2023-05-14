@@ -170,13 +170,13 @@ exports.updateUser = async (req, res) => {
     }
     const key = process.env.JWT_SEC;
     const decoded = jwt.verify(token, key);
-    const { name, phone, city, district, wards,  streetAndHouseNumber } = req.body;
-    if (!name ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid input",
-      });
-    }
+    const { phone, city, district, wards,  streetAndHouseNumber } = req.body;
+    // if (!name ) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Invalid input",
+    //   });
+    // }
     const updatedUser = await User.findOneAndUpdate(
       { email: decoded.email }, 
       { phone, city, district, wards, streetAndHouseNumber},
@@ -322,13 +322,13 @@ exports.editUser = async (req, res) => {
         message: "Forbidden",
       });
     }
-    const { name, phone, city, district, wards,  streetAndHouseNumber } = req.body;
-    if (!name ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid input",
-      });
-    }
+    const { phone, city, district, wards,  streetAndHouseNumber } = req.body;
+    // if (!name ) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Invalid input",
+    //   });
+    // }
     const updatedUser = await User.findOneAndUpdate(
       { email: decoded.email }, 
       { phone, city, district, wards, streetAndHouseNumber},
@@ -343,7 +343,7 @@ exports.editUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "User updated successfully",
-      data: editedUser,
+      data: updatedUser,
     });
   } catch (err) {
     console.log(err);
