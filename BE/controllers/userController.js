@@ -329,8 +329,8 @@ exports.editUser = async (req, res) => {
     //     message: "Invalid input",
     //   });
     // }
-    const updatedUser = await User.findOneAndUpdate(
-      { email: decoded.email }, 
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id, 
       { phone, city, district, wards, streetAndHouseNumber},
       { new: true }
     );
