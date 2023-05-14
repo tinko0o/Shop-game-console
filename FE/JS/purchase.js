@@ -3,7 +3,7 @@ const $$ = document.querySelectorAll.bind(document);
 const User = JSON.parse(localStorage.getItem("loginUser"));
 const http = "http://localhost:8080/api/";
 const userID = User?.data.idUser;
-import {header,formatCurrency,alertFullil,alertFail,U_quantityCart} from "./header.js";
+import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
 //console.log
 function log(value) {
   console.log(`${value}: `,value)
@@ -24,6 +24,7 @@ async function getPurchased() {
         console.log(err);
         })
 }
+
 getPurchased();
 function renderPuchase(data){
     const html = data.data.map((val,index)=>{
@@ -59,6 +60,7 @@ function renderPuchase(data){
                         <div class="total">
                             <p class="t-price"><strong>Totail:</strong>${val.total}</p>
                             <p class="t-quantity"><strong>quantity:</strong>x${count}</p>
+                            <p class="p-createdAt"><strong>createdAt:</strong>${val.createdAt}</p>
                         </div>
                     </div>
                     <hr>
@@ -88,19 +90,26 @@ function handleRatingClick(event) {
   }
 }
 window.addEventListener("load",function(e){
+  header();
     const purchased= $(".purchased");
     purchased.addEventListener('click',function(e){
     const product = e.target.closest('.product')
     const stars =e.target.closest(".stars-rating .fa-star")
     const rate = e.target.closest(".btn-rate")
+    const img = e.target.closest("img")
+    const name = e.target.closest(".name-product")
     if (stars) {
       handleRatingClick(e);
     }
     if(rate){
         const id = product.dataset.id;
-
         log(id)
       }
+    if(img || name){
+        const id = product.dataset.id;
+        window.location.href = `./detail.html?idpd=${id}`
+    }
+
 
     });
 

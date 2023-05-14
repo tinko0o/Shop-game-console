@@ -258,6 +258,9 @@ a {
 .table-wrapper table.table th:last-child {
   width: 100px;
 }
+.table-wrapper table.table td {
+  overflow: hidden;
+}
 .table-wrapper table.table td a {
   cursor: pointer;
   display: inline-block;
@@ -329,4 +332,31 @@ a {
 }
 .table-wrapper .product-items .delete i {
   font-size: 20px;
+}
+
+.wrapper-statistic .statistic {
+  padding: 0 10px;
+}
+.wrapper-statistic .statistic .statistic-item {
+  padding: 0 10px;
+}
+.wrapper-statistic .statistic .statistic-item .item {
+  border: solid 1px #181a18;
+  height: 100px;
+  border-radius: 10px;
+}
+.wrapper-statistic .statistic .statistic-item .item .content {
+  height: 50px;
+}
+.wrapper-statistic .statistic .statistic-item .item .content .item-name {
+  text-align: center;
+  font-size: 25px;
+}
+.wrapper-statistic .statistic .statistic-item .item .content .item-name i {
+  margin: 0 10px;
+}
+.wrapper-statistic .statistic .statistic-item .item p {
+  text-align: center;
+  height: 40px;
+  font-size: 23px;
 }/*# sourceMappingURL=admin.css.map */

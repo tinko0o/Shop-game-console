@@ -213,7 +213,7 @@ header .container .nav-top .nav-action .user span {
   margin: 10px 0;
 }
 .puchase .purchased .block .address p {
-  margin: 0;
+  margin: 0 10px 0 0;
 }
 .puchase .purchased .block .address .address-content {
   display: flex;

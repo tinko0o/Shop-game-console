@@ -34,7 +34,7 @@
                 <div class="nav_list"> 
                     <a href="#" class="nav_link active nav-dash"> 
                         <i class="fa-solid fa-grip nav_icon"></i> 
-                        <span class="nav_name">Dashboard</span> </a> 
+                        <span class="nav_name">statistics</span> </a> 
                     <a href="#" class="nav_link nav-user">
                         <i class="fa-solid fa-user nav_icon"></i>
                         <span class="nav_name">Users</span> </a> 
@@ -44,13 +44,13 @@
                     <a href="#" class="nav_link nav-comment"> 
                         <i class="fa-solid fa-comment nav_icon"></i> 
                         <span class="nav_name">Comment</span> </a> 
-                    <a href="#" class="nav_link"> 
+                    <!-- <a href="#" class="nav_link"> 
                         <i class='bx bx-folder nav_icon'></i> 
                         <span class="nav_name">Something</span> </a> 
                     <a href="#" class="nav_link"> 
                         <i class='bx bx-bar-chart-alt-2 nav_icon'></i> 
                         <span class="nav_name">Something</span> 
-                    </a> 
+                    </a>  -->
                 </div>
             </div> <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
         </nav>
@@ -59,6 +59,50 @@
     <!-- Main Dashboard -->
     <div class="height-100 bg-light main main-dashboard nav-active">
         <h4>Main Components</h4>
+            <div class="wrapper-statistic">
+
+            <div class="statistic row">
+                <div class="statistic-item products col-12 col-lg-3">
+                    <div class="item">
+                        <div class="content">
+                            <div class="item-name">Products<i class="fa-solid fa-box"></i></div>
+
+                        </div>
+                        <p class="rating-product">0</p>
+                    </div>
+                </div>
+                <div class="statistic-item revenue col-12 col-lg-3">
+                    <div class="item">
+                        <div class="content">
+
+                            <div class="item-name">Revenue<i class="fa-solid fa-money-bill"></i></div>
+                        </div>
+                        <p class="rating-revenue">0</p>
+                    </div>
+                </div>
+                <div class="statistic-item users col-12 col-lg-3">
+                    <div class="item">
+                        <div class="content">
+
+                            <div class="item-name">Users<i class="fa-solid fa-user"></i></div>
+                        </div>
+                        <p class="rating-users">0</p>
+                    </div>
+                </div>
+                <div class="statistic-item orders col-12 col-lg-3">
+                    <div class="item">
+                        <div class="content">
+
+                            <div class="item-name">Orders<i class="fa-solid fa-cart-flatbed"></i></div>
+                        </div>
+                        <p class="rating-orders">0</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+    </div>
     </div>
     <!-- Main USER -->
     <div class="height-100 bg-light main main-user">
@@ -101,7 +145,7 @@
                                 </tr>                            
                         </tbody>
                     </table>
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover table-bordered table-user">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -109,20 +153,26 @@
                                 <th>Password</th>
                                 <th>Admin</th>
                                 <th>Phone</th>
-                                <th>Adress</th>
+                                <th>City</th>
+                                <th>District</th>
+                                <th>Ward</th>
+                                <th>Street</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
+                        <tbody id="tbody-user">
+                            <!-- <tr>
                                 <td>John Doe</td>
                                 <td>132@gmail</td>
                                 <td>1324243</td>
                                 <td>true</td>
                                 <td>(171) 555-2222</td>
                                 <td>1333 le van viet</td>
+                                <td>1333 le van viet</td>
+                                <td>1333 le van viet</td>
+                                <td>1333 le van viet</td>
                                 <td>
-                                    <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus-minus"></i></a> -->
+                                    
                                     <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
                                     <a class="delete" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
                                 </td>
@@ -135,7 +185,7 @@
                                 <td>(171) 555-2222</td>
                                 <td>1333 le van viet</td>
                                 <td>
-                                    <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus-minus"></i></a> -->
+                                    
                                     <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
                                     <a class="delete" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
                                 </td>
@@ -148,11 +198,11 @@
                                 <td>(171) 555-2222</td>
                                 <td>1333 le van viet</td>
                                 <td>
-                                    <!-- <a class="add" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus-minus"></i></a> -->
+                                    
                                     <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
                                     <a class="delete" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
                                 </td>
-                            </tr>      
+                            </tr>       -->
                         </tbody>
                     </table>
                 </div>
@@ -221,15 +271,9 @@
                                 eos repellendus commodi, unde vel animi incidunt praesentium 
                                 aliquam velit saepe sint facilis?
                             </th>
-                            <th>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger edit-product">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-primary delete">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
+                            <th class="d-flex">
+                                <a class=" btn edit-product" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus"></i></a>
+                                <a class=" btn delete-product" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
                             </th>
                         </tr>
                         <tr class="product-item">

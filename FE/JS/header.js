@@ -3,6 +3,7 @@ const $$ = document.querySelectorAll.bind(document);
 const User = JSON.parse(localStorage.getItem("loginUser"));
 const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
+const http = "http://localhost:8080/api/";
 export function header(){
     //show user
     if (User) {
@@ -84,30 +85,31 @@ export  function formatCurrency(price, symbol = "đ") {
   return intPart + symbol;
 }
 // UPdate Quantity Cart
-export function U_quantityCart(){
-  if(User){
-    fetch(`${http}carts/cart/amount`,{
-      headers:{
-        "Content-type": "application/json; charset=UTF-8",
-        authentication: User?.token,                         
-      },
-      // method:"post",
-      // body: JSON.stringify({_id,quantity:1})
-    })
-    .then((data)=>data.json())
-    .then((data)=>{
-      if(data.success)
-      {
-        cartQuantities.innerHTML = data?.data;
-      }
-      else{
-        header().logoff.click();
-      }
-    })
-    .catch(()=>{
-      alertFail();
-    })
-  }else{
-    cartQuantities.innerHTML = "";
-  }
-}
+// export function U_quantityCart(){
+//   console.log(User?.token)
+//   if(User){
+//     fetch(`${http}carts/cart/amount`,{
+//       headers:{
+//         "Content-type": "application/json; charset=UTF-8",
+//         authentication: User?.token,                         
+//       },
+//       // method:"post",
+//       // body: JSON.stringify({_id,quantity:1})
+//     })
+//     .then((data)=>data.json())
+//     .then((data)=>{
+//       if(data.success)
+//       {
+//         cartQuantities.innerHTML = data?.data;
+//       }
+//       else{
+//         header().logoff.click();
+//       }
+//     })
+//     .catch(()=>{
+//       alertFail();
+//     })
+//   }else{
+//     cartQuantities.innerHTML = "";
+//   }
+// }

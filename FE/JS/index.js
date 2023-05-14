@@ -325,7 +325,7 @@ window.addEventListener("load",function(){
         headers: {
           "Content-Type": "application/json"
         },
-          method:"get",
+          method:"post",
           body:JSON.stringify({name:search})
         })
           .then((data) => data.json())

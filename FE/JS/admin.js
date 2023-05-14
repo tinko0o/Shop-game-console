@@ -47,36 +47,52 @@ function alertFail(message="Something fail!") {
   }, 1000);
 }
 //Render
+function renderUser(data){
+            const productHtml = data.data.map((val, index) => { 
+            return `
+            <tr data-id="${val._id}">
+                <td data-key="name">${val.name}</td>
+                <td data-key="email">${val.email}</td>
+                <td data-key="password">${val.password}</td>
+                <td data-key="isAdmin">${val.isAdmin}</td>
+                <td data-key="phone">${val.phone?val.phone:""}</td>
+                <td data-key="city">${val.city?val.city:""}</td>
+                <td data-key="district">${val.district?val.district:""}</td>
+                <td data-key="wards">${val.wards?val.wards:""}</td>
+                <td data-key="street">${val.streetAndHouseNumber?val.streetAndHouseNumber:""}</td>
+                <td>
+                    <!--<a class="save-user" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus-minus"></i></a> -->
+                    <a data-id="${val._id}" class="edit-user" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
+                    <a data-id="${val._id}" class="delete-user" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+            `;
+            });
+            $("#tbody-user").innerHTML = productHtml.join("");
+}
 function renderProduct(data){
             const productHtml = data.data.map((val, index) => { 
             return `
-                        <tr class="product-item">
-                            <th>
+                        <tr data-id="${val?._id} class="product-item">
+                            <th data-key="img" data-value="${val.img}">
                                 <a data-id=${val._id} href="#" class="img">
                                     <img src="${val.img}" alt="">
                                 </a>
                             </th>
-                            <th>
-                                <div class="name-product">
-                                   ${val.name}
-                                </div>
+                            <th data-key="name" data-value="${val.name}" class="name-product">
+                            ${val.name}
+
                             </th>
-                            <th>${val.release_date}</th>
-                            <th> ${val.type} </th>
-                            <th> ${val.manufacturer} </th>
-                            <th> ${formatCurrency(val.price)} </th>
-                            <th>
+                            <th data-key="release_date" data-value="${val.release_date}">${val.release_date}</th>
+                            <th data-key="type" data-value="${val.type}"> ${val.type} </th>
+                            <th data-key="manufacturer" data-value="${val.manufacturer}"> ${val.manufacturer} </th>
+                            <th data-key="price" data-value="${val.price}"> ${formatCurrency(val.price)} </th>
+                            <th data-key="description" data-value="${val.description}">
                               ${val.description}
                             </th>
-                            <th>
-                                <div class="d-flex">
-                                    <button data-id=${val._id} class="btn btn-danger edit-product">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </button>
-                                    <button data-id=${val._id} class="btn btn-primary delete">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
+                            <th class="d-flex">
+                                <a data-id="${val?._id}" class=" btn btn-danger edit-product" title="Add" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
+                                <a data-id="${val?._id}"class=" btn btn-primary delete-product" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
                             </th>
                         </tr>
             `;
@@ -94,14 +110,27 @@ async function product(page = 1, search, limit = 100) {
         })
           .then((data) => data.json())
           .then((data) => {
+            // log(data)
             renderProduct(data);
           })
           .catch((err) => {
             console.log(err);
           })
-        //   .finally(() => {
-        //     spinner(false);
-        //   });
+    }
+    async function getUser() {
+        await fetch(`${http}users`, {
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            authentication: User?.token, 
+          },
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            renderUser(data);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
     }
 //add new product
 async function addProduct(data){
@@ -126,9 +155,73 @@ async function addProduct(data){
     log(err);
   })
 }
-
+async function editUser(data,id){
+  await fetch(`${http}users/edit/${id}`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,       
+    },
+    method:"put",
+    body:JSON.stringify(data)
+  })
+  .then((res)=>res.json())
+  .then((res)=>{
+    if(!res.success){
+      alertFail(res.message);
+    }else{
+      alertFullil("add success")
+      console.log(res.message)
+    }
+  }).catch((err)=>{
+      alertFail();
+  })
+}
+async function deleteUser(id){
+  await fetch(`${http}users/delete/${id}`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,       
+    },
+    method:"delete",
+    // body:JSON.stringify(data)
+  })
+  .then((res)=>res.json())
+  .then((res)=>{
+    if(!res.success){
+      alertFail(res.message);
+    }else{
+      alertFullil("add success")
+      console.log(res.message)
+    }
+  }).catch((err)=>{
+      alertFail();
+  })
+}
+async function deleteProduct(id){
+  await fetch(`${http}products/delete/${id}`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,       
+    },
+    method:"delete",
+    // body:JSON.stringify(data)
+  })
+  .then((res)=>res.json())
+  .then((res)=>{
+    if(!res.success){
+      alertFail(res.message);
+    }else{
+      alertFullil("add success")
+      product();
+      console.log(res.message)
+    }
+  }).catch((err)=>{
+      alertFail();
+  })
+}
 document.addEventListener("DOMContentLoaded", function (event) {
   product();
+  getUser()
   //sile bar
   const showNavbar = (toggleId, navId, bodyId, headerId) => {
     const toggle = document.getElementById(toggleId),
@@ -207,14 +300,162 @@ document.addEventListener("DOMContentLoaded", function (event) {
     $(".table-add").classList.remove("table-add-active");
   };
 
+  const tabUser = $(".table-user")
+  tabUser.addEventListener("click",function(e){
+    const editBtn = e.target.closest(".edit-user")
+    const deleteBtn = e.target.closest(".delete-user")
+    if(editBtn){
+    const row = editBtn.closest("tr");
+    const inputs = row.querySelectorAll("td:not(:last-child)");
+
+    // Disable all edit buttons while editing
+    const editButtons = row.querySelectorAll(".edit-user");
+    editButtons.forEach(button => button.disabled = true);
+
+    // Change the edit button to a save button
+    editBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    editBtn.classList.remove("edit-user");
+    editBtn.classList.add("save-user");
+
+    // Enable the delete button while editing
+    const deleteButton = row.querySelector(".delete-user");
+    deleteButton.disabled = false;
+
+    // Add input fields to each cell
+    inputs.forEach((cell, index) => {
+      const text = cell.textContent;
+      cell.innerHTML = `<input type="text" value="${text}">`;
+    });
+    }
+    const saveBtn = e.target.closest(".save-user");
+  if (saveBtn) {
+    const row = saveBtn.closest("tr");
+    const inputs = row.querySelectorAll("input");
+    const id = saveBtn.dataset.id; 
+    // Change the save button back to an edit button
+    saveBtn.innerHTML = '<i class="fa-solid fa-pencil"></i>';
+    saveBtn.classList.remove("save-user");
+    saveBtn.classList.add("edit-user");
+
+    // Disable the delete button while not editing
+    const deleteButton = row.querySelector(".delete-user");
+    deleteButton.disabled = true;
+
+    // Enable all edit buttons while not editing
+    const editButtons = row.querySelectorAll(".edit-user");
+    editButtons.forEach(button => button.disabled = false);
+    let data = {
+    name: row.querySelector('td[data-key="name"]').textContent,
+    email: row.querySelector('td[data-key="email"]').textContent,
+    password: row.querySelector('td[data-key="password"]').textContent,
+    isAdmin: row.querySelector('td[data-key="isAdmin"]').textContent,
+    phone: row.querySelector('td[data-key="phone"]').textContent,
+    city: row.querySelector('td[data-key="city"]').textContent,
+    district: row.querySelector('td[data-key="district"]').textContent,
+    wards: row.querySelector('td[data-key="wards"]').textContent,
+    street: row.querySelector('td[data-key="street"]').textContent,
+};
+inputs.forEach((input, index) => {
+  const key = row.querySelector(`td:nth-child(${index+1})`).getAttribute("data-key");
+  if (key !== null) {
+    data[key] = input.value;
+    row.querySelector(`td[data-key="${key}"]`).textContent = input.value;
+  }
+});
+    const dataUser = {...data,streetAndHouseNumber:data.street} 
+    editUser(dataUser,id)
+  }
+  if(deleteBtn){
+    const row = deleteBtn.closest("tr");
+    row.remove();
+    const id = deleteBtn.dataset.id;
+    deleteUser(id)
+  }
+})
   //Main Product
   const btnAddNewProduct = $(".add-new-product");
   const table_product = $('#tbody-product');
   // product-items addEventListener
-  const items = $(".product-items");
-  items.onclick = function(e){
+  const tbodyProduct = $(".product-items");
+tbodyProduct.addEventListener("click", function (e) {
+  const btnEditProduct = e.target.closest(".edit-product");
+  if (btnEditProduct) {
+    const row = btnEditProduct.closest("tr");
+    const inputs = row.querySelectorAll("th:not(:last-child)");
+
+    // Disable all edit buttons while editing
+    const editButtons = row.querySelectorAll(".edit-product");
+    editButtons.forEach((button) => (button.disabled = true));
+
+    // Change the edit button to a save button
+    btnEditProduct.innerHTML = ' <i class="fa-solid fa-check">'
+    
+    
+    btnEditProduct.classList.remove("edit-product");
+    btnEditProduct.classList.add("save-product");
+    
+    // Enable the delete button while editing
+    const deleteButton = row.querySelector(".delete-product");
+    deleteButton.disabled = false;
+
+    // Add input fields to each cell
+    inputs.forEach((cell, index) => {
+      const text = cell.dataset.value;
+      cell.innerHTML = `<input type="text" value="${text}">`;
+    });
+
+  }
+
+  const saveBtn = e.target.closest(".save-product");
+  if (saveBtn) {
+    const row = saveBtn.closest("tr");
+    const inputs = row.querySelectorAll("input");
+    const id = saveBtn.dataset.id;
+
+    // Change the save button back to an edit button
+    saveBtn.innerHTML = '<i class="fa-solid fa-pencil"></i>';
+    saveBtn.classList.remove("save-product");
+    saveBtn.classList.add("edit-product");
+
+    // Disable the delete button while not editing
+    const deleteButton = row.querySelector(".delete-product");
+    deleteButton.disabled = true;
+
+    // Enable all edit buttons while not editing
+    const editButtons = row.querySelectorAll(".edit-product");
+    editButtons.forEach((button) => (button.disabled = false));
+
+    let data = {
+      img: row.querySelector('th[data-key="img"]').dataset.value,
+      name: row.querySelector('th[data-key="name"]').dataset.value,
+      type: row.querySelector('th[data-key="type"]').dataset.value,
+      manufacturer: row.querySelector('th[data-key="manufacturer"]').dataset.value,
+      price: row.querySelector('th[data-key="price"]').dataset.value,
+      description: row.querySelector('th[data-key="description"]').dataset.value,
+    };
+    inputs.forEach((input, index) => {
+
+        const key = row.querySelector(`th:nth-child(${index + 1})`).dataset.key;
+  if (key !== null) {
+    const value = input.value;
+    data[key] = value;
+    if (key.startsWith("img")) {
+      row.querySelector("th:first-child").innerHTML = `<img src="${value}" alt="">`;
+    } else {
+      row.querySelector(`th[data-key="${key}"]`).dataset.value = value;
+      row.querySelector(`th[data-key="${key}"]`).textContent = value;
+    }
+  }
+  // input.parentElement.removeChild(input);
+    });
+    // updateProduct(id, data);
+          console.log(data)
+  }
+
+
+
     const btnCancelProduct = e.target.closest(".cancel-product");
-    const btnEditProduct = e.target.closest(".edit-product");
+    const btnDeleteProduct = e.target.closest(".delete-product");
     const btnAdd = e.target.closest(".add-product");
     if(btnCancelProduct){
       btnCancelProduct.closest("tr").remove();
@@ -232,22 +473,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
         const data = {
           img,name,release_date,type,manufacturer,price,description
         }
-        // resetProduct(data);
-        log(data)
+        resetProduct(data);
+        // log(data)
         addProduct(data);
           setTimeout(() => {
             product();
           }, 1000);
     }
-    if(btnEditProduct){
-      log("hehe")
-    //   btnEditProduct.closest("tr").find("td:not(:last-child)").forEach(function(){
-		// 	btnEditProduct.html('<input type="text" class="form-control" value="' + $(this).text() + '">');
-		// });	
-    }
+      if(btnCancelProduct) {
+    // $(".add-product").classList.remove("add-product-active");
+    // console.log("hehe")
+    // $(btnCancelProduct).parents("tr").remove();
+		// $(".add-new").removeAttr("disabled");
 
+  };
+  if(btnDeleteProduct){
+    const id = btnDeleteProduct.dataset.id
+    deleteProduct(id)
   }
-
+});
 
   btnAddNewProduct.onclick = function (e) {
     this.setAttribute("disabled","disabled");
@@ -275,88 +519,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
   //   console.log("hehe")
   //   $(this).parents("tr").remove();
 	// 	$(".add-new").removeAttr("disabled");
-
   // };
+
 });
-// Main User
 
-// document.addEventListener("DOMContentLoaded", function() {
-//     var tooltipElements = document.querySelectorAll('[data-toggle="tooltip"]');
-//     for (var i = 0; i < tooltipElements.length; i++) {
-//       tooltipElements[i].addEventListener("mouseover", function() {
-//         var tooltipText = this.getAttribute("title");
-//         var tooltip = document.createElement("div");
-//         tooltip.innerHTML = tooltipText;
-//         tooltip.classList.add("tooltip");
-//         this.appendChild(tooltip);
-//       });
-//       tooltipElements[i].addEventListener("mouseout", function() {
-//         var tooltip = this.querySelector(".tooltip");
-//         this.removeChild(tooltip);
-//       });
-//     }
-
-//     var actions = document.querySelector("table td:last-child").innerHTML;
-
-//     var addNewButton = document.querySelector(".add-new");
-//     addNewButton.addEventListener("click", function() {
-//       this.disabled = true;
-//       var index = document.querySelectorAll("table tbody tr").length - 1;
-//       var row = '<tr>' +
-//                 '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-//                 '<td><input type="text" class="form-control" name="department" id="department"></td>' +
-//                 '<td><input type="text" class="form-control" name="phone" id="phone"></td>' +
-//                 '<td>' + actions + '</td>' +
-//                 '</tr>';
-//       var table = document.querySelector("table");
-//       table.insertAdjacentHTML("beforeend", row);
-//       var newAddButton = document.querySelectorAll(".add, .edit")[index + 1];
-//       newAddButton.classList.toggle("hidden");
-//       var newEditButton = document.querySelectorAll(".add, .edit")[index + 2];
-//       newEditButton.classList.toggle("hidden");
-//       var newInputs = document.querySelectorAll("table tbody tr")[index + 1].querySelectorAll('input[type="text"]');
-//       for (var i = 0; i < newInputs.length; i++) {
-//         newInputs[i].addEventListener("blur", function() {
-//           if (this.value.trim() === "") {
-//             this.classList.add("error");
-//           } else {
-//             this.classList.remove("error");
-//           }
-//         });
-//       }
-//     });
-
-//     document.addEventListener("click", function(event) {
-//       if (event.target.classList.contains("add")) {
-//         var empty = false;
-//         var inputs = event.target.parentNode.parentNode.querySelectorAll('input[type="text"]');
-//         for (var i = 0; i < inputs.length; i++) {
-//           if (inputs[i].value.trim() === "") {
-//             inputs[i].classList.add("error");
-//             empty = true;
-//           } else {
-//             inputs[i].parentNode.innerHTML = inputs[i].value;
-//           }
-//         }
-//         if (!empty) {
-//           var addButton = event.target;
-//           var editButton = addButton.parentNode.querySelector(".edit");
-//           addButton.classList.toggle("hidden");
-//           editButton.classList.toggle("hidden");
-//           var addButtonRow = addButton.parentNode.parentNode;
-//           var addNewButton = document.querySelector(".add-new");
-//           addNewButton.disabled = false;
-//         }
-//       } else if (event.target.classList.contains("edit")) {
-//         var row = event.target.parentNode.parentNode;
-//         var cells = row.querySelectorAll("td:not(:last-child)");
-//         for (var i = 0; i < cells.length; i++) {
-//           var cellText = cells[i].innerHTML;
-//           cells[i].innerHTML = '<input type="text" class="form-control" value="' + cellText + '">';
-//         }
-//         var addButton = event.target;
-//         var editButton = addButton.parentNode.querySelector(".edit");
-//         addButton.classList.toggle("hidden");
-//         editButton.classList.toggle("hidden");
-//         var addNewButton = document.querySelector(".add-new");}})
-//     })
