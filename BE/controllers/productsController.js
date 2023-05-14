@@ -4,6 +4,7 @@ const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const Rating = require("../models/ratingModel");
 const Comment = require("../models/commentModel");
+const Order = require("../models/orderModel");
 
 //add product
 
@@ -234,6 +235,63 @@ exports.searchProducts = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
+//get top sales products
+
+exports.getTopSalesProducts = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const orders = await Order.find({
+      createdAt: {
+        $gte: new Date(year, month - 1, 1),
+        $lte: new Date(year, month, 0, 23, 59, 59, 999),
+      },
+    });
+    const products = {};
+    orders.forEach((order) => {
+      order.products.forEach((product) => {
+        if (products[product.id]) {
+          products[product.id].quantity += product.quantity;
+        } else {
+          products[product.id] = {
+            name: product.name,
+            manufacturer: product.manufacturer,
+            type: product.type,
+            img: product.img,
+            price: product.price,
+            quantity: product.quantity,
+          };
+        }
+      });
+    });
+    const topProducts = Object.values(products)
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 10);
+    
+    res.json({ success: true, data: topProducts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "An error occurred while retrieving top sales products" });
   }
 };
 
