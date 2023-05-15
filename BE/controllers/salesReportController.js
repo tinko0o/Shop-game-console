@@ -51,7 +51,7 @@ exports.getSalesReports = async (req, res) => {
             month: { $month: "$date" },
           },
           totalSales: { $sum: "$totalSales" },
-          numberOfOrder: { $sum: "$numberOfOrder" },
+          numberOfOrder: { $sum: "$numberOfOrders" },
           totalUsers: { $sum: "$totalUsers" },
           totalProducts: { $sum: "$totalProducts" },
         },

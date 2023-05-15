@@ -3,7 +3,7 @@ const Product = require("../models/productModel");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const jwt = require("jsonwebtoken");
-const SalesReport = require("../models/salesReportModel")
+const SalesReport = require("../models/salesReportModel");
 const { isEmpty } = require("lodash");
 
 //create order with default information
@@ -53,32 +53,6 @@ exports.createOrder = async (req, res) => {
                 message: "Missing required fields",
             })
         }
-        let amount = 0;
-        cart.products.forEach((products) => {
-            amount += products.quantity
-        });
-        const today = new Date();
-        const salesReportDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        let salesReport = await SalesReport.findOne({ date: salesReportDate });
-        if (!salesReport) {
-            salesReport = new SalesReport({
-                date: salesReportDate,
-                totalSales: newOrder.total,
-                numberOfOrder: 1,
-                totalUsers: 1,
-                totalProducts: amount,
-            });
-        } else {
-            salesReport.totalSales += newOrder.total;
-            salesReport.numberOfOrder++;
-            const existingOrder = await Order.findOne({ userId: user._id, createdAt: { $gte: salesReportDate } });
-            if (!existingOrder) {
-                salesReport.totalUsers++;
-            }
-            salesReport.totalProducts += amount;
-        }
-
-        await salesReport.save();
         await newOrder.save();
         await cart.deleteOne({ userId: user._id });
         return res.status(200).json({
@@ -132,8 +106,8 @@ exports.getOrders = async (req, res) => {
     }
 }
 
-//get all orders by admin
 
+//get all orders by admin
 exports.getAllOrders = async (req, res) => {
     try {
         const token = req.headers.authentication;
@@ -169,3 +143,120 @@ exports.getAllOrders = async (req, res) => {
         res.status(500).json({ success: false, message: "something went wrong" });
     }
 }
+
+//confirm order
+
+exports.confirmOrder = async (req, res) => {
+    try {
+        const token = req.headers.authentication;
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized",
+            });
+        }
+        const key = process.env.JWT_SEC;
+        const decoded = jwt.verify(token, key);
+        const user = await User.findOne({ email: decoded.email });
+        if (!user.isAdmin) {
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden",
+            });
+        }
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found",
+            });
+        }
+        if (order.status !== "pending") {
+            return res.status(400).json({
+                success: false,
+                message: "Only confirm orders that are in the pending state",
+            });
+        }
+        order.status = "confirm";
+        await order.save();
+        return res.status(200).json({
+            success: true,
+            message: "Order confirmed",
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+};
+
+
+//delivered
+
+
+exports.deliveryOrder = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+        return res.status(404).json({
+            success: false,
+            message: "Order not found",
+        });
+    }
+    if (order.status !== "confirm") {
+        return res.status(400).json({
+            success: false,
+            message: "Only delivery orders that are in the confirm state",
+        });
+    }
+    let amount = 0;
+    order.products.forEach((product) => {
+      amount += product.quantity;
+    });
+    const today = new Date();
+    const salesReportDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    let salesReport = await SalesReport.findOne({ date: salesReportDate });
+    if (!salesReport) {
+      salesReport = new SalesReport({
+        date: salesReportDate,
+        totalSales: order.total,
+        numberOfOrders: 1,
+        totalUsers: 1,
+        totalProducts: amount,
+      });
+    } else {
+      salesReport.totalSales += order.total;
+      salesReport.numberOfOrders++;
+      const existingOrder = await Order.findOne({ userId: order.userId, createdAt: { $gte: salesReportDate }, status: "delivered" });
+      if (!existingOrder) {
+        salesReport.totalUsers++;
+      }
+      salesReport.totalProducts += amount;
+    }
+    await salesReport.save();
+    order.status = "delivered";
+    await order.save();
+    return res.status(200).json({
+      success: true,
+      message: "Order delivered",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
