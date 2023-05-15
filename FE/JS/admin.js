@@ -5,6 +5,18 @@ const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
 const http = "http://localhost:8080/api/";
 let getDataProduct = {};
+//formatDate
+function formatDate(date) {
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+}
+
+function formattedDate(date){
+  const dated = new Date(`${date}`)
+  return formatDate(dated)
+};
 //reset /empty value input
 function resetProduct(data) {
      this.img = $("#p-img").value = "";
@@ -48,90 +60,111 @@ function alertFail(message="Something fail!") {
 }
 //Render
 function renderUser(data){
-            const productHtml = data.data.map((val, index) => { 
-            return `
-            <tr data-id="${val._id}">
-                <td data-key="name">${val.name}</td>
-                <td data-key="email">${val.email}</td>
-                <td data-key="password">${val.password}</td>
-                <td data-key="isAdmin">${val.isAdmin}</td>
-                <td data-key="phone">${val.phone?val.phone:""}</td>
-                <td data-key="city">${val.city?val.city:""}</td>
-                <td data-key="district">${val.district?val.district:""}</td>
-                <td data-key="wards">${val.wards?val.wards:""}</td>
-                <td data-key="street">${val.streetAndHouseNumber?val.streetAndHouseNumber:""}</td>
-                <td>
-                    <!--<a class="save-user" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus-minus"></i></a> -->
-                    <a data-id="${val._id}" class="edit-user" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
-                    <a data-id="${val._id}" class="delete-user" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
-                </td>
-            </tr>
-            `;
-            });
-            $("#tbody-user").innerHTML = productHtml.join("");
+    const productHtml = data.data.map((val, index) => { 
+    return `
+    <tr data-id="${val._id}">
+        <td data-key="name">${val.name}</td>
+        <td data-key="email">${val.email}</td>
+        <td data-key="password">${val.password}</td>
+        <td data-key="isAdmin">${val.isAdmin}</td>
+        <td data-key="phone">${val.phone?val.phone:""}</td>
+        <td data-key="city">${val.city?val.city:""}</td>
+        <td data-key="district">${val.district?val.district:""}</td>
+        <td data-key="wards">${val.wards?val.wards:""}</td>
+        <td data-key="street">${val.streetAndHouseNumber?val.streetAndHouseNumber:""}</td>
+        <td>
+            <!--<a class="save-user" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus-minus"></i></a> -->
+            <a data-id="${val._id}" class="edit-user" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
+            <a data-id="${val._id}" class="delete-user" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
+        </td>
+    </tr>
+    `;
+    });
+    $("#tbody-user").innerHTML = productHtml.join("");
 }
 function renderProduct(data){
-            const productHtml = data.data.map((val, index) => { 
-            return `
-                        <tr data-id="${val?._id} class="product-item">
-                            <th data-key="img" data-value="${val.img}">
-                                <a data-id=${val._id} href="#" class="img">
-                                    <img src="${val.img}" alt="">
-                                </a>
-                            </th>
-                            <th data-key="name" data-value="${val.name}" class="name-product">
-                            ${val.name}
+  const productHtml = data.data.map((val, index) => { 
+  return `
+    <tr data-id="${val?._id} class="product-item">
+        <th data-key="img" data-value="${val.img}">
+            <a data-id=${val._id} href="#" class="img d-block">
+                <img src="${val.img}" alt="">
+            </a>
+        </th>
+        <th data-key="name" data-value="${val.name}" class="name-product">
+        ${val.name}
 
-                            </th>
-                            <th data-key="release_date" data-value="${val.release_date}">${val.release_date}</th>
-                            <th data-key="type" data-value="${val.type}"> ${val.type} </th>
-                            <th data-key="manufacturer" data-value="${val.manufacturer}"> ${val.manufacturer} </th>
-                            <th data-key="price" data-value="${val.price}"> ${formatCurrency(val.price)} </th>
-                            <th data-key="description" data-value="${val.description}">
-                              ${val.description}
-                            </th>
-                            <th class="d-flex">
-                                <a data-id="${val?._id}" class=" btn btn-danger edit-product" title="Add" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
-                                <a data-id="${val?._id}"class=" btn btn-primary delete-product" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
-                            </th>
-                        </tr>
-            `;
-            });
-            $("#tbody-product").innerHTML = productHtml.join("");
+        </th>
+        <th data-key="release_date" data-value="${formattedDate(val.release_date)}">${formattedDate(val.release_date)}</th>
+        <th data-key="type" data-value="${val.type}"> ${val.type} </th>
+        <th data-key="manufacturer" data-value="${val.manufacturer}"> ${val.manufacturer} </th>
+        <th data-key="price" data-value="${val.price}"> ${formatCurrency(val.price)} </th>
+        <th data-key="description" data-value="${val.description}">
+          ${val.description}
+        </th>
+        <th class="d-flex">
+            <a data-id="${val?._id}" class=" btn btn-danger edit-product" title="Add" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
+            <a data-id="${val?._id}"class=" btn btn-primary delete-product" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
+        </th>
+    </tr>
+  `;
+  });
+  $("#tbody-product").innerHTML = productHtml.join("");
 }
 //get allProduct
 async function product(page = 1, search, limit = 100) {
-        const checkSearch = search ? search : "";
-        await fetch(`${http}products?page=${page}&limit=${limit}`, {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            search: checkSearch,
-          },
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            // log(data)
-            renderProduct(data);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
+  const checkSearch = search ? search : "";
+  await fetch(`${http}products?page=${page}&limit=${limit}`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      search: checkSearch,
+    },
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      // log(data)
+      renderProduct(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
     }
-    async function getUser() {
-        await fetch(`${http}users`, {
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            authentication: User?.token, 
-          },
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            renderUser(data);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
+async function getUser() {
+    await fetch(`${http}users`, {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token, 
+      },
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        renderUser(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+}
+async function getStatistic() {
+  await fetch(`${http}sales-Reports`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token, 
+    },
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      // renderUser(data);
+      console.log(data)
+      $(".rating-product").innerHTML = data.data[0]?.totalProducts
+      $(".rating-revenue").innerHTML = data.data[0]?.totalSales
+      $(".rating-users").innerHTML = data.data[0]?.totalUsers
+      $(".rating-orders").innerHTML = data.data[0]?.numberOfOrder
+    })
+    .catch((err) => {
+      console.log(err);
+    })
     }
+    getStatistic();
 //add new product
 async function addProduct(data){
   await fetch(`${http}products/add`,{
@@ -211,7 +244,7 @@ async function deleteProduct(id){
     if(!res.success){
       alertFail(res.message);
     }else{
-      alertFullil("add success")
+      alertFullil("delete success")
       product();
       console.log(res.message)
     }
@@ -448,8 +481,8 @@ tbodyProduct.addEventListener("click", function (e) {
   }
   // input.parentElement.removeChild(input);
     });
-    // updateProduct(id, data);
-          console.log(data)
+    updateProduct(id, data);
+          // console.log(data)
   }
 
 
@@ -490,6 +523,11 @@ tbodyProduct.addEventListener("click", function (e) {
   if(btnDeleteProduct){
     const id = btnDeleteProduct.dataset.id
     deleteProduct(id)
+  }
+  const detailImg = e.target.closest(".img")
+  if(detailImg){
+    const id = detailImg.dataset.id
+    window.location.href = `./detail.html?idpd=${id}`
   }
 });
 
