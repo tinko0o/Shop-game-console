@@ -4,7 +4,7 @@ const salesReportSchema = new mongoose.Schema(
     {
         date: { type: Date, require: true, unique: true },
         totalSales: { type: Number, default: 0 },
-        numberOfOrder: { type: Number, default: 0 },
+        numberOfOrders: { type: Number, default: 0 },
         totalUsers: { type: Number, default: 0 },
         totalProducts: { type: Number, default: 0 },
     },

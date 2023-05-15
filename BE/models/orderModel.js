@@ -15,10 +15,17 @@ const OrderSchema = new mongoose.Schema(
         wards: { type: String, require: true },
         streetAndHouseNumber: {type: String, require: true},
         address: {type: String, require: true},
+        status: {
+            type: String,
+            enum: ["pending", "confirm", "delivered"],
+            default: "pending",
+            require: true,
+        },
     },
     {
         timestamps: true,
         collection: "orders",
     }
 );
+
 module.exports = mongoose.model("order", OrderSchema);
