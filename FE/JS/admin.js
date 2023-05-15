@@ -99,7 +99,7 @@ function renderProduct(data){
         <th data-key="type" data-value="${val.type}"> ${val.type} </th>
         <th data-key="manufacturer" data-value="${val.manufacturer}"> ${val.manufacturer} </th>
         <th data-key="price" data-value="${val.price}"> ${formatCurrency(val.price)} </th>
-        <th data-key="description" data-value="${val.description}">
+        <th data-key="description" data-value="${val.description}" class="description">
           ${val.description}
         </th>
         <th class="d-flex">

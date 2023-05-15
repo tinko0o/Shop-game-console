@@ -276,7 +276,11 @@ body{
             }
             // background-color: #27c46b;
         }
-
+        .description{
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
         // .add-product{
         //     // visibility: hidden;
         //     // opacity: 0;

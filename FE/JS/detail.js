@@ -9,6 +9,10 @@ import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
 const cartQuantities = $(".quantities-cart");
 const formAddCmt = $("#f-addcmt");
 const listCmt = $(".list-cmt");
+if(User.data.isAdmin){
+  $(".header").style.visibility = 'hidden'
+  $(".content-action").style.visibility = 'hidden'
+}
 //console.log
 function log(value) {
   console.log(`${value}: `,value)

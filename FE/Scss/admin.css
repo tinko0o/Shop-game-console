@@ -333,6 +333,11 @@ a {
 .table-wrapper .product-items .delete i {
   font-size: 20px;
 }
+.table-wrapper .product-items .description {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
 .wrapper-statistic .statistic {
   padding: 0 10px;

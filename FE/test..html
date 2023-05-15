@@ -1,144 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./Scss/test.css">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>Chọn địa chỉ</title>
 </head>
 <body>
- <!-- <nav>
-  <ul class="nav">
-    <li class="nav-item">
-      <a class="nav-link" href="#">Mục chính 1</a>
-      <ul class="submenu">
-        <li class="submenu-item">
-          <a href="#">Phần tử con 1</a>
-          <ul class="submenu-sub">
-            <li class="submenu-sub-item"><a href="#">Phần tử con 1.1</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 1.2</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 1.3</a></li>
-          </ul>
-        </li>
-        <li class="submenu-item">
-          <a href="#">Phần tử con 2</a>
-          <ul class="submenu-sub">
-            <li class="submenu-sub-item"><a href="#">Phần tử con 2.1</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 2.2</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 2.3</a></li>
-          </ul>
-        </li>
-        <li class="submenu-item">
-          <a href="#">Phần tử con 3</a>
-          <ul class="submenu-sub">
-            <li class="submenu-sub-item"><a href="#">Phần tử con 3.1</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 3.2</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 3.3</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Mục chính 2</a>
-      <ul class="submenu">
-        <li class="submenu-item">
-          <a href="#">Phần tử con 1</a>
-          <ul class="submenu-sub">
-            <li class="submenu-sub-item"><a href="#">Phần tử con 1.1</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 1.2</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 1.3</a></li>
-          </ul>
-        </li>
-        <li class="submenu-item">
-          <a href="#">Phần tử con 2</a>
-          <ul class="submenu-sub">
-            <li class="submenu-sub-item"><a href="#">Phần tử con 2.1</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 2.2</a></li>
-            <li class="submenu-sub-item"><a href="#">Phần tử con 2.3</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
- </nav> -->
- <form>
   <label for="province">Tỉnh/Thành phố:</label>
-  <select id="province" name="province"></select>
-
+  <select id="province" onchange="getDistricts()">
+    <option value="">Chọn tỉnh/thành phố</option>
+  </select>
+  
   <label for="district">Quận/Huyện:</label>
-  <select id="district" name="district"></select>
-
+  <select id="district" onchange="getWards()">
+    <option value="">Chọn quận/huyện</option>
+  </select>
+  
   <label for="ward">Xã/Phường:</label>
-  <select id="ward" name="ward"></select>
-</form>
+  <select id="ward">
+    <option value="">Chọn xã/phường</option>
+  </select>
 
+  <script>
+    function getProvinces() {
+      fetch("https://provinces.open-api.vn/api/?depth=3")
+        .then(response => response.json())
+        .then(data => {
+          const provinceSelect = document.getElementById("province");
+          data.forEach(province => {
+            const option = document.createElement("option");
+            option.value = province.code;
+            option.textContent = province.name;
+            provinceSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+
+    function getDistricts() {
+      const provinceCode = document.getElementById("province").value;
+      const districtSelect = document.getElementById("district");
+      const wardSelect = document.getElementById("ward");
+
+      districtSelect.innerHTML = "<option value=''>Chọn quận/huyện</option>";
+      wardSelect.innerHTML = "<option value=''>Chọn xã/phường</option>";
+
+      if (provinceCode) {
+        fetch(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`)
+          .then(response => response.json())
+          .then(data => {
+      // console.log(data)
+
+            data.districts.forEach(district => {
+              const option = document.createElement("option");
+              option.value = district.code;
+              option.textContent = district.name;
+              districtSelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    }
+
+    function getWards() {
+      const provinceCode = document.getElementById("province").value;
+      const districtCode = document.getElementById("district").value;
+      const wardSelect = document.getElementById("ward");
+      wardSelect.innerHTML = "<option value=''>Chọn xã/phường</option>";
+
+      if (districtCode) {
+        fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=1`)
+          .then(response => response.json())
+          .then(data => {
+      // console.log(data)
+
+            data.wards.forEach(ward => {
+              const option = document.createElement("option");
+              option.value = ward.code;
+              option.textContent = ward.name;
+              wardSelect.appendChild(option);
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    }
+    function get() {
+      const provinceCode = document.getElementById("province").value;
+      // const districtCode = document.getElementById("district").value;
+      const districtCode = 1;
+      const wardSelect = document.getElementById("ward");
+      wardSelect.innerHTML = "<option value=''>Chọn xã/phường</option>";
+          console.log(districtCode)
+
+      if (districtCode) {
+        fetch(`https://provinces.open-api.vn/api/d/${1}`)
+          .then(response => response.json())
+          .then(data => {
+          console.log(data)
+
+            // data.wards.forEach(ward => {
+            //   const option = document.createElement("option");
+            //   option.value = ward.code;
+            //   option.textContent = ward.name;
+            //   wardSelect.appendChild(option);
+            // });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    }
+    get();
+    getProvinces();
+  </script>
 </body>
 </html>
-
-<style>
-  form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-label {
-  font-weight: bold;
-}
-
-select {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-</style>
-<script>
-  const provinceSelect = document.getElementById("province");
-const districtSelect = document.getElementById("district");
-const wardSelect = document.getElementById("ward");
-
-function populateProvinces() {
-  // Lấy danh sách tỉnh/thành phố từ API hoặc cơ sở dữ liệu
-  const provinces = ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng"];
-  
-  // Thêm các tỉnh/thành phố vào select
-  for (let province of provinces) {
-    const option = document.createElement("option");
-    option.text = province;
-    provinceSelect.add(option);
-  }
-}
-
-function populateDistricts() {
-  // Lấy danh sách quận/huyện từ API hoặc cơ sở dữ liệu
-  const districts = ["Hoàn Kiếm", "Ba Đình", "Đống Đa", "Cầu Giấy", "Thanh Xuân"];
-  
-  // Thêm các quận/huyện vào select
-  for (let district of districts) {
-    const option = document.createElement("option");
-    option.text = district;
-    districtSelect.add(option);
-  }
-}
-
-function populateWards() {
-  // Lấy danh sách xã/phường từ API hoặc cơ sở dữ liệu
-  const wards = ["Phúc Xá", "Trúc Bạch", "Ngọc Hà", "Liễu Giai", "Yên Hòa"];
-  
-  // Thêm các xã/phường vào select
-  for (let ward of wards) {
-    const option = document.createElement("option");
-    option.text = ward;
-    wardSelect.add(option);
-  }
-}
-
-// Thực hiện việc điền dữ liệu vào các select khi trang được load
-populateProvinces();
-populateDistricts();
-populateWards();
-
-</script>
