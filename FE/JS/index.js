@@ -195,9 +195,9 @@ window.addEventListener("load",function(){
     // change password user
     const userProfile = $(".user")
     userProfile.addEventListener("click",function(e){
-      e.preventDefault();
       const btnChange = e.target.closest(".btn-changePass")
       if(btnChange){
+        e.preventDefault();
       const oldPassword = document.getElementById("old-p").value;
       const newPassword = document.getElementById("new-p").value;
       const repeatPassword = document.getElementById("re-p").value;
