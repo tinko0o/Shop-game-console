@@ -4,68 +4,92 @@ const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const jwt = require("jsonwebtoken");
 const SalesReport = require("../models/salesReportModel");
+const Rating = require("../models/ratingModel");
 const { isEmpty } = require("lodash");
 
 //create order with default information
 
 exports.createOrder = async (req, res) => {
     try {
-        const token = req.headers.authentication;
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized",
-            });
-        }
-        const key = process.env.JWT_SEC;
-        const decoded = jwt.verify(token, key);
-        const user = await User.findOne({ email: decoded.email });
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: 'User not found',
-            });
-        }
-        const cart = await Cart.findOne({ userId: user._id });
-        if (!cart) {
-            return res.status(404).json({
-                success: false,
-                message: "Cart not found",
-            });
-        }
-        const { name, phone, city, district, wards, streetAndHouseNumber, address } = req.body;
-        const newOrder = new Order({
-            userId: user._id,
-            products: cart.products,
-            total: cart.total,
-            name: name || user.name,
-            phone: phone || user.phone,
-            city: city || user.city,
-            district: district || user.district,
-            wards: wards || user.wards,
-            streetAndHouseNumber: streetAndHouseNumber || user.streetAndHouseNumber,
+      const token = req.headers.authentication;
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
         });
-        newOrder.address = address || `${newOrder.streetAndHouseNumber}, ${newOrder.wards}, ${newOrder.district}, ${newOrder.city}`;
-        if (isEmpty(newOrder.name) || isEmpty(newOrder.phone) || isEmpty(newOrder.city) || isEmpty(newOrder.district)
-            || isEmpty(newOrder.wards) || isEmpty(newOrder.streetAndHouseNumber) || isEmpty(newOrder.address)) {
-            return res.status(400).json({
-                success: false,
-                message: "Missing required fields",
-            })
-        }
-        await newOrder.save();
-        await cart.deleteOne({ userId: user._id });
-        return res.status(200).json({
-            success: true,
-            message: "Order created successfully",
+      }
+      const key = process.env.JWT_SEC;
+      const decoded = jwt.verify(token, key);
+      const user = await User.findOne({ email: decoded.email });
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
         });
+      }
+      const cart = await Cart.findOne({ userId: user._id });
+      if (!cart) {
+        return res.status(404).json({
+          success: false,
+          message: "Cart not found",
+        });
+      }
+      const { name, phone, city, district, wards, streetAndHouseNumber, address } = req.body;
+      const newOrder = new Order({
+        userId: user._id,
+        products: cart.products,
+        total: cart.total,
+        name: name || user.name,
+        phone: phone || user.phone,
+        city: city || user.city,
+        district: district || user.district,
+        wards: wards || user.wards,
+        streetAndHouseNumber: streetAndHouseNumber || user.streetAndHouseNumber,
+      });
+      for (const product of newOrder.products) {
+        const productRating = await Rating.findOne({ productId: product.id });
+        let userRating = 0;
+        if (productRating) {
+          const userRatingObj = productRating.users.find(
+            (ratingObj) => ratingObj.id.toString() === user._id.toString()
+          );
+          if (userRatingObj) {
+            userRating = userRatingObj.rating;
+          }
+        }
+        product.rating = userRating;
+      }
+      newOrder.address =
+        address ||
+        `${newOrder.streetAndHouseNumber}, ${newOrder.wards}, ${newOrder.district}, ${newOrder.city}`;
+      if (
+        isEmpty(newOrder.name) ||
+        isEmpty(newOrder.phone) ||
+        isEmpty(newOrder.city) ||
+        isEmpty(newOrder.district) ||
+        isEmpty(newOrder.wards) ||
+        isEmpty(newOrder.streetAndHouseNumber) ||
+        isEmpty(newOrder.address)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Missing required fields",
+        });
+      }
+      for (const product of newOrder.products) {//// this don't touch
+        product.rating = 0;
+      }
+      await newOrder.save();
+      await cart.deleteOne({ userId: user._id });
+      return res.status(200).json({
+        success: true,
+        message: "Order created successfully",
+      });
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ success: false, message: "Something went wrong" });
+      console.log(err);
+      res.status(500).json({ success: false, message: "Something went wrong" });
     }
-};
-
-
+  };
 
 
 //get user orders
@@ -190,7 +214,7 @@ exports.confirmOrder = async (req, res) => {
 };
 
 
-//delivered
+//delivered order
 
 
 exports.deliveryOrder = async (req, res) => {
@@ -258,5 +282,89 @@ exports.deliveryOrder = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
+// cancel order when user
+
+exports.cancelOrderUser = async (req, res) => {
+  try {
+      const token = req.headers.authentication;
+      if (!token) {
+          return res.status(401).json({
+              success: false,
+              message: "Unauthorized",
+          });
+      }
+      const key = process.env.JWT_SEC;
+      const decoded = jwt.verify(token, key);
+      const user = await User.findOne({ email: decoded.email });
+      const order = await Order.findById(req.params.id);
+      if (!order) {
+          return res.status(404).json({
+              success: false,
+              message: "Order not found",
+          });
+      }
+      if (order.status !== "pending") {
+          return res.status(400).json({
+              success: false,
+              message: "Only cancel orders that are in the pending state",
+          });
+      }
+      order.status = "cancel";
+      await order.save();
+      return res.status(200).json({
+          success: true,
+          message: "Order canceled",
+      });
+  } catch (err) {
+      console.log(err);
+      return res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+};
+
+// cancel order when admin
+
+exports.cancelOrderAdmin = async (req, res) => {
+  try {
+      const token = req.headers.authentication;
+      if (!token) {
+          return res.status(401).json({
+              success: false,
+              message: "Unauthorized",
+          });
+      }
+      const key = process.env.JWT_SEC;
+      const decoded = jwt.verify(token, key);
+      const user = await User.findOne({ email: decoded.email });
+      const order = await Order.findById(req.params.id);
+      if (!user.isAdmin) {
+        return res.status(403).json({
+            success: false,
+            message: "Forbidden",
+        });
+      }
+      if (!order) {
+          return res.status(404).json({
+              success: false,
+              message: "Order not found",
+          });
+      }
+      if (order.status == "Delivered") {
+          return res.status(400).json({
+              success: false,
+              message: "You can't cancel order that had already delivered",
+          });
+      }
+      order.status = "cancel";
+      await order.save();
+      return res.status(200).json({
+          success: true,
+          message: "Order canceled",
+      });
+  } catch (err) {
+      console.log(err);
+      return res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };

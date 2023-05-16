@@ -17,7 +17,7 @@ const OrderSchema = new mongoose.Schema(
         address: {type: String, require: true},
         status: {
             type: String,
-            enum: ["pending", "confirm", "delivered"],
+            enum: ["pending", "confirm", "delivered","cancel"],
             default: "pending",
             require: true,
         },
