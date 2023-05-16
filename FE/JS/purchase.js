@@ -8,6 +8,18 @@ import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
 function log(value) {
   console.log(`${value}: `,value)
 }
+// format daytime
+function formatDate(date) {
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
+function formattedDate(date){
+  const dated = new Date(`${date}`)
+  return formatDate(dated)
+};
 async function getPurchased() {
     await fetch(`${http}oders/`, {
         headers: {
@@ -24,8 +36,32 @@ async function getPurchased() {
         console.log(err);
         })
 }
+function rateStar(id,rating){
 
-getPurchased();
+    fetch(`${http}ratings/add`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      method:"post",
+      body: JSON.stringify({id,rating})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        alertFullil(data.message)
+      }
+      else{
+        alertFail(data.message)
+
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+
+}
 function renderPuchase(data){
     const html = data.data.map((val,index)=>{
         let count = 0;
@@ -39,7 +75,7 @@ function renderPuchase(data){
                     <span class="quantity">X${v.quantity}</span>
                 </div>
                 <p class="p-total">${v.price}</p>
-                <div data-id="${v.id}" data-rating="5" class="stars-rating">
+                <div data-id="${v.id}" data-rating="${v.rating}" class="stars-rating">
                     <i class="fa-sharp fa-solid fa-star"></i>
                     <i class="fa-sharp fa-solid fa-star"></i>
                     <i class="fa-sharp fa-solid fa-star"></i>
@@ -60,7 +96,8 @@ function renderPuchase(data){
                         <div class="total">
                             <p class="t-price"><strong>Totail:</strong>${val.total}</p>
                             <p class="t-quantity"><strong>quantity:</strong>x${count}</p>
-                            <p class="p-createdAt"><strong>createdAt:</strong>${val.createdAt}</p>
+                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
+                            <p class="p-status"><strong>Status:</strong>${val.status}</p>
                         </div>
                     </div>
                     <hr>
@@ -90,7 +127,27 @@ function handleRatingClick(event) {
   }
 }
 window.addEventListener("load",function(e){
+  // auto rating base on data-rate
+   const starsRatingElements = document.querySelectorAll('.stars-rating');
+
+  starsRatingElements.forEach(starsRatingElement => {
+    const rating = parseInt(starsRatingElement.dataset.rating);
+
+    // Xóa tất cả lớp của các sao trước khi đặt lại
+    starsRatingElement.querySelectorAll('i').forEach(starElement => {
+      starElement.classList.remove('filled');
+    });
+
+    // Đặt lớp 'filled' cho số sao tương ứng với giá trị rating
+    for (let i = 0; i < rating; i++) {
+      const starElement = starsRatingElement.querySelector(`i:nth-child(${i + 1})`);
+      if (starElement) {
+        starElement.classList.add('filled');
+      }
+    }
+  });
   header();
+  getPurchased();
     const purchased= $(".purchased");
     purchased.addEventListener('click',function(e){
     const product = e.target.closest('.product')
@@ -103,7 +160,9 @@ window.addEventListener("load",function(e){
     }
     if(rate){
         const id = product.dataset.id;
-        log(id)
+        const rateNumber = $(".stars-rating").dataset.rating
+        // log(rateNumber)
+        rateStar(id,rateNumber)
       }
     if(img || name){
         const id = product.dataset.id;

@@ -323,3 +323,68 @@ body{
         }
     }
 }
+// Main Purchase
+.puchase{
+  .purchased{
+    padding: 10px;
+    .block{
+      font-size: 18px;
+      border: #706c6c 1px solid;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+      .address{
+        display: flex;
+        justify-content: space-around;
+        p{
+          margin: 0 10px 0 0 ;
+        }
+        .address-content{
+          display: block;
+          .u-name{
+            display: flex;
+            max-width: 200px;
+            margin-right: 10px;
+            .u-phone{
+                margin-left: 5px;
+            }
+          }
+          .u-address{
+            display: block;
+            width: 100%;
+          }
+        }
+        .total{
+          display: block;
+          .t-price{
+            max-width: 200px;
+            margin-right: 10px;
+          }
+        }
+      }
+      .status{
+        text-align: center;
+      }
+      .products{
+        max-height: 210px;
+        overflow: auto;
+        .product{
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          .name-product{
+            width: 450px;
+          }
+          img{
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+          }
+          .p-total{
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}

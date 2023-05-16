@@ -51,7 +51,7 @@ async function login(data){
     // checkAdmin
     const User = JSON.parse(localStorage.getItem("loginUser"));
     // console.log(User.data.admin)
-    if(User.data.admin){
+    if(User.data.isAdmin){
       window.location.replace("./admin.html");
     }
     else{

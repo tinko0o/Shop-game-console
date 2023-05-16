@@ -42,7 +42,7 @@
                         <i class="fa-solid fa-box nav_icon"></i>
                         <span class="nav_name">Product</span> </a> 
                     <a href="#" class="nav_link nav-comment"> 
-                        <i class="fa-solid fa-comment nav_icon"></i> 
+                        <i class="fa-solid fa-cart-shopping nav_icon"></i>
                         <span class="nav_name">Comment</span> </a> 
                     <!-- <a href="#" class="nav_link"> 
                         <i class='bx bx-folder nav_icon'></i> 
@@ -52,7 +52,7 @@
                         <span class="nav_name">Something</span> 
                     </a>  -->
                 </div>
-            </div> <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
+            </div> <a href="#" class="nav_link"> <i class="fa-solid fa-right-from-bracket nav_icon"></i> <span class="nav_name">SignOut</span> </a>
         </nav>
     </div>
     <!-- Container Main start-->
@@ -318,7 +318,71 @@
     </div>
     <!-- Main Commment -->
     <div class="height-100 bg-light main main-comment">
-        <h4>Main Comment</h4>
+        <!-- <h4>Main Purchase</h4> -->
+            <div class="puchase">
+        <!-- <div class="container"> -->
+            <h3>Your Purchased</h3>
+            <div class="purchased">
+                <div class="block">
+                    <div class="address">
+                        <div class="address-content">
+                            <p class="u-name"><strong>Name:</strong>User</p>
+                            <p class="u-phone"><strong>Phone:</strong>01237237</p>
+                            <p class="u-address"><strong>Address:</strong>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                        </div>
+                        <div class="total">
+                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
+                            <p class="t-quantity"><strong>quantity:</strong>x5</p>
+                            <p class="t-price"><strong>Totail:</strong>1000000</p>
+                        </div>
+                        <div class="status">
+                            <p class="s-status"><strong>Status:</strong>pending</p>
+                            <button class="btn btn-primary">giao hàng</button>
+                            <button class="btn btn-success">thành công</button>                           
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="products">
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+
+                        </div>
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+
+                        </div>
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+
+                        </div>
+                        <div class="product">
+                            <img src="./img/sp1.jpg" alt="">
+                            <div class="p-name">
+                                <h4 class="name-product">this is name product</h4>
+                                <span class="quantity">X2</span>
+                            </div>
+                            <p class="p-total">10000d</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- </div> -->
+    </div>
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"

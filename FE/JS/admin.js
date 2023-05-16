@@ -5,6 +5,9 @@ const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
 const http = "http://localhost:8080/api/";
 let getDataProduct = {};
+if(!User.data.isAdmin){
+  window.location.replace("./index.html");
+}
 //formatDate
 function formatDate(date) {
   const day = ("0" + date.getDate()).slice(-2);
@@ -111,6 +114,51 @@ function renderProduct(data){
   });
   $("#tbody-product").innerHTML = productHtml.join("");
 }
+function renderPuchase(data){
+    const html = data.data.map((val,index)=>{
+        let count = 0;
+        const producthtml = val.products.map((v,i)=>{
+            count = count + v.quantity;
+            return`
+            <div data-id="${v.id}" class="product">
+                <img src="${v.img}" alt="">
+                <div class="p-name">
+                    <h4 class="name-product">${v.name}</h4>
+                    <span class="quantity">X${v.quantity}</span>
+                </div>
+                <p class="p-total">${formatCurrency(v.price)}</p>
+            </div>
+            `
+        });
+        return`
+                <div class="block">
+                    <div class="address">
+                        <div class="address-content">
+                            <p class="u-name"><strong>Name:</strong>${val.name}</p>
+                            <p class="u-phone"><strong>Phone:</strong>${val.phone}</p>
+                            <p class="p-address"><strong>Address:</strong>${val.address}</p>
+                        </div>
+                        <div class="total">
+                            <p class="t-price"><strong>Totail:</strong>${formatCurrency(val.total)}</p>
+                            <p class="t-quantity"><strong>quantity:</strong>x${count}</p>
+                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
+                        </div>
+                        <div class="status">
+                            <p class="s-status"><strong>Status:</strong>${val.status}</p>
+                            <hr style="margin-bottom: 0; color: white;">
+                            <button data-id="${val._id}" class="btn btn-primary">giao hàng</button>
+                            <button data-id="${val._id}" class="btn btn-success">thành công</button>                           
+                        </div>                        
+                    </div>
+                    <hr>
+                    <div data-id="${val._id}" class="products">
+                        ${producthtml.join("")}
+                    </div>
+                </div>        
+        `
+    })
+    $(".purchased").innerHTML = html.join("");
+}
 //get allProduct
 async function product(page = 1, search, limit = 100) {
   const checkSearch = search ? search : "";
@@ -144,6 +192,23 @@ async function getUser() {
         console.log(err);
       })
 }
+async function getAllOder() {
+    await fetch(`${http}oders/all-orders`, {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token, 
+      },
+    })
+      .then((data) => data.json())
+      .then((data) => {
+      // log(data)
+      renderPuchase(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+}
+getAllOder();
 async function getStatistic() {
   await fetch(`${http}sales-Reports`, {
     headers: {
@@ -230,6 +295,27 @@ async function deleteUser(id){
       alertFail();
   })
 }
+async function updateProduct(id,data){
+  await fetch(`${http}products/update/${id}`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,       
+    },
+    method:"put",
+    body:JSON.stringify(data)
+  })
+  .then((res)=>res.json())
+  .then((res)=>{
+    if(!res.success){
+      alertFail(res.message);
+    }else{
+      alertFullil(res.message)
+      // product();
+    }
+  }).catch((err)=>{
+      alertFail();
+  })
+}
 async function deleteProduct(id){
   await fetch(`${http}products/delete/${id}`,{
     headers:{
@@ -246,7 +332,6 @@ async function deleteProduct(id){
     }else{
       alertFullil("delete success")
       product();
-      console.log(res.message)
     }
   }).catch((err)=>{
       alertFail();

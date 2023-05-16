@@ -364,4 +364,68 @@ a {
   text-align: center;
   height: 40px;
   font-size: 23px;
+}
+
+.puchase .purchased {
+  padding: 10px;
+}
+.puchase .purchased .block {
+  font-size: 18px;
+  border: #706c6c 1px solid;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
+}
+.puchase .purchased .block .address {
+  display: flex;
+  justify-content: space-around;
+}
+.puchase .purchased .block .address p {
+  margin: 0 10px 0 0;
+}
+.puchase .purchased .block .address .address-content {
+  display: block;
+}
+.puchase .purchased .block .address .address-content .u-name {
+  display: flex;
+  max-width: 200px;
+  margin-right: 10px;
+}
+.puchase .purchased .block .address .address-content .u-name .u-phone {
+  margin-left: 5px;
+}
+.puchase .purchased .block .address .address-content .u-address {
+  display: block;
+  width: 100%;
+}
+.puchase .purchased .block .address .total {
+  display: block;
+}
+.puchase .purchased .block .address .total .t-price {
+  max-width: 200px;
+  margin-right: 10px;
+}
+.puchase .purchased .block .status {
+  text-align: center;
+}
+.puchase .purchased .block .products {
+  max-height: 210px;
+  overflow: auto;
+}
+.puchase .purchased .block .products .product {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.puchase .purchased .block .products .product .name-product {
+  width: 450px;
+}
+.puchase .purchased .block .products .product img {
+  width: 110px;
+  height: 110px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.puchase .purchased .block .products .product .p-total {
+  margin: 0;
 }/*# sourceMappingURL=admin.css.map */

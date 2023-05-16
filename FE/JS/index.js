@@ -3,6 +3,10 @@
 // const { default: header } = require("./header");
 // import head from "./header.js";
 
+// const { changePassword } = require("../../BE/controllers/userController");
+
+// const { changePassword } = require("../../BE/controllers/userController");
+
 // const { json } = require("body-parser");
 
 // import debounce from 'lodash';
@@ -46,9 +50,9 @@ function header(){
               <li class="Change">Change Password
                 <div class="dropdown-pass">
                   <form action="#">
-                    <input type="text"placeholder="Old Password">
-                    <input type="text"placeholder="New Password">
-                    <input type="text"placeholder="Repeat new Password">
+                    <input id="old-p" type="text"placeholder="Old Password">
+                    <input id="new-p" type="text"placeholder="New Password">
+                    <input id="re-p" type="text"placeholder="Repeat new Password">
                     <button class="btn btn-dark btn-changePass" type="submit">Change</button>
                   </form> 
                 </div>
@@ -116,6 +120,32 @@ function U_quantityCart(){
     cartQuantities.innerHTML = "";
   }
 }
+function changePass(password,newPassword,confirmPassword){
+  if(User){
+    fetch(`${http}users/user/changepassword`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      method:"put",
+      body: JSON.stringify({password,newPassword,confirmPassword})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        alertFullil(data.message)
+      }
+      else{
+        alertFail(data.message)
+
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+}
+}
 //alert
  function alertFullil(message="success") {
   alertSuccess.children[0].textContent = `${message}`;
@@ -162,7 +192,19 @@ window.addEventListener("load",function(){
     header();
     scroll();
     U_quantityCart();
-
+    // change password user
+    const userProfile = $(".user")
+    userProfile.addEventListener("click",function(e){
+      e.preventDefault();
+      const btnChange = e.target.closest(".btn-changePass")
+      if(btnChange){
+      const oldPassword = document.getElementById("old-p").value;
+      const newPassword = document.getElementById("new-p").value;
+      const repeatPassword = document.getElementById("re-p").value;
+      changePass(oldPassword,newPassword,repeatPassword)
+      }
+    })
+    
     // head()
     const navPage = $(".pagination");
     const products = {
