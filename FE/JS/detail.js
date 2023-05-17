@@ -9,7 +9,7 @@ import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
 const cartQuantities = $(".quantities-cart");
 const formAddCmt = $("#f-addcmt");
 const listCmt = $(".list-cmt");
-if(User.data.isAdmin){
+if(User?.data.isAdmin){
   $(".header").style.visibility = 'hidden'
   $(".content-action").style.visibility = 'hidden'
 }
@@ -152,28 +152,41 @@ function displayRating(rating = 0) {
 }
 // UPdate Quantity Cart
 function U_quantityCart(){
-  fetch(`${http}carts/cart/amount`,{
-    headers:{
-      "Content-type": "application/json; charset=UTF-8",
-      authentication: User?.token,                         
-    },
-    // method:"post",
-    // body: JSON.stringify({_id,quantity:1})
-  })
-  .then((data)=>data.json())
-  .then((data)=>{
-    if(data.success)
-    {
-      cartQuantities.innerHTML = data?.data;
-    }
-    else{
-      header().logoff.click();
-    }
-  })
-  .catch(()=>{
-    alertFail();
-  })
+  if(User){
+    fetch(`${http}carts/cart/amount`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      // method:"post",
+      // body: JSON.stringify({_id,quantity:1})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        cartQuantities.innerHTML = data?.data;
+      }
+      else{
+        header().logoff.click();
+      }
+    })
+    .catch(()=>{
+      // alertFail();
+    })
+  }else{
+    cartQuantities.innerHTML = "";
+  }
 }
+// check click cart
+$(".cart").addEventListener("click",function(e){
+  if(User){
+    window.location.replace("./cart.html")
+  }else{
+    e.preventDefault()
+    alertFail("You need login fist")
+  }
+})
 function addRepCmt(comment,parentCommentId){
     const {idpd} = getSearchParameters();
   fetch(`${http}comments/add`,{

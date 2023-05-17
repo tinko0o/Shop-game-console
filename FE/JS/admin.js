@@ -146,8 +146,9 @@ function renderPuchase(data){
                         <div class="status">
                             <p class="s-status"><strong>Status:</strong>${val.status}</p>
                             <hr style="margin-bottom: 0; color: white;">
-                            <button data-id="${val._id}" class="btn btn-primary">giao hàng</button>
-                            <button data-id="${val._id}" class="btn btn-success">thành công</button>                           
+                            <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>
+                            <button data-id="${val._id}" class="btn btn-primary  btn-confirm">Chấp nhận</button>
+                            <button data-id="${val._id}" class="btn btn-success btn-deleved">thành công</button>                           
                         </div>                        
                     </div>
                     <hr>
@@ -201,14 +202,13 @@ async function getAllOder() {
     })
       .then((data) => data.json())
       .then((data) => {
-      // log(data)
+      log(data)
       renderPuchase(data);
       })
       .catch((err) => {
         console.log(err);
       })
 }
-getAllOder();
 async function getStatistic() {
   await fetch(`${http}sales-Reports`, {
     headers: {
@@ -219,7 +219,7 @@ async function getStatistic() {
     .then((data) => data.json())
     .then((data) => {
       // renderUser(data);
-      console.log(data)
+      // console.log(data)
       $(".rating-product").innerHTML = data.data[0]?.totalProducts
       $(".rating-revenue").innerHTML = data.data[0]?.totalSales
       $(".rating-users").innerHTML = data.data[0]?.totalUsers
@@ -317,7 +317,7 @@ async function updateProduct(id,data){
   })
 }
 async function deleteProduct(id){
-  await fetch(`${http}products/delete/${id}`,{
+  await fetch(`${http}oders/confirm/delivery/${id}`,{
     headers:{
       "Content-type": "application/json; charset=UTF-8",
       authentication: User?.token,       
@@ -337,9 +337,86 @@ async function deleteProduct(id){
       alertFail();
   })
 }
+//Oder
+function cancelOder(id){
+    fetch(`${http}oders/peding/confirm/cancel/${id}`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      method:"put",
+      // body: JSON.stringify({id})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        alertFullil(data.message)
+        getAllOder();
+      }
+      else{
+        alertFail(data.message)
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+
+}
+function confimOder(id){
+    fetch(`${http}oders/confirm/${id}`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      method:"put",
+      // body: JSON.stringify({id})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        alertFullil(data.message)
+        getAllOder();
+      }
+      else{
+        alertFail(data.message)
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+
+}
+function delivedOder(id){
+    fetch(`${http}oders/confirm/delivery/${id}`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      method:"put",
+      // body: JSON.stringify({id})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        alertFullil(data.message)
+        getAllOder();
+      }
+      else{
+        alertFail(data.message)
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+
+}
 document.addEventListener("DOMContentLoaded", function (event) {
   product();
   getUser()
+  getAllOder();
   //sile bar
   const showNavbar = (toggleId, navId, bodyId, headerId) => {
     const toggle = document.getElementById(toggleId),
@@ -644,5 +721,28 @@ tbodyProduct.addEventListener("click", function (e) {
 	// 	$(".add-new").removeAttr("disabled");
   // };
 
+
+  //Main purchase
+  const oderUser= $(".purchased")
+  oderUser.addEventListener("click",function(e){
+  const btnCancel= e.target.closest(".btn-cancel")
+  const btnDelivery= e.target.closest(".btn-deleved")
+  const btnconfirm= e.target.closest(".btn-confirm")
+  if(btnCancel){
+    const cancelId = btnCancel.dataset.id
+    cancelOder(cancelId)
+    // console.log(cancelId)
+
+  }
+  if(btnconfirm){
+    const confirmId = btnconfirm.dataset.id
+    confimOder(confirmId)
+    // console.log(confirmId)
+  }
+  if(btnDelivery){
+    const deliveryId = btnDelivery.dataset.id
+    delivedOder(deliveryId)
+  }
+  })
 });
 
