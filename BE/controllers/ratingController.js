@@ -74,6 +74,10 @@ exports.addRating = async (req, res) => {
         totalRating: 1,
       });
       await newRating.save();
+      const orders = await Order.updateMany(
+        { userId: user.id, "products.id": req.body.id },
+        { $set: { "products.$.rating": req.body.rating } }
+      );
       return res.status(200).json({
         success: true,
         data: newRating,
@@ -111,7 +115,10 @@ exports.addRating = async (req, res) => {
         avgRating: roundedAvgRating,
         totalRating: totalRating,
       });
-
+      const orders = await Order.updateMany(
+        { userId: user.id, "products.id": req.body.id },
+        { $set: { "products.$.rating": req.body.rating } }
+      );
       return res.status(200).json({
         success: true,
         data: await Rating.findOne({ productId: product._id }),
