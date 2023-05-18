@@ -36,6 +36,29 @@ async function getPurchased() {
         console.log(err);
         })
 }
+async function cancelOder(id) {
+    await fetch(`${http}oders/cancel/${id}`, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+        },
+            method:"put",
+        })
+        .then((data) => data.json())
+        .then((data) => {
+          if(data.success)
+          {
+            alertFullil(data.message)
+            getPurchased() 
+          }
+          else{
+            alertFail(data.message)
+          }
+        })
+        .catch((err) => {
+        console.log(err);
+        })
+}
 function rateStar(id,rating){
 
     fetch(`${http}ratings/add`,{
@@ -75,7 +98,7 @@ function renderPuchase(data){
                     <span class="quantity">X${v.quantity}</span>
                 </div>
                 <p class="p-total">${v.price}</p>
-                <div data-id="${v.id}" data-rating="${v.rating}" class="stars-rating">
+                <div data-id="${v.id}" data-rating="5" class="stars-rating">
                     <i class="fa-sharp fa-solid fa-star"></i>
                     <i class="fa-sharp fa-solid fa-star"></i>
                     <i class="fa-sharp fa-solid fa-star"></i>
@@ -88,17 +111,21 @@ function renderPuchase(data){
         });
         return`
                 <div class="block">
-                    <div class="address">
-                        <div class="address-content">
+                    <div class="address d-flex justify-content-between">
+                        <div class="address-content d-block">
                             <p class="u-name"><strong>Name:</strong>${val.name}</p>
                             <p class="p-address"><strong>Address:</strong>${val.address}</p>
+                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
                         </div>
-                        <div class="total">
+                        <div class="total d-block">
                             <p class="t-price"><strong>Totail:</strong>${val.total}</p>
                             <p class="t-quantity"><strong>quantity:</strong>x${count}</p>
-                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
-                            <p class="p-status"><strong>Status:</strong>${val.status}</p>
                         </div>
+                        <div class="status d-block">
+                            <p class="s-status"><strong>Status:</strong>${val.status}</p>
+                            <hr style="margin-bottom: 0; color: white;">
+                            <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>                          
+                        </div>    
                     </div>
                     <hr>
                     <div data-id="${val._id}" class="products">
@@ -126,10 +153,9 @@ function handleRatingClick(event) {
     starsContainer.dataset.rating = selectedIndex;
   }
 }
-window.addEventListener("load",function(e){
-  // auto rating base on data-rate
-   const starsRatingElements = document.querySelectorAll('.stars-rating');
-
+function refeshRate(){
+     const starsRatingElements = document.querySelectorAll('.stars-rating');
+  log(starsRatingElements)
   starsRatingElements.forEach(starsRatingElement => {
     const rating = parseInt(starsRatingElement.dataset.rating);
 
@@ -146,6 +172,28 @@ window.addEventListener("load",function(e){
       }
     }
   });
+}
+window.addEventListener("load",function(e){
+  // // auto rating base on data-rate
+  //  const starsRatingElements = document.querySelectorAll('.stars-rating');
+
+  // starsRatingElements.forEach(starsRatingElement => {
+  //   const rating = parseInt(starsRatingElement.dataset.rating);
+
+  //   // Xóa tất cả lớp của các sao trước khi đặt lại
+  //   starsRatingElement.querySelectorAll('i').forEach(starElement => {
+  //     starElement.classList.remove('filled');
+  //   });
+
+  //   // Đặt lớp 'filled' cho số sao tương ứng với giá trị rating
+  //   for (let i = 0; i < rating; i++) {
+  //     const starElement = starsRatingElement.querySelector(`i:nth-child(${i + 1})`);
+  //     if (starElement) {
+  //       starElement.classList.add('filled');
+  //     }
+  //   }
+  // });
+  refeshRate();
   header();
   getPurchased();
     const purchased= $(".purchased");
@@ -155,6 +203,7 @@ window.addEventListener("load",function(e){
     const rate = e.target.closest(".btn-rate")
     const img = e.target.closest("img")
     const name = e.target.closest(".name-product")
+    const btnCancel = e.target.closest(".btn-cancel")
     if (stars) {
       handleRatingClick(e);
     }
@@ -168,7 +217,11 @@ window.addEventListener("load",function(e){
         const id = product.dataset.id;
         window.location.href = `./detail.html?idpd=${id}`
     }
-
+    if(btnCancel){
+        const id = btnCancel.dataset.id;
+        log(id)
+        cancelOder(id)
+      }
 
     });
 

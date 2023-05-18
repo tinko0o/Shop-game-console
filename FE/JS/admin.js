@@ -8,6 +8,12 @@ let getDataProduct = {};
 if(!User.data.isAdmin){
   window.location.replace("./index.html");
 }
+// btn log-out
+const logoff = $(".log-out");
+logoff.addEventListener("click", function () {
+  localStorage.removeItem("loginUser");
+  window.location.replace("./Login.html");
+});
 //formatDate
 function formatDate(date) {
   const day = ("0" + date.getDate()).slice(-2);
@@ -35,7 +41,7 @@ function resetProduct(data) {
 function log(value) {
   console.log(`${value}: `,value)
 }
-//formatCurrency
+formatCurrency
 function formatCurrency(price, symbol = "đ") {
   var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
   var priceWithCommas = price.toLocaleString();
