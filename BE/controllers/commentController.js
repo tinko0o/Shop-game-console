@@ -125,12 +125,12 @@ exports.deleteComment = async (req, res) => {
         message: "Không tìm thấy bình luận",
       });
     }
-    if (comment.userId.toString() !== user.id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: "Bạn không có quyền xóa bình luận này",
-      });
-    }
+    // if (comment.userId.toString() !== user.id.toString()) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     message: "Bạn không có quyền xóa bình luận này",
+    //   });
+    // }
     await Comment.findByIdAndDelete(req.params.commentId);
     return res.status(200).json({
       success: true,
