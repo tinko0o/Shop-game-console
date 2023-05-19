@@ -138,21 +138,21 @@ function renderPuchase(data) {
                 <div class="block">
                     <div class="address">
                         <div class="address-content">
-                            <p class="u-name"><strong>Name:</strong>${val.name}</p>
-                            <p class="u-phone"><strong>Phone:</strong>${val.phone}</p>
-                            <p class="p-address"><strong>Address:</strong>${val.address}</p>
+                            <p class="u-name"><strong>Người đặt:</strong>${val.name}</p>
+                            <p class="u-phone"><strong>Số điện thoại:</strong>${val.phone}</p>
+                            <p class="p-address"><strong>Địa chỉ:</strong>${val.address}</p>
                         </div>
                         <div class="total">
-                            <p class="t-price"><strong>Totail:</strong>${formatCurrency(val.total)}</p>
-                            <p class="t-quantity"><strong>quantity:</strong>x${count}</p>
-                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
+                            <p class="t-price"><strong>Tổng tiền:</strong>${formatCurrency(val.total)}</p>
+                            <p class="t-quantity"><strong>Tổng sản phẩm:</strong>x${count}</p>
+                            <p class="p-createdAt"><strong>Ngày đặt:</strong>${formattedDate(val.createdAt)}</p>
                         </div>
                         <div class="status">
-                            <p class="s-status"><strong>Status:</strong>${val.status}</p>
+                            <p class="s-status"><strong>Trạng thái:</strong>${val.status}</p>
                             <hr style="margin-bottom: 0; color: white;">
                             <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>
-                            <button data-id="${val._id}" class="btn btn-primary  btn-confirm">Chấp nhận</button>
-                            <button data-id="${val._id}" class="btn btn-success btn-deleved">thành công</button>                           
+                            <button data-id="${val._id}" class="btn btn-primary  btn-confirm">Xác nhận</button>
+                            <button data-id="${val._id}" class="btn btn-success btn-deleved">Đã giao</button>                           
                         </div>                        
                     </div>
                     <hr>

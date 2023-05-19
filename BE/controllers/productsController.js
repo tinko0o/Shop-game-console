@@ -235,7 +235,7 @@ exports.searchProducts = async (req, res) => {
     });
   } catch (err) {
     console.error(err)
-    res.status(500).json({ success: false, message: "Dẵ xảy ra sự cố khi tìm sản phẩm" });
+    res.status(500).json({ success: false, message: "Đẵ xảy ra sự cố khi tìm sản phẩm" });
   }
 };
 

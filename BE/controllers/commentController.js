@@ -100,7 +100,7 @@ exports.deleteComment = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Unauthorized',
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -109,38 +109,38 @@ exports.deleteComment = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found or invalid token',
+        message: "Không tìm thấy người dùng",
       });
     }
     if (!user.isAdmin) {
       return res.status(401).json({
         success: false,
-        message: 'Unauthorized',
+        message: "bạn không có quyền",
       });
     }
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {
       return res.status(404).json({
         success: false,
-        message: 'Comment not found',
+        message: "Không tìm thấy bình luận",
       });
     }
     if (comment.userId.toString() !== user.id.toString()) {
       return res.status(403).json({
         success: false,
-        message: 'You are not authorized to delete this comment',
+        message: "Bạn không có quyền xóa bình luận này",
       });
     }
     await Comment.findByIdAndDelete(req.params.commentId);
     return res.status(200).json({
       success: true,
-      message: 'Comment deleted successfully',
+      message: "Xóa bình luận thành công",
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({
       success: false,
-      message: 'Something went wrong. Please try again later.',
+      message: "Đã xảy ra sự cố vui lòng thử lại sau",
     });
   }
 };
@@ -174,7 +174,7 @@ exports.getComments = async (req, res) => {
     console.error(err);
     res.status(500).json({
       success: false,
-      message: "Something went wrong. Please try again later.",
+      message: "Đã xảy ra sự cố vui lòng thử lại sau",
     });
   }
 };
