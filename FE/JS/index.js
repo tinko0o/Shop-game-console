@@ -59,7 +59,7 @@ function header(){
               </li>
               <li>
                 <div class="btn-group dropstart">
-                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <button type="button" class="btn btn-secondary dropdown-toggle edit-profile" data-bs-toggle="dropdown" aria-expanded="false">
                     Edit Profile
                   </button>
                   <ul class="dropdown-menu">
@@ -80,6 +80,11 @@ function header(){
         logoff.addEventListener("click", function () {
           localStorage.removeItem("loginUser");
           window.location.reload();
+        });
+
+        const editUser = $(".edit-profile");
+        editUser.addEventListener("click", function () {
+          window.location.replace("./userProfile.html");
         });
 
     }
