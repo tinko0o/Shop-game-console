@@ -59,7 +59,7 @@ async function cancelOder(id) {
         console.log(err);
         })
 }
-function rateStar(id,rating){
+function rateStar(productId,orderId,rating){
 
     fetch(`${http}ratings/add`,{
       headers:{
@@ -67,7 +67,7 @@ function rateStar(id,rating){
         authentication: User?.token,                         
       },
       method:"post",
-      body: JSON.stringify({id,rating})
+      body: JSON.stringify({productId,orderId,rating})
     })
     .then((data)=>data.json())
     .then((data)=>{
@@ -85,56 +85,59 @@ function rateStar(id,rating){
     })
 
 }
-function renderPuchase(data){
-    const html = data.data.map((val,index)=>{
-        let count = 0;
-        const producthtml = val.products.map((v,i)=>{
-            count = count + v.quantity;
-            return`
-            <div data-id="${v.id}" class="product">
-                <img src="${v.img}" alt="">
-                <div class="p-name">
-                    <h4 class="name-product">${v.name}</h4>
-                    <span class="quantity">X${v.quantity}</span>
-                </div>
-                <p class="p-total">${v.price}</p>
-                <div data-id="${v.id}" data-rating="${v.rating}" class="stars-rating">
-                    <i class="fa-sharp fa-solid fa-star"></i>
-                    <i class="fa-sharp fa-solid fa-star"></i>
-                    <i class="fa-sharp fa-solid fa-star"></i>
-                    <i class="fa-sharp fa-solid fa-star"></i>
-                    <i class="fa-sharp fa-solid fa-star"></i>
-                </div>
-                <button class="btn btn-rate">Rating</button>
-            </div>
-            `
-        });
-        return`
-                <div class="block">
-                    <div class="address d-flex justify-content-between">
-                        <div class="address-content d-block">
-                            <p class="u-name"><strong>Name:</strong>${val.name}</p>
-                            <p class="p-address"><strong>Address:</strong>${val.address}</p>
-                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
-                        </div>
-                        <div class="total d-block">
-                            <p class="t-price"><strong>Totail:</strong>${val.total}</p>
-                            <p class="t-quantity"><strong>quantity:</strong>x${count}</p>
-                        </div>
-                        <div class="status d-block">
-                            <p class="s-status"><strong>Status:</strong>${val.status}</p>
-                            <hr style="margin-bottom: 0; color: white;">
-                            <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>                          
-                        </div>    
-                    </div>
-                    <hr>
-                    <div data-id="${val._id}" class="products">
-                        ${producthtml.join("")}
-                    </div>
-                </div>        
-        `
-    })
-    $(".purchased").innerHTML = html.join("");
+function renderPuchase(data) {
+  const html = data.data.map((val, index) => {
+    let count = 0;
+    const producthtml = val.products.map((v, i) => {
+      count = count + v.quantity;
+      const ratingClass = v.rating > 0 ? "disabled" : "";
+      const ratingButton = v.rating > 0 ? "" : `<button class="btn btn-rate">Rating</button>`;
+      return `
+        <div data-id="${v.id}" class="product">
+          <img src="${v.img}" alt="">
+          <div class="p-name">
+            <h4 class="name-product">${v.name}</h4>
+            <span class="quantity">X${v.quantity}</span>
+          </div>
+          <p class="p-total">${v.price}</p>
+          <div data-id="${v.id}" data-rating="${v.rating}" class="stars-rating ${ratingClass}">
+            <i class="fa-sharp fa-solid fa-star"></i>
+            <i class="fa-sharp fa-solid fa-star"></i>
+            <i class="fa-sharp fa-solid fa-star"></i>
+            <i class="fa-sharp fa-solid fa-star"></i>
+            <i class="fa-sharp fa-solid fa-star"></i>
+          </div>
+          ${ratingButton}
+        </div>
+      `;
+    });
+    return `
+      <div class="block">
+        <div class="address d-flex justify-content-between">
+          <div class="address-content d-block">
+            <p class="u-name"><strong>Name:</strong>${val.name}</p>
+            <p class="p-address"><strong>Address:</strong>${val.address}</p>
+            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
+          </div>
+          <div class="total d-block">
+            <p class="t-price"><strong>Total:</strong>${val.total}</p>
+            <p class="t-quantity"><strong>Quantity:</strong>x${count}</p>
+          </div>
+          <div class="status d-block">
+            <p class="s-status"><strong>Status:</strong>${val.status}</p>
+            <hr style="margin-bottom: 0; color: white;">
+            <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>
+          </div>
+        </div>
+        <hr>
+        <div data-id="${val._id}" class="products">
+          ${producthtml.join("")}
+        </div>
+      </div>
+    `;
+  });
+  $(".purchased").innerHTML = html.join("");
+
 }
 function handleRatingClick(event) {
   const starElement = event.target.closest(".stars-rating .fa-star");
@@ -185,6 +188,7 @@ window.addEventListener("load",function(e){
   //
     const purchased= $(".purchased");
     purchased.addEventListener('click',function(e){
+    const products = e.target.closest('.products')
     const product = e.target.closest('.product')
     const stars =e.target.closest(".stars-rating .fa-star")
     const rate = e.target.closest(".btn-rate")
@@ -196,8 +200,11 @@ window.addEventListener("load",function(e){
     }
     if(rate){
         const id = product.dataset.id;
-        const rateNumber = product.querySelector(".stars-rating").dataset.rating;
-        rateStar(id,rateNumber)
+        const idoder = products.dataset.id;
+        const rateNumber = +product.querySelector(".stars-rating").dataset.rating+1;
+        rateStar(id,idoder,rateNumber)
+        // console.log(rateNumber)
+        rate.remove();
       }
     if(img || name){
         const id = product.dataset.id;
