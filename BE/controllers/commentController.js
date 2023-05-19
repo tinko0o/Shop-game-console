@@ -11,7 +11,7 @@ exports.addComment = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Unauthorized',
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -20,21 +20,21 @@ exports.addComment = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found or invalid token',
+        message: "Không tìm thấy người dùng",
       });
     }
     const product = await Product.findById(req.body.productId);
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
+        message: "Không tìm thấy sản phẩm",
       });
     }
     const orders = await Order.find({ userId: user.id });
     if (!orders) {
       return res.status(400).json({
         success: false,
-        message: "orders not found",
+        message: "Không tìm thấy order",
       });
     }
 
@@ -46,7 +46,7 @@ exports.addComment = async (req, res) => {
       if (!parentComment) {
         return res.status(404).json({
           success: false,
-          message: 'Parent comment not found',
+          message: "Không tìm thấy bình luận",
         });
       }
 
@@ -77,7 +77,7 @@ exports.addComment = async (req, res) => {
     await newComment.save();
     return res.status(200).json({
       success: true,
-      message: 'Comment added successfully',
+      message: "Bình luận thành công",
       data: newComment,
     });
 
@@ -85,7 +85,7 @@ exports.addComment = async (req, res) => {
     console.error(err);
     res.status(500).json({
       success: false,
-      message: 'Something went wrong. Please try again later.',
+      message: "Đã xảy ra sự cố vui lòng thử lại sau",
     });
   }
 };

@@ -12,7 +12,7 @@ exports.addCart = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -21,7 +21,7 @@ exports.addCart = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found',
+        message: "Bạn không có quyền",
       });
     }
     else {
@@ -29,7 +29,7 @@ exports.addCart = async (req, res) => {
       if (!product) {
         return res.status(404).json({
           success: false,
-          message: 'Product not found',
+          message: "Không tìm thấy sản phẩm",
         });
       }
       else {
@@ -89,7 +89,7 @@ exports.addCart = async (req, res) => {
       }
     }
   } catch (err) {
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi thêm vào giỏ" });
   }
 };
 
@@ -101,7 +101,7 @@ exports.updateCart = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -110,14 +110,14 @@ exports.updateCart = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy người dùng",
       });
     }
     const cart = await Cart.findOne({ userId: user._id });
     if (!cart) {
       return res.status(404).json({
         success: false,
-        message: "Cart not found",
+        message: "Không tìm thấy giỏ hàng",
       });
     }
     const productId = req.params.id;
@@ -125,14 +125,14 @@ exports.updateCart = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found in cart",
+        message: "Không tìm thấy sản phẩm trong giỏ",
       });
     }
     const newQuantity = req.body.quantity;
     if (!newQuantity || newQuantity < 1) {
       return res.status(400).json({
         success: false,
-        message: "Quantity must be at least 1",
+        message: "Số lượng phải lớn hơn 0",
       });
     }
     const productIndex = cart.products.findIndex((product) => String(product.id) === productId);
@@ -151,7 +151,7 @@ exports.updateCart = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi cập nhật số lượng sản phẩm" });
   }
 };
 
@@ -163,7 +163,7 @@ exports.deleteCartProducts = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -172,7 +172,7 @@ exports.deleteCartProducts = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found',
+        message: "Không tìm thấy người",
       });
     }
     const cart = await Cart.findOne({ userId: user._id });
@@ -191,17 +191,17 @@ exports.deleteCartProducts = async (req, res) => {
       await Cart.findOneAndDelete({ userId: user._id });
       return res.status(200).json({
         success: true,
-        message: "Cart deleted successfully"
+        message: "Xóa giỏ hàng thành công"
       });
     }
     await Cart.findOneAndUpdate({ userId: user._id }, {products, total: newTotal});
     return res.status(200).json({
       success: true,
-      message: "Product deleted from cart successfully"
+      message: "Xóa sản phẩm trong giỏ thành công"
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xóa sản phẩm trong giỏ hàng" });
   }
 };
 
@@ -213,7 +213,7 @@ exports.deleteCart = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -222,7 +222,7 @@ exports.deleteCart = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found',
+        message: "Không tìm thấy người dùng",
       });
     }
     const cart = await Cart.findOneAndDelete({ userId: user._id });
@@ -238,7 +238,7 @@ exports.deleteCart = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xóa giỏ hàng" });
   }
 };
 
@@ -250,7 +250,7 @@ exports.getCart = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -259,7 +259,7 @@ exports.getCart = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found',
+        message: "không tìm thấy người dùng",
       });
     }
     const cart = await Cart.findOne({ userId: user._id })
@@ -274,7 +274,7 @@ exports.getCart = async (req, res) => {
       data: cart,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi xuất giỏ hàng của người dùng" });
   }
 };
 
@@ -286,7 +286,7 @@ exports.getAmountCart = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -295,7 +295,7 @@ exports.getAmountCart = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found',
+        message: "Không tìm thấy người dùng",
       });
     }
     const cart = await Cart.findOne({ userId: user._id })
@@ -314,7 +314,7 @@ exports.getAmountCart = async (req, res) => {
       data: amount,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi lấy tổng sản phẩm trong giỏ hàng" });
   }
 };
 
