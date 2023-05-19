@@ -322,16 +322,16 @@ exports.editUser = async (req, res) => {
         message: "Bạn không có quyền",
       });
     }
-    const { phone, city, district, wards,  streetAndHouseNumber } = req.body;
-    // if (!name ) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Invalid input",
-    //   });
-    // }
+    const { name, phone, city, district, wards,  streetAndHouseNumber } = req.body;
+    if (!name ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid input",
+      });
+    }
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id, 
-      { phone, city, district, wards, streetAndHouseNumber},
+      { name, phone, city, district, wards, streetAndHouseNumber},
       { new: true }
     );
     if (!updatedUser) {

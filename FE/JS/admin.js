@@ -74,8 +74,6 @@ function renderUser(data) {
     <tr data-id="${val._id}">
         <td data-key="name">${val.name}</td>
         <td data-key="email">${val.email}</td>
-        <td data-key="password">${val.password}</td>
-        <td data-key="isAdmin">${val.isAdmin}</td>
         <td data-key="phone">${val.phone ? val.phone : ""}</td>
         <td data-key="city">${val.city ? val.city : ""}</td>
         <td data-key="district">${val.district ? val.district : ""}</td>
@@ -226,10 +224,10 @@ async function getStatistic() {
     .then((data) => {
       // renderUser(data);
       // console.log(data)
-      $(".rating-product").innerHTML = data.data[0]?.totalProducts
-      $(".rating-revenue").innerHTML = data.data[0]?.totalSales
-      $(".rating-users").innerHTML = data.data[0]?.totalUsers
-      $(".rating-orders").innerHTML = data.data[0]?.numberOfOrder
+      $(".rating-product").innerHTML = data.data[0]?.totalProducts || 0
+      $(".rating-revenue").innerHTML = data.data[0]?.totalSales || 0 
+      $(".rating-users").innerHTML = data.data[0]?.totalUsers || 0
+      $(".rating-orders").innerHTML = data.data[0]?.numberOfOrder || 0
     })
     .catch((err) => {
       console.log(err);
@@ -251,7 +249,7 @@ async function addProduct(data) {
       if (!res.success) {
         alertFail(res.message);
       } else {
-        alertFullil("add success")
+        alertFullil(res.message)
       }
     })
     .catch((err) => {
@@ -273,7 +271,7 @@ async function editUser(data, id) {
       if (!res.success) {
         alertFail(res.message);
       } else {
-        alertFullil("add success")
+        alertFullil(res.message)
         console.log(res.message)
       }
     }).catch((err) => {
@@ -294,7 +292,7 @@ async function deleteUser(id) {
       if (!res.success) {
         alertFail(res.message);
       } else {
-        alertFullil("add success")
+        alertFullil(res.message)
         console.log(res.message)
       }
     }).catch((err) => {
@@ -323,7 +321,7 @@ async function updateProduct(id, data) {
     })
 }
 async function deleteProduct(id) {
-  await fetch(`${http}oders/confirm/delivery/${id}`, {
+  await fetch(`${http}products/delete/${id}`, {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
       authentication: User?.token,
@@ -521,8 +519,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
       // Add input fields to each cell
       inputs.forEach((cell, index) => {
-        const text = cell.textContent;
-        cell.innerHTML = `<input type="text" value="${text}">`;
+        const dataKey = cell.getAttribute('data-key');
+        if (dataKey !== 'password' && dataKey !== 'isAdmin'&& dataKey !== 'email') {
+          const text = cell.textContent;
+          cell.innerHTML = `<input type="text" value="${text}">`;
+        }
       });
     }
     const saveBtn = e.target.closest(".save-user");
@@ -545,8 +546,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
       let data = {
         name: row.querySelector('td[data-key="name"]').textContent,
         email: row.querySelector('td[data-key="email"]').textContent,
-        password: row.querySelector('td[data-key="password"]').textContent,
-        isAdmin: row.querySelector('td[data-key="isAdmin"]').textContent,
         phone: row.querySelector('td[data-key="phone"]').textContent,
         city: row.querySelector('td[data-key="city"]').textContent,
         district: row.querySelector('td[data-key="district"]').textContent,
@@ -554,14 +553,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
         street: row.querySelector('td[data-key="street"]').textContent,
       };
       inputs.forEach((input, index) => {
-        const key = row.querySelector(`td:nth-child(${index + 1})`).getAttribute("data-key");
-        if (key !== null) {
-          data[key] = input.value;
-          row.querySelector(`td[data-key="${key}"]`).textContent = input.value;
+        const keyIndex = index + 1; // Adjust the index by adding 1
+        let adjustedIndex = keyIndex;
+        if (keyIndex >= 2) {
+          adjustedIndex += 1; // Skip the locked email cell
+        }
+        const key = row.querySelector(`td:nth-child(${adjustedIndex})`).getAttribute("data-key");
+        if (key !== "password" && key !== "isAdmin") {
+          if (key === "email") {
+            const text = row.querySelector(`td[data-key="${key}"]`).textContent;
+            data[key] = text;
+          } else {
+            data[key] = input.value;
+            row.querySelector(`td[data-key="${key}"]`).textContent = input.value;
+          }
         }
       });
-      const dataUser = { ...data, streetAndHouseNumber: data.street }
-      editUser(dataUser, id)
+      const dataUser = { ...data, streetAndHouseNumber: data.street };
+      editUser(dataUser, id);
     }
     if (deleteBtn) {
       const row = deleteBtn.closest("tr");
@@ -587,8 +596,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
       // Change the edit button to a save button
       btnEditProduct.innerHTML = ' <i class="fa-solid fa-check">'
-
-
       btnEditProduct.classList.remove("edit-product");
       btnEditProduct.classList.add("save-product");
 
@@ -601,7 +608,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         const text = cell.dataset.value;
         cell.innerHTML = `<input type="text" value="${text}">`;
       });
-
     }
 
     const saveBtn = e.target.closest(".save-product");
@@ -622,11 +628,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
       // Enable all edit buttons while not editing
       const editButtons = row.querySelectorAll(".edit-product");
       editButtons.forEach((button) => (button.disabled = false));
-
       let data = {
         img: row.querySelector('th[data-key="img"]').dataset.value,
         name: row.querySelector('th[data-key="name"]').dataset.value,
         type: row.querySelector('th[data-key="type"]').dataset.value,
+        release_date: row.querySelector('th[data-key="release_date"]').dataset.value,
         manufacturer: row.querySelector('th[data-key="manufacturer"]').dataset.value,
         price: row.querySelector('th[data-key="price"]').dataset.value,
         description: row.querySelector('th[data-key="description"]').dataset.value,
@@ -647,7 +653,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         // input.parentElement.removeChild(input);
       });
       updateProduct(id, data);
-      // console.log(data)
+      console.log(data)
     }
 
 

@@ -18,7 +18,7 @@ const OrderSchema = new mongoose.Schema(
         status: {
             type: String,
             enum: ["Đang chờ", "Xác nhận", "Đã giao","Đã hủy"],
-            default: "pending",
+            default: "Đang chờ",
             require: true,
         },
     },

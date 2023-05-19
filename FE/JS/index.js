@@ -46,7 +46,7 @@ function header(){
 
               <li>Name: ${User.data?.name}</li>
               <li>Email:${User.data?.email}</li>
-              <li>phone:${User.data?.phone}</li>
+              <li>phone: ${User.data?.phone ? User.data.phone : 'không có'}</li>
               <li class="Change">Change Password
                 <div class="dropdown-pass">
                   <form action="#">

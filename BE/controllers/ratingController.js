@@ -27,7 +27,7 @@ exports.addRating = async (req, res) => {
       });
     }
 
-    const product = await Product.findById(req.body.id);
+    const product = await Product.findById(req.body.productId);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -35,7 +35,12 @@ exports.addRating = async (req, res) => {
       });
     }
 
-    const order = await Order.findOne({ userId: user.id, "products.id": req.body.id });
+    const order = await Order.findOne({
+      _id: req.body.orderId,
+      userId: user.id,
+      "products.id": req.body.productId
+    }).sort({ createdAt: -1 });
+
     if (!order) {
       return res.status(400).json({
         success: false,
@@ -43,7 +48,7 @@ exports.addRating = async (req, res) => {
       });
     }
 
-    if (order.status !== "delivered") {
+    if (order.status !== "Đã giao") {
       return res.status(400).json({
         success: false,
         message: "You can only rate delivered products",
@@ -58,10 +63,10 @@ exports.addRating = async (req, res) => {
       });
     }
 
-    const existingRating = await Rating.findOne({ productId: req.body.id });
+    const existingRating = await Rating.findOne({ productId: req.body.productId });
     if (!existingRating) {
       const newRating = new Rating({
-        productId: req.body.id,
+        productId: req.body.productId,
         users: [
           {
             id: user.id,
@@ -75,7 +80,7 @@ exports.addRating = async (req, res) => {
       });
       await newRating.save();
       const orders = await Order.updateMany(
-        { userId: user.id, "products.id": req.body.id },
+        { userId: user.id, "products.id": req.body.productId },
         { $set: { "products.$.rating": req.body.rating } }
       );
       return res.status(200).json({
@@ -85,43 +90,31 @@ exports.addRating = async (req, res) => {
     } else {
       const userRatingIndex = existingRating.users.findIndex(
         (u) => u.id.toString() === user.id.toString()
-      );    
+      );
       if (userRatingIndex >= 0) {
-        return res.status(400).json({
-          success: false,
-          message: "You have already rated this product in the current order",
-        });
-      }
-      // if (userRatingIndex >= 0) {
-      //   return res.status(400).json({
-      //     success: false,
-      //     message: "You have already rated this product",
-      //   });
-      // }
-      const updatedUsers = [
-        ...existingRating.users,
-        {
+        existingRating.users[userRatingIndex].rating = rating;
+      } else {
+        existingRating.users.push({
           id: user.id,
           name: user.name,
           email: user.email,
           rating: rating,
-        },
-      ];
-      const sumOfRatings = updatedUsers.reduce((acc, cur) => acc + cur.rating, 0);
-      const totalRating = updatedUsers.length;
+        });
+      }
+      const sumOfRatings = existingRating.users.reduce((acc, cur) => acc + cur.rating, 0);
+      const totalRating = existingRating.users.length;
       const roundedAvgRating = Math.round((sumOfRatings / totalRating) * 2) / 2;
-      await existingRating.updateOne({
-        users: updatedUsers,
-        avgRating: roundedAvgRating,
-        totalRating: totalRating,
-      });
+      existingRating.avgRating = roundedAvgRating;
+      existingRating.totalRating = totalRating;
+      await existingRating.save();
+
       const orders = await Order.updateMany(
-        { userId: user.id, "products.id": req.body.id },
+        { userId: user.id, "products.id": req.body.productId },
         { $set: { "products.$.rating": req.body.rating } }
       );
       return res.status(200).json({
         success: true,
-        data: await Rating.findOne({ productId: product._id }),
+        data: await Rating.findOne({ productId: req.body.productId }),
       });
     }
   } catch (err) {
@@ -129,6 +122,7 @@ exports.addRating = async (req, res) => {
     res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
 
 
 
