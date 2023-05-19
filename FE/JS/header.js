@@ -21,7 +21,7 @@ export function header(){
               <li>Name: ${User.data?.name}</li>
               <li>Email:${User.data?.email}</li>
               <li>phone:023234234</li>
-              <li class="Change">Change Password
+              <li disabled  class="Change">Change Password
                 <div class="dropdown-pass">
                   <form action="#">
                     <input type="text"placeholder="Old Password">
@@ -33,7 +33,7 @@ export function header(){
               </li>
               <li>
                 <div class="btn-group dropstart">
-                  <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <button type="button" class="btn btn-secondary dropdown-toggle edit-profile" data-bs-toggle="dropdown" aria-expanded="false">
                     Edit Profile
                   </button>
                   <ul class="dropdown-menu">
@@ -55,6 +55,11 @@ export function header(){
           localStorage.removeItem("loginUser");
           window.location.reload();
         });
+        const editUser = $(".edit-profile");
+        editUser.addEventListener("click", function () {
+          window.location.replace("./userProfile.html");
+        });
+
 
     }
 }
