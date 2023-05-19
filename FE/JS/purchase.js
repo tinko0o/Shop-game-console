@@ -98,7 +98,7 @@ function renderPuchase(data){
                     <span class="quantity">X${v.quantity}</span>
                 </div>
                 <p class="p-total">${v.price}</p>
-                <div data-id="${v.id}" data-rating="5" class="stars-rating">
+                <div data-id="${v.id}" data-rating="${v.rating}" class="stars-rating">
                     <i class="fa-sharp fa-solid fa-star"></i>
                     <i class="fa-sharp fa-solid fa-star"></i>
                     <i class="fa-sharp fa-solid fa-star"></i>
@@ -139,7 +139,7 @@ function renderPuchase(data){
 function handleRatingClick(event) {
   const starElement = event.target.closest(".stars-rating .fa-star");
   if (starElement) {
-    const rating = $('.stars-rating').dataset.rating;
+    // const rating = starsContainer.dataset.rating;
     const starsContainer = starElement.parentElement;
     const allStars = Array.from(starsContainer.children);
     const selectedIndex = allStars.indexOf(starElement);
@@ -154,12 +154,11 @@ function handleRatingClick(event) {
   }
 }
 function refeshRate(){
-     const starsRatingElements = document.querySelectorAll('.stars-rating');
-  log(starsRatingElements)
+  const starsRatingElements = document.querySelectorAll('.stars-rating');
   starsRatingElements.forEach(starsRatingElement => {
     const rating = parseInt(starsRatingElement.dataset.rating);
-
-    // Xóa tất cả lớp của các sao trước khi đặt lại
+    console.log(starsRatingElements)
+    // Xóa tất cả lớp 'filled' của các sao trước khi đặt lại
     starsRatingElement.querySelectorAll('i').forEach(starElement => {
       starElement.classList.remove('filled');
     });
@@ -174,28 +173,16 @@ function refeshRate(){
   });
 }
 window.addEventListener("load",function(e){
-  // // auto rating base on data-rate
-  //  const starsRatingElements = document.querySelectorAll('.stars-rating');
 
-  // starsRatingElements.forEach(starsRatingElement => {
-  //   const rating = parseInt(starsRatingElement.dataset.rating);
-
-  //   // Xóa tất cả lớp của các sao trước khi đặt lại
-  //   starsRatingElement.querySelectorAll('i').forEach(starElement => {
-  //     starElement.classList.remove('filled');
-  //   });
-
-  //   // Đặt lớp 'filled' cho số sao tương ứng với giá trị rating
-  //   for (let i = 0; i < rating; i++) {
-  //     const starElement = starsRatingElement.querySelector(`i:nth-child(${i + 1})`);
-  //     if (starElement) {
-  //       starElement.classList.add('filled');
-  //     }
-  //   }
-  // });
-  refeshRate();
-  header();
   getPurchased();
+  header();
+  setTimeout(() => {
+    refeshRate();
+    
+  }, 1000);
+  //
+
+  //
     const purchased= $(".purchased");
     purchased.addEventListener('click',function(e){
     const product = e.target.closest('.product')
@@ -209,8 +196,7 @@ window.addEventListener("load",function(e){
     }
     if(rate){
         const id = product.dataset.id;
-        const rateNumber = $(".stars-rating").dataset.rating
-        // log(rateNumber)
+        const rateNumber = product.querySelector(".stars-rating").dataset.rating;
         rateStar(id,rateNumber)
       }
     if(img || name){

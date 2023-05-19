@@ -5,61 +5,62 @@ const http = "http://localhost:8080/api/";
 const userID = User?.data._id;
 const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
+import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
 let dataCart = [];
 
 
 //formatCurrency
-function formatCurrency(price, symbol = "đ") {
-  var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
-  var priceWithCommas = price.toLocaleString();
-  var arParts = String(priceWithCommas).split(DecimalSeparator);
-  var intPart = arParts[0];
-  var decPart = arParts.length > 1 ? arParts[1] : '';
-  decPart = (decPart + '000').substr(0, 3);
-  return intPart + symbol;
-}
+// function formatCurrency(price, symbol = "đ") {
+//   var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
+//   var priceWithCommas = price.toLocaleString();
+//   var arParts = String(priceWithCommas).split(DecimalSeparator);
+//   var intPart = arParts[0];
+//   var decPart = arParts.length > 1 ? arParts[1] : '';
+//   decPart = (decPart + '000').substr(0, 3);
+//   return intPart + symbol;
+// }
 // const price = 1900;
 // console.log(formatCurrency(price))
 
 
 
-function header(){
-    //show user
-    if (User) {
-        const showUser = $(".user");
-        // console.log(User.data?.name)
-        showUser.innerHTML = `<i class="fa-solid fa-user"></i> ${User.data?.name}
-        <ul class="dropdown-user">
-            <li class="profile">Your profile</li>
-            <li class="purchase"><a href="./puchase.html">Purchase</a></li>
-            <li class="logout">Logout</li>
-        </ul>
-        `;
+// function header(){
+//     //show user
+//     if (User) {
+//         const showUser = $(".user");
+//         // console.log(User.data?.name)
+//         showUser.innerHTML = `<i class="fa-solid fa-user"></i> ${User.data?.name}
+//         <ul class="dropdown-user">
+//             <li class="profile">Your profile</li>
+//             <li class="purchase"><a href="./purchase.html">Purchase</a></li>
+//             <li class="logout">Logout</li>
+//         </ul>
+//         `;
 
-        // btn log-out
-        const logoff = $(".logout");
-        logoff.addEventListener("click", function () {
-          localStorage.removeItem("loginUser");
-          window.location.reload();
-        });
-    }
-}
+//         // btn log-out
+//         const logoff = $(".logout");
+//         logoff.addEventListener("click", function () {
+//           localStorage.removeItem("loginUser");
+//           window.location.reload();
+//         });
+//     }
+// }
 //alert
-function alertFullil(message="success") {
-  alertSuccess.children[0].textContent = `${message}`;
-  alertSuccess.classList.add("get-active");
-  setTimeout(() => {
-    alertSuccess.classList.remove("get-active");
-  }, 1500);
-}
+// function alertFullil(message="success") {
+//   alertSuccess.children[0].textContent = `${message}`;
+//   alertSuccess.classList.add("get-active");
+//   setTimeout(() => {
+//     alertSuccess.classList.remove("get-active");
+//   }, 1500);
+// }
 
-function alertFail(message="Something fail!") {
-  alertDanger.children[0].textContent = `${message}`;
-  alertDanger.classList.add("get-active");
-  setTimeout(() => {
-    alertDanger.classList.remove("get-active");
-  }, 1500);
-}
+// function alertFail(message="Something fail!") {
+//   alertDanger.children[0].textContent = `${message}`;
+//   alertDanger.classList.add("get-active");
+//   setTimeout(() => {
+//     alertDanger.classList.remove("get-active");
+//   }, 1500);
+// }
 //render cart
 function renderCart(data){
   if(data.data != null){
