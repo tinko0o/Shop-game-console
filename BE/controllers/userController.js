@@ -11,7 +11,7 @@ exports.register = async (req, res) => {
     return res.status(400).json({
       success: false,
       error: {
-        message: "Missing required fields",
+        message: "Thiếu các trường bắt buộc",
       },
     });
   }
@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
     await user.save();
     res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message: "Đăng ký tài khoản thành công",
     });
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));
@@ -35,14 +35,14 @@ exports.register = async (req, res) => {
       res.status(400).json({
         success: false,
         error: {
-          message: "Email is already taken",
+          message: "Email đã tồn tại",
         },
       });
     } else {
       res.status(500).json({
         success: false,
         error: {
-          message: "Something went wrong",
+          message: "Đã xảy ra sự cố khi tạo tài khoản",
         },
       });
     }
@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: "Invalid Input",
+      message: "không hợp lệ",
     });
   }
 
@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid User",
+        message: "Không tìm tài khoản",
       });
     }
 
@@ -74,7 +74,7 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid password",
+        message: "Sai mật khẩu",
       });
     }
 
@@ -97,7 +97,7 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi đăng nhập" });
   }
 };
 
@@ -109,7 +109,7 @@ exports.changePassword = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -118,26 +118,26 @@ exports.changePassword = async (req, res) => {
     if (!password || !newPassword || !confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: "Invalid Input",
+        message: "Không hợp lệ",
       });
     }
     const user = await User.findOne({ email: decoded.email });
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy tài khoản",
       })
     }
     if (!bcrypt.compareSync(password, user.password)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid password",
+        message: "Sai mật khẩu",
       });
     }
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: "Confirm passwords do not match",
+        message: "Mật khẩu xác nhận không trùng",
       });
     }
     const salt = bcrypt.genSaltSync(12);
@@ -149,11 +149,11 @@ exports.changePassword = async (req, res) => {
     );
     return res.status(200).json({
       success: true,
-      message: "Password changed successfully",
+      message: "Cập nhật mật khẩu thành công",
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi cập nhật mật khẩu" });
   }
 };
 
@@ -165,7 +165,7 @@ exports.updateUser = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -185,19 +185,19 @@ exports.updateUser = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy tài khoản",
       });
     }
     return res.status(200).json({
       success: true,
-      message: "User updated successfully",
+      message: "Cập nhật thông tin thành công",
       data: updatedUser,
     });
   } catch (err) {
     console.log(err);
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Đã xảy ra sự cố khi cập nhật thông tin",
     });
   }
 };
@@ -210,7 +210,7 @@ exports.getUser = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -219,7 +219,7 @@ exports.getUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy tài khoản",
       })
     }
     return res.status(200).json({
@@ -228,7 +228,7 @@ exports.getUser = async (req, res) => {
     })
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố xuất thông tin chi tiết tài khoản" });
   }
 };
 
@@ -240,7 +240,7 @@ exports.getAllUsers = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -249,7 +249,7 @@ exports.getAllUsers = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const users = await User.find({ email: { $ne: decoded.email },isAdmin: false});
@@ -259,7 +259,7 @@ exports.getAllUsers = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố xuất thông tin người dùng" });
   }
 };
 
@@ -271,7 +271,7 @@ exports.getUserWhenAdmin = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -280,7 +280,7 @@ exports.getUserWhenAdmin = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const userFound = await User.findById(req.params.id);
@@ -288,7 +288,7 @@ exports.getUserWhenAdmin = async (req, res) => {
     {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy người dùng",
       })
     }
     return res.status(200).json({
@@ -297,7 +297,7 @@ exports.getUserWhenAdmin = async (req, res) => {
     })
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi xuất thông tin chi tiết người dùng" });
   }
 };
 
@@ -309,7 +309,7 @@ exports.editUser = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -319,7 +319,7 @@ exports.editUser = async (req, res) => {
     {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const { phone, city, district, wards,  streetAndHouseNumber } = req.body;
@@ -337,19 +337,19 @@ exports.editUser = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy người dùng",
       });
     }
     return res.status(200).json({
       success: true,
-      message: "User updated successfully",
+      message: "Cập nhật người dùng thành công",
       data: updatedUser,
     });
   } catch (err) {
     console.log(err);
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Đã xảy ra sự cố khi cập nhật người dùng",
     });
   }
 };
@@ -362,7 +362,7 @@ exports.deleteUser = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -371,20 +371,20 @@ exports.deleteUser = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const deletedUser = await User.findByIdAndDelete({ _id: req.params.id });
     if (!deletedUser) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Không tìm thấy người dùng",
       });
     }
-    return res.status(200).json({ success: true, message: "User deleted successfully" });
+    return res.status(200).json({ success: true, message: "Xóa người dùng thành công" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, message: "An error occurred while deleting user" });
+    res.status(500).json({ success: false, message: "Đă xảy ra sự cố khi xóa người dùng" });
   }
 };
 

@@ -14,7 +14,7 @@ exports.addProduct = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -23,25 +23,25 @@ exports.addProduct = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const { name, manufacturer, type, release_date, description, price, img } = req.body
     if (!name || !manufacturer || !type || !release_date || !description || !price || !img) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields",
+        message: "Thiếu các trường bắt buộc",
       })
     }
     const product = new Product(req.body);
     await product.save();
     return res.status(200).json({
       success: true,
-      message: "Product added successfully",
+      message: "Thêm sản phẩm thành công",
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "An error occurred while adding the product" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi thêm sản phẩm" });
   }
 };
 
@@ -53,7 +53,7 @@ exports.updateProduct = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -62,25 +62,25 @@ exports.updateProduct = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyển",
       });
     }
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedProduct) {
       return res.status(404).json({
         success: false,
-        message: "Product not found",
+        message: "Không tìm thấy sản phẩm",
       });
     }
     return res.status(200).json({
       success: true,
-      message: "Product updated successfully",
+      message: "Cập nhật sản phẩm thành công",
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: "An error occurred while updating the product",
+      message: "Đã xảy ra lỗi khi cập nhật sản phẩm",
     });
   }
 };
@@ -93,7 +93,7 @@ exports.deleteProduct = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -102,23 +102,23 @@ exports.deleteProduct = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found",
+        message: "Không tìm thấy sản phẩm",
       });
     }
 
     await Comment.deleteMany({ productId: req.params.id });
 
-    return res.status(200).json({ success: true, message: "Product deleted successfully" });
+    return res.status(200).json({ success: true, message: "Xóa sản phẩm thành công" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "An error occurred while deleting product" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xóa sản phẩm sản phẩm" });
   }
 };
 
@@ -130,7 +130,7 @@ exports.getProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found",
+        message: "Không tìm thấy sản phẩm",
       });
     }
     const rating = await Rating.findOne({ productId: req.params.id });
@@ -147,7 +147,7 @@ exports.getProduct = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi xuất thông tin chi tiết sản phẩm" });
   }
 };
 
@@ -198,7 +198,7 @@ exports.getAllProducts = async (req, res) => {
       length: lengthAllProduct,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã sảy ra sự cố khi xuất thông tin sản phẩm" });
   }
 };
 
@@ -234,7 +234,8 @@ exports.searchProducts = async (req, res) => {
       length: lengthAllProduct,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    console.error(err)
+    res.status(500).json({ success: false, message: "Dẵ xảy ra sự cố khi tìm sản phẩm" });
   }
 };
 
@@ -246,7 +247,7 @@ exports.getTopSalesProducts = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -255,7 +256,7 @@ exports.getTopSalesProducts = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const date = new Date();
@@ -291,7 +292,7 @@ exports.getTopSalesProducts = async (req, res) => {
     res.json({ success: true, data: topProducts });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "An error occurred while retrieving top sales products" });
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xuất những sản phẩm bán chạy" });
   }
 };
 

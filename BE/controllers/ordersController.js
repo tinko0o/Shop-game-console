@@ -15,7 +15,7 @@ exports.createOrder = async (req, res) => {
       if (!token) {
         return res.status(401).json({
           success: false,
-          message: "Unauthorized",
+          message: "Không được phép",
         });
       }
       const key = process.env.JWT_SEC;
@@ -24,14 +24,14 @@ exports.createOrder = async (req, res) => {
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: "User not found",
+          message: "Không tìm thấy tài khoản",
         });
       }
       const cart = await Cart.findOne({ userId: user._id });
       if (!cart) {
         return res.status(404).json({
           success: false,
-          message: "Cart not found",
+          message: "Không tìm thấy giỏ hàng",
         });
       }
       const { name, phone, city, district, wards, streetAndHouseNumber, address } = req.body;
@@ -73,7 +73,7 @@ exports.createOrder = async (req, res) => {
       ) {
         return res.status(400).json({
           success: false,
-          message: "Missing required fields",
+          message: "Thiếu các trường bắt buộc",
         });
       }
       for (const product of newOrder.products) {//// this don't touch
@@ -83,11 +83,11 @@ exports.createOrder = async (req, res) => {
       await cart.deleteOne({ userId: user._id });
       return res.status(200).json({
         success: true,
-        message: "Order created successfully",
+        message: "Đặt hàng thành công",
       });
     } catch (err) {
       console.log(err);
-      res.status(500).json({ success: false, message: "Something went wrong" });
+      res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi đặt hàng" });
     }
   };
 
@@ -100,7 +100,7 @@ exports.getOrders = async (req, res) => {
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized",
+                message: "Không được phép",
             });
         }
         const key = process.env.JWT_SEC;
@@ -109,14 +109,14 @@ exports.getOrders = async (req, res) => {
         if (!user) {
             return res.status(401).json({
                 success: false,
-                message: 'User not found',
+                message: 'Không tìm thấy tài khoản',
             });
         }
         const order = await Order.find({ userId: user._id }).sort({ createdAt: -1 })
         if (!order) {
             return res.status(401).json({
                 success: false,
-                message: 'Order not found',
+                message: 'Không tìm thấy lịch sử đơn hàng',
             });
         }
         return res.status(200).json({
@@ -126,7 +126,7 @@ exports.getOrders = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ success: false, message: "something went wrong" });
+        res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xuất lịch sử đơn hàng" });
     }
 }
 
@@ -138,7 +138,7 @@ exports.getAllOrders = async (req, res) => {
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized",
+                message: "Không được phép",
             });
         }
         const key = process.env.JWT_SEC;
@@ -147,14 +147,14 @@ exports.getAllOrders = async (req, res) => {
         if (!user.isAdmin) {
             return res.status(403).json({
                 success: false,
-                message: "Forbidden",
+                message: "Bạn không có quyền",
             });
         }
         const order = await Order.find().sort({ createdAt: -1 });
         if (!order) {
             return res.status(401).json({
                 success: false,
-                message: 'Order not found',
+                message: "Không có đơn hàng",
             });
         }
         return res.status(200).json({
@@ -164,7 +164,7 @@ exports.getAllOrders = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ success: false, message: "something went wrong" });
+        res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xuất thông tin các đơn hàng" });
     }
 }
 
@@ -176,7 +176,7 @@ exports.confirmOrder = async (req, res) => {
         if (!token) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized",
+                message: "Không được phép",
             });
         }
         const key = process.env.JWT_SEC;
@@ -185,31 +185,31 @@ exports.confirmOrder = async (req, res) => {
         if (!user.isAdmin) {
             return res.status(403).json({
                 success: false,
-                message: "Forbidden",
+                message: "Bạn không có quyền",
             });
         }
         const order = await Order.findById(req.params.id);
         if (!order) {
             return res.status(404).json({
                 success: false,
-                message: "Order not found",
+                message: "Không tìm thấy đơn hàng",
             });
         }
-        if (order.status !== "pending") {
+        if (order.status !== "Đang chờ") {
             return res.status(400).json({
                 success: false,
-                message: "Only confirm orders that are in the pending state",
+                message: "Chỉ có thể xác nhận đơn hàng đang ở trang thái chờ",
             });
         }
-        order.status = "confirm";
+        order.status = "Xác nhận";
         await order.save();
         return res.status(200).json({
             success: true,
-            message: "Order confirmed",
+            message: "Xác nhận đơn hàng thành công",
         });
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ success: false, message: "Something went wrong" });
+        return res.status(500).json({ success: false, message: "Dẵ xảy ra sự cố khi xác nhận đơn hàng" });
     }
 };
 
@@ -223,7 +223,7 @@ exports.deliveryOrder = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "Không được phép",
       });
     }
     const key = process.env.JWT_SEC;
@@ -232,20 +232,20 @@ exports.deliveryOrder = async (req, res) => {
     if (!user.isAdmin) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden",
+        message: "Bạn không có quyền",
       });
     }
     const order = await Order.findById(req.params.id);
     if (!order) {
         return res.status(404).json({
             success: false,
-            message: "Order not found",
+            message: "Không tìm thấy đơn hàng",
         });
     }
-    if (order.status !== "confirm") {
+    if (order.status !== "Xác nhận") {
         return res.status(400).json({
             success: false,
-            message: "Only delivery orders that are in the confirm state",
+            message: "Chỉ có thể xác nhận giao hàng khi đã xác nhận đơn hàng",
         });
     }
     let amount = 0;
@@ -273,15 +273,15 @@ exports.deliveryOrder = async (req, res) => {
       salesReport.totalProducts += amount;
     }
     await salesReport.save();
-    order.status = "delivered";
+    order.status = "Đã giao";
     await order.save();
     return res.status(200).json({
       success: true,
-      message: "Order delivered",
+      message: "Xác nhận đã giao hàng thành công",
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi xác nhận giao hàng" });
   }
 };
 
@@ -293,7 +293,7 @@ exports.cancelOrderUser = async (req, res) => {
       if (!token) {
           return res.status(401).json({
               success: false,
-              message: "Unauthorized",
+              message: "Không được phép",
           });
       }
       const key = process.env.JWT_SEC;
@@ -303,24 +303,24 @@ exports.cancelOrderUser = async (req, res) => {
       if (!order) {
           return res.status(404).json({
               success: false,
-              message: "Order not found",
+              message: "Không tìm thấy đơn hàng",
           });
       }
-      if (order.status !== "pending") {
+      if (order.status !== "Đang chờ") {
           return res.status(400).json({
               success: false,
-              message: "Only cancel orders that are in the pending state",
+              message: "Chỉ có thể hủy đơn hàng khi đơn đang ở trang thái chờ",
           });
       }
-      order.status = "cancel";
+      order.status = "Đã hủy";
       await order.save();
       return res.status(200).json({
           success: true,
-          message: "Order canceled",
+          message: "Hủy đơn hàng thành công",
       });
   } catch (err) {
       console.log(err);
-      return res.status(500).json({ success: false, message: "Something went wrong" });
+      return res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi hủy đơn hàng" });
   }
 };
 
@@ -332,7 +332,7 @@ exports.cancelOrderAdmin = async (req, res) => {
       if (!token) {
           return res.status(401).json({
               success: false,
-              message: "Unauthorized",
+              message: "Không được phép",
           });
       }
       const key = process.env.JWT_SEC;
@@ -342,29 +342,29 @@ exports.cancelOrderAdmin = async (req, res) => {
       if (!user.isAdmin) {
         return res.status(403).json({
             success: false,
-            message: "Forbidden",
+            message: "Bạn không có quyền",
         });
       }
       if (!order) {
           return res.status(404).json({
               success: false,
-              message: "Order not found",
+              message: "Không tìm thấy đơn hàng",
           });
       }
-      if (order.status == "Delivered") {
+      if (order.status == "Đã giao") {
           return res.status(400).json({
               success: false,
-              message: "You can't cancel order that had already delivered",
+              message: "Không thể hủy đơn hàng khi đã giao hàng",
           });
       }
-      order.status = "cancel";
+      order.status = "Đã hủy";
       await order.save();
       return res.status(200).json({
           success: true,
-          message: "Order canceled",
+          message: "Hủy đơn hàng thành công",
       });
   } catch (err) {
       console.log(err);
-      return res.status(500).json({ success: false, message: "Something went wrong" });
+      return res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi hủy đơn hàng" });
   }
 };
