@@ -181,11 +181,8 @@ window.addEventListener("load",function(e){
   header();
   setTimeout(() => {
     refeshRate();
-    
   }, 1000);
-  //
 
-  //
     const purchased= $(".purchased");
     purchased.addEventListener('click',function(e){
     const products = e.target.closest('.products')
@@ -198,14 +195,24 @@ window.addEventListener("load",function(e){
     if (stars) {
       handleRatingClick(e);
     }
-    if(rate){
-        const id = product.dataset.id;
-        const idoder = products.dataset.id;
-        const rateNumber = +product.querySelector(".stars-rating").dataset.rating+1;
-        rateStar(id,idoder,rateNumber)
-        // console.log(rateNumber)
-        rate.remove();
-      }
+    if (rate) {
+      const id = product.dataset.id;
+      const idoder = products.dataset.id;
+      const rateNumber = +product.querySelector(".stars-rating").dataset.rating + 1;
+
+      rateStar(id, idoder, rateNumber)
+        .then(data => {
+          if (data.success) {
+            alertFullil(data.message);
+            rate.remove();
+          } else {
+            alertFail(data.message);
+          }
+        })
+        .catch((err) => {
+          alertFail(err);
+        });
+    }
     if(img || name){
         const id = product.dataset.id;
         window.location.href = `./detail.html?idpd=${id}`
