@@ -5,62 +5,38 @@ const http = "http://localhost:8080/api/";
 const userID = User?.data._id;
 const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
+const cartQuantities = $(".quantities-cart");
 import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
 let dataCart = [];
 
-
-//formatCurrency
-// function formatCurrency(price, symbol = "đ") {
-//   var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
-//   var priceWithCommas = price.toLocaleString();
-//   var arParts = String(priceWithCommas).split(DecimalSeparator);
-//   var intPart = arParts[0];
-//   var decPart = arParts.length > 1 ? arParts[1] : '';
-//   decPart = (decPart + '000').substr(0, 3);
-//   return intPart + symbol;
-// }
-// const price = 1900;
-// console.log(formatCurrency(price))
-
-
-
-// function header(){
-//     //show user
-//     if (User) {
-//         const showUser = $(".user");
-//         // console.log(User.data?.name)
-//         showUser.innerHTML = `<i class="fa-solid fa-user"></i> ${User.data?.name}
-//         <ul class="dropdown-user">
-//             <li class="profile">Your profile</li>
-//             <li class="purchase"><a href="./purchase.html">Purchase</a></li>
-//             <li class="logout">Logout</li>
-//         </ul>
-//         `;
-
-//         // btn log-out
-//         const logoff = $(".logout");
-//         logoff.addEventListener("click", function () {
-//           localStorage.removeItem("loginUser");
-//           window.location.reload();
-//         });
-//     }
-// }
-//alert
-// function alertFullil(message="success") {
-//   alertSuccess.children[0].textContent = `${message}`;
-//   alertSuccess.classList.add("get-active");
-//   setTimeout(() => {
-//     alertSuccess.classList.remove("get-active");
-//   }, 1500);
-// }
-
-// function alertFail(message="Something fail!") {
-//   alertDanger.children[0].textContent = `${message}`;
-//   alertDanger.classList.add("get-active");
-//   setTimeout(() => {
-//     alertDanger.classList.remove("get-active");
-//   }, 1500);
-// }
+// UPdate Quantity Cart
+function U_quantityCart(){
+  if(User){
+    fetch(`${http}carts/cart/amount`,{
+      headers:{
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User?.token,                         
+      },
+      // method:"post",
+      // body: JSON.stringify({_id,quantity:1})
+    })
+    .then((data)=>data.json())
+    .then((data)=>{
+      if(data.success)
+      {
+        cartQuantities.innerHTML = data?.data;
+      }
+      else{
+        header().logoff.click();
+      }
+    })
+    .catch(()=>{
+      alertFail();
+    })
+  }else{
+    cartQuantities.innerHTML = "";
+  }
+}
 //render cart
 function renderCart(data){
   if(data.data != null){
@@ -175,17 +151,18 @@ async function updateCart(id,quantity){
             }
             else{
               alertFail();
+              console.log(data)
             }
           })
-          .catch(()=>{
-            alertFail();
+          .catch((err)=>{
+            alertFail(err);
           })
         
 }
 window.addEventListener("load",function(){
     header();
     getCart();
-
+    U_quantityCart()
     const addCart = $("#add-to-cart");
     addCart.addEventListener("change", function (e) {
         const quantityInput = e.target.closest(".quantity");
@@ -198,6 +175,7 @@ window.addEventListener("load",function(){
               dataCart[index].quantity= quantityInput.value; 
                 updateCart(id,parseInt(quantityInput.value));
                 alertFullil();
+                U_quantityCart()
             }
             else{
               alertDanger.children[0].textContent = "The input must be less than 100";
@@ -214,6 +192,7 @@ window.addEventListener("load",function(){
       const sub = e.target.closest(".sub");
       const plus = e.target.closest(".plus");
       const del = e.target.closest(".delete")
+          U_quantityCart()
       if (sub) {
         const index = sub.dataset.id;
         const id = dataCart[index].id;
@@ -221,6 +200,7 @@ window.addEventListener("load",function(){
           dataCart[index].quantity--;
           // sub.nextElementSibling.value = dataCart[index].quantity;
           updateCart(id,dataCart[index].quantity)
+          U_quantityCart()
         }
       }
       if (plus) {
@@ -230,12 +210,14 @@ window.addEventListener("load",function(){
           dataCart[index].quantity++;
           // plus.nextElementSibling.value = dataCart[index].quantity;
           updateCart(id,dataCart[index].quantity)
+          U_quantityCart()
         }
       }
       if(del){
         const id = del.dataset.id;
         console.log(id)
         deleteCart(id);
+        U_quantityCart()
       }
     })
     const btnCheckout= $(".checkout")
