@@ -67,6 +67,30 @@ function alertFail(message = "Something fail!") {
     alertDanger.classList.remove("get-active");
   }, 1000);
 }
+function renderTopProducts(data) {
+  const productHtml = data.data.map((val, index) => {
+    return `
+    <tr class="top-product-item">
+        <th style="text-align: center; width: 5px;">${index+1}</th>
+        <th>
+            <a href="#" class="img">
+                <img id="product-top" src="${val.img}" alt="">
+            </a>
+        </th>
+        <th>
+            <div class="name-product">
+                ${val.name}
+            </div>
+        </th>
+        <th>${val.type}</th>
+        <th>${val.price}</th>
+        <th>${val.quantity}</th>
+
+    </tr>
+  `;
+  });
+  $("#top-product-item").innerHTML = productHtml.join("");
+}
 //Render
 function renderUser(data) {
   const productHtml = data.data.map((val, index) => {
@@ -182,6 +206,24 @@ async function product(page = 1, search, limit = 100) {
       console.log(err);
     })
 }
+//get all Top Sale Product
+async function getTopProducts() {
+  await fetch(`${http}products/abc/top-sales-products`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,
+    },
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      // log(data)
+      renderTopProducts(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+}
+getTopProducts()
 async function getUser() {
   await fetch(`${http}users`, {
     headers: {

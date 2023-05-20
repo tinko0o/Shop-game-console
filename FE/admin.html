@@ -58,7 +58,7 @@
     </div>
     <!-- Container Main start-->
     <!-- Main Dashboard -->
-    <div class="height-100 bg-light main main-dashboard nav-active">
+    <div class=" bg-light main main-dashboard nav-active">
         <h5>DOANH THU</h5>
             <div class="wrapper-statistic">
 
@@ -100,7 +100,25 @@
                 </div>
 
             </div>
-
+           <!--  -->
+           <h4 style="margin-top: 40px;">Sản Phẩm Bán chạy</h4>
+            <div class="top-product" style="margin-top: 15px;">
+                <table class="table top-products"> 
+                    <thead>
+                        <tr>
+                            <th>Top</th>
+                            <th style="width: 230px;">Ảnh</th>
+                            <th style="width: 400px;">Tên SP</th>
+                            <th class="t-small">Loại</th>
+                            <th class="t-small">Giá</th>
+                            <th>Đã Bán</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-product-item">
+                        <!-- render top product class="top-product-item" here  -->
+                    </tbody>
+                </table>
+            </div>
 
     </div>
     </div>
@@ -159,48 +177,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-user">
-                            <!-- <tr>
-                                <td>John Doe</td>
-                                <td>132@gmail</td>
-                                <td>1324243</td>
-                                <td>true</td>
-                                <td>(171) 555-2222</td>
-                                <td>1333 le van viet</td>
-                                <td>1333 le van viet</td>
-                                <td>1333 le van viet</td>
-                                <td>1333 le van viet</td>
-                                <td>
-                                    
-                                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
-                                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>132@gmail</td>
-                                <td>1324243</td>
-                                <td>true</td>
-                                <td>(171) 555-2222</td>
-                                <td>1333 le van viet</td>
-                                <td>
-                                    
-                                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
-                                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>132@gmail</td>
-                                <td>1324243</td>
-                                <td>true</td>
-                                <td>(171) 555-2222</td>
-                                <td>1333 le van viet</td>
-                                <td>
-                                    
-                                    <a class="edit" title="Edit" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
-                                    <a class="delete" title="Delete" data-toggle="tooltip"><i class="fa-solid fa-trash"></i></a>
-                                </td>
-                            </tr>       -->
+                        <!-- render user here  -->
                         </tbody>
                     </table>
                 </div>
@@ -233,82 +210,8 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-product">
-                            <!-- <tr>
-                            <td><input type="text" class="form-control" name="name" id="name"></td>
-                            <td><input type="text" class="form-control" name="email" id="email"></td>
-                            <td><input type="text" class="form-control" name="password" id="password"></td>
-                            <td><input type="text" class="form-control" name="isAdmin" id="isAdmin"></td>
-                            <td><input type="text" class="form-control" name="phone" id="phone"></td>
-                            <td><input type="text" class="form-control" name="address" id="address"></td>
-                            <td>
-                                <a class="add" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus"></i></a>
-                                <a class="cancel" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
-                            </td>
-                            </tr>                             -->
-                        <tr class="product-item">
-                            <th>
-                                <a href="#" class="img">
-                                    <img src="./img/sp1.jpg" alt="">
-                                </a>
-                            </th>
-                            <th>
-                                <div class="name-product">
-                                    Watch Longines L3
-                                </div>
-                            </th>
-                            <th>2020-11-12T00</th>
-                            <th>
-                                    May PS5
-                            </th>
-                            <th>
-                                GoGssle
-                            </th>
-                            <th>$2000</th>
-                            <th>Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                                Corporis autem omnis, id quod atque aut maxime assumenda, 
-                                eos repellendus commodi, unde vel animi incidunt praesentium 
-                                aliquam velit saepe sint facilis?
-                            </th>
-                            <th class="d-flex">
-                                <a class=" btn edit-product" title="Add" data-toggle="tooltip"><i class="fa-solid fa-plus"></i></a>
-                                <a class=" btn delete-product" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
-                            </th>
-                        </tr>
-                        <tr class="product-item">
-                            <th>
-                                <a href="#" class="img">
-                                    <img src="./img/sp1.jpg" alt="">
-                                </a>
-                            </th>
-                            <th>
-                                <div class="name-product">
-                                    Watch Longines L3
-                                </div>
-                            </th>
-                            <th>2020-11-12T00</th>
-                            <th>
-                                    May PS5
-                            </th>
-                            <th>
-                                GoGssle
-                            </th>
-                            <th>$2000</th>
-                            <th>Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-                                Corporis autem omnis, id quod atque aut maxime assumenda, 
-                                eos repellendus commodi, unde vel animi incidunt praesentium 
-                                aliquam velit saepe sint facilis?
-                            </th>
-                            <th>
-                                <div class="d-flex">
-                                    <button class="btn btn-danger edit-product">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-primary delete">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
-                            </th>
-                        </tr>
+                        <!-- render model add new  -->
+                        <!-- render product class="product-item" here  -->
                     </tbody>
                 </table>
             </div>
@@ -321,63 +224,7 @@
         <!-- <div class="container"> -->
             <h5>ĐƠN HÀNG</h5>
             <div class="purchased">
-                <div class="block">
-                    <div class="address">
-                        <div class="address-content">
-                            <p class="u-name"><strong>Name:</strong>User</p>
-                            <p class="u-phone"><strong>Phone:</strong>01237237</p>
-                            <p class="u-address"><strong>Address:</strong>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
-                        </div>
-                        <div class="total">
-                            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
-                            <p class="t-quantity"><strong>quantity:</strong>x5</p>
-                            <p class="t-price"><strong>Totail:</strong>1000000</p>
-                        </div>
-                        <div class="status">
-                            <p class="s-status"><strong>Status:</strong>pending</p>
-                            <button class="btn btn-primary">giao hàng</button>
-                            <button class="btn btn-success">thành công</button>                           
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="products">
-                        <div class="product">
-                            <img src="./img/sp1.jpg" alt="">
-                            <div class="p-name">
-                                <h4 class="name-product">this is name product</h4>
-                                <span class="quantity">X2</span>
-                            </div>
-                            <p class="p-total">10000d</p>
-
-                        </div>
-                        <div class="product">
-                            <img src="./img/sp1.jpg" alt="">
-                            <div class="p-name">
-                                <h4 class="name-product">this is name product</h4>
-                                <span class="quantity">X2</span>
-                            </div>
-                            <p class="p-total">10000d</p>
-
-                        </div>
-                        <div class="product">
-                            <img src="./img/sp1.jpg" alt="">
-                            <div class="p-name">
-                                <h4 class="name-product">this is name product</h4>
-                                <span class="quantity">X2</span>
-                            </div>
-                            <p class="p-total">10000d</p>
-
-                        </div>
-                        <div class="product">
-                            <img src="./img/sp1.jpg" alt="">
-                            <div class="p-name">
-                                <h4 class="name-product">this is name product</h4>
-                                <span class="quantity">X2</span>
-                            </div>
-                            <p class="p-total">10000d</p>
-                        </div>
-                    </div>
-                </div>
+                <!-- render list purchase class="block" contain list class="product"-->
             </div>
         <!-- </div> -->
     </div>

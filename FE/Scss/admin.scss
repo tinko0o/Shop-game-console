@@ -116,12 +116,13 @@ body{
 //     z-index: 100;
 //     // background-color: #4723D9;
 // }
-// .main-dashboard{
-//     display: none;
-//     z-index: 0;
-//     // opacity: 0;
-//     // visibility: hidden;
-// }
+.main-dashboard{
+    img{
+        width: 200px;
+        height: 170px;
+        overflow: hidden;
+    }
+}
 .main{
     display: none;
     z-index: 0;

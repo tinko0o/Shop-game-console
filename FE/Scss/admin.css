@@ -208,6 +208,12 @@ a {
     padding-left: calc(var(--nav-width) + 188px);
   }
 }
+.main-dashboard img {
+  width: 200px;
+  height: 170px;
+  overflow: hidden;
+}
+
 .main {
   display: none;
   z-index: 0;
