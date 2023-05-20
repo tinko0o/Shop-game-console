@@ -76,11 +76,11 @@ function renderCart(data){
     });
 
     $("#add-to-cart").innerHTML = html.join("");
-    $(".total-text").innerHTML = `Total: ${formatCurrency(data.data.total)}`;
+    $(".total-text").innerHTML = `Tổng tiền: ${formatCurrency(data.data.total)}`;
   }
   else{
       $("#add-to-cart").innerHTML = "no product in cart";
-      $(".total-text").innerHTML = "0d";
+      $(".total-text").innerHTML = "0đ";
       
     }
 }
