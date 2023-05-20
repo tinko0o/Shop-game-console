@@ -59,31 +59,26 @@ async function cancelOder(id) {
         console.log(err);
         })
 }
-function rateStar(productId,orderId,rating){
-
-    fetch(`${http}ratings/add`,{
-      headers:{
-        "Content-type": "application/json; charset=UTF-8",
-        authentication: User?.token,                         
-      },
-      method:"post",
-      body: JSON.stringify({productId,orderId,rating})
-    })
-    .then((data)=>data.json())
-    .then((data)=>{
-      if(data.success)
-      {
-        alertFullil(data.message)
-      }
-      else{
-        alertFail(data.message)
-
+function rateStar(productId, orderId, rating) {
+  return fetch(`${http}ratings/add`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,
+    },
+    method: "post",
+    body: JSON.stringify({ productId, orderId, rating }),
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      if (data.success) {
+        return Promise.resolve(data); // Trả về Promise với giá trị data thành công
+      } else {
+        return Promise.reject(data); // Trả về Promise với giá trị data thất bại
       }
     })
-    .catch(()=>{
-      alertFail();
-    })
-
+    .catch(() => {
+      return Promise.reject(); // Trả về Promise với giá trị thất bại
+    });
 }
 function renderPuchase(data) {
   const html = data.data.map((val, index) => {
@@ -201,7 +196,7 @@ window.addEventListener("load",function(e){
       const rateNumber = +product.querySelector(".stars-rating").dataset.rating + 1;
 
       rateStar(id, idoder, rateNumber)
-        .then(data => {
+        .then((data) => {
           if (data.success) {
             alertFullil(data.message);
             rate.remove();
