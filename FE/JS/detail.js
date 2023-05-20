@@ -45,56 +45,153 @@ function getSearchParameters() {
     return params;
   }
 
-function renderCmt(data){
-  const html = data.comments.map((val,index)=>{
-    const rep = val.replies.map((v,i)=>{
+// function renderCmt(data){
+//   const html = data.comments.map((val,index)=>{
+//     const rep = val.replies.map((v,i)=>{
+//       return `
+//           <li class="rep">
+//         <div class="main-cmt">
+//             <div class="cmt-top">
+//                 <div class="cmt-top-name">
+//                 <p class="p-name">${v.name}</p>
+//                 <p class="p-admin">${v.isAdmin?"Admin":""}</p> 
+//                 <p class="p-purchase">${v.purchased?"purchased":""}</p>               
+//                 </div>
+//             </div>
+//             <div class="cmt-content">
+//                 <p class="cmt-text"><a href="#">${v.repliedToUsername?`@${v.repliedToUsername}`:""}</a>${v.comment}</p>
+//             </div>
+//             <div class="cmt-command">
+//                 <button class="btn-rep" data-id="${v._id}" data-parent="${v.parentCommentId}">Reply</button>
+//                 <span>${formattedDate(v.createdAt)}</span>
+//             </div>
+//         </div>                                    
+//     </li>
+//       `
+//     })
+//     // log(replyHtml) 
+//     return `
+//         <li class="cmt">
+//             <div class="main-cmt">
+//                 <div class="cmt-top">
+//                   <div class="cmt-top-name">
+//                   <p class="p-name">${val.name}</p>
+//                   <p class="p-admin">${val.isAdmin?"Admin":""}</p> 
+//                   <p class="p-purchase">${val.purchased?"purchased":""}</p>               
+//                   </div>
+//                 </div>
+//                 <div class="cmt-content">
+//                     <p class="cmt-text">${val.comment}</p>
+//                 </div>
+//                 <div class="cmt-command">
+//                     <button class="btn-rep" data-id="${val._id}">Reply</button>
+//                     <span>${formattedDate(val.createdAt)}</span>
+//                 </div>
+//             </div>
+//             <ul class="l-rep">
+//                 ${rep.join("")}
+//             </ul>
+//         </li>
+//     `;
+//   });
+//   $(".list-cmt").innerHTML = html.join("");
+// }
+function renderCmt(data) {
+  const html = data.comments.map((val, index) => {
+    const rep = val.replies.map((v, i) => {
+      let deleteButton = '';
+      if (User.data.isAdmin) {
+        deleteButton = `<button class="btn-delete-cmt" data-id="${v._id}">Xóa</button>`;
+      }
       return `
-          <li class="rep">
-        <div class="main-cmt">
+        <li class="rep">
+          <div class="main-cmt">
             <div class="cmt-top">
-                <div class="cmt-top-name">
+              <div class="cmt-top-name">
                 <p class="p-name">${v.name}</p>
-                <p class="p-admin">${v.isAdmin?"Admin":""}</p> 
-                <p class="p-purchase">${v.purchased?"purchased":""}</p>               
-                </div>
+                <p class="p-admin">${v.isAdmin ? "Admin" : ""}</p>
+                <p class="p-purchase">${v.purchased ? "purchased" : ""}</p>
+              </div>
             </div>
             <div class="cmt-content">
-                <p class="cmt-text"><a href="#">${v.repliedToUsername?`@${v.repliedToUsername}`:""}</a>${v.comment}</p>
+              <p class="cmt-text"><a href="#">${v.repliedToUsername ? `@${v.repliedToUsername}` : ""}</a>${v.comment}</p>
             </div>
             <div class="cmt-command">
-                <button class="btn-rep" data-id="${v._id}" data-parent="${v.parentCommentId}">Reply</button>
-                <span>${formattedDate(v.createdAt)}</span>
+              ${deleteButton}
+              <button class="btn-rep" data-id="${v._id}" data-parent="${v.parentCommentId}">Reply</button>
+              <span>${formattedDate(v.createdAt)}</span>
             </div>
-        </div>                                    
-    </li>
-      `
-    })
-    // log(replyHtml) 
-    return `
-        <li class="cmt">
-            <div class="main-cmt">
-                <div class="cmt-top">
-                  <div class="cmt-top-name">
-                  <p class="p-name">${val.name}</p>
-                  <p class="p-admin">${val.isAdmin?"Admin":""}</p> 
-                  <p class="p-purchase">${val.purchased?"purchased":""}</p>               
-                  </div>
-                </div>
-                <div class="cmt-content">
-                    <p class="cmt-text">${val.comment}</p>
-                </div>
-                <div class="cmt-command">
-                    <button class="btn-rep" data-id="${val._id}">Reply</button>
-                    <span>${formattedDate(val.createdAt)}</span>
-                </div>
-            </div>
-            <ul class="l-rep">
-                ${rep.join("")}
-            </ul>
+          </div>
         </li>
+      `;
+    });
+
+    let deleteButton = '';
+    if (User.data.isAdmin) {
+      deleteButton = `<button class="btn-delete-cmt" data-id="${val._id}">Xóa</button>`;
+    }
+
+    return `
+      <li class="cmt">
+        <div class="main-cmt">
+          <div class="cmt-top">
+            <div class="cmt-top-name">
+              <p class="p-name">${val.name}</p>
+              <p class="p-admin">${val.isAdmin ? "Admin" : ""}</p>
+              <p class="p-purchase">${val.purchased ? "purchased" : ""}</p>
+            </div>
+          </div>
+          <div class="cmt-content">
+            <p class="cmt-text">${val.comment}</p>
+          </div>
+          <div class="cmt-command">
+            ${deleteButton}
+            <button class="btn-rep" data-id="${val._id}">Reply</button>
+            <span>${formattedDate(val.createdAt)}</span>
+          </div>
+        </div>
+        <ul class="l-rep">
+          ${rep.join("")}
+        </ul>
+      </li>
     `;
   });
+
   $(".list-cmt").innerHTML = html.join("");
+
+  // Xử lý sự kiện khi bấm nút "Xóa"
+  const deleteButtons = document.querySelectorAll(".btn-delete-cmt");
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const commentId = e.target.dataset.id;
+      deleteComment(commentId);
+    });
+  });
+}
+function deleteComment(commentId){
+    const {idpd} = getSearchParameters();
+  fetch(`${http}comments/${commentId}`,{
+    headers:{
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,                         
+    },
+    method:"delete",
+    body: JSON.stringify({productId:idpd})
+  })
+  .then((data)=>data.json())
+  .then((data)=>{
+    if(data.success)
+    {
+      alertFullil(data.message)
+      getComment();
+    }
+    else{
+      alertFail(data.message)
+    }
+  })
+  .catch(()=>{
+    alertFail();
+  })
 }
 async function getComment() {
     const productId = getSearchParameters().idpd; 

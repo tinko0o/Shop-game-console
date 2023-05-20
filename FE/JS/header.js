@@ -53,7 +53,7 @@ export function header(){
         const logoff = $(".logout");
         logoff.addEventListener("click", function () {
           localStorage.removeItem("loginUser");
-          window.location.reload();
+          window.location.replace("./Login.html");
         });
         const editUser = $(".edit-profile");
         editUser.addEventListener("click", function () {
