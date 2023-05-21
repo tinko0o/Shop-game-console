@@ -1,0 +1,49 @@
+.footer {
+  background-color: #f5f5f5;
+  padding: 30px 0;
+  color: #777;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    
+    .footer-column {
+      flex-basis: 30%;
+      
+      h3 {
+        margin-top: 0;
+      }
+      
+      p {
+        margin-bottom: 10px;
+      }
+      
+      .social-icons {
+        a {
+          display: inline-block;
+          margin-right: 10px;
+          
+          i {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    
+    p {
+      margin: 0;
+    }
+  }
+}
