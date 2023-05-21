@@ -84,7 +84,28 @@ function renderCart(data){
       
     }
 }
-
+async function deleteAllCart(){
+    await fetch(`${http}carts/cart/delete`,{
+        headers: {                     
+        "Content-type": "application/json; charset=UTF-8",
+        authentication: User.token,},
+        method:"delete",
+        
+    })
+    .then((data) => data.json())
+    .then((data) => {
+      console.log(data.success)
+      if(!data.success){
+        renderCart(data);
+        alertFail()
+      }else{
+        dataCart = [];
+        renderCart(data);
+        alertFullil("xóa tất cả thành công")
+      }
+        // console.log(dataCart)
+    })
+}
 async function getCart(){
     await fetch(`${http}carts/cart`,{
         headers: {                     
@@ -164,6 +185,10 @@ window.addEventListener("load",function(){
     getCart();
     U_quantityCart()
     const addCart = $("#add-to-cart");
+    const deleteAll = $(".detele-all");
+    deleteAll.addEventListener("click",function(){
+      deleteAllCart();
+    })
     addCart.addEventListener("change", function (e) {
         const quantityInput = e.target.closest(".quantity");
         const index = quantityInput.dataset.id;
