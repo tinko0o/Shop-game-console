@@ -12,7 +12,7 @@ if (!User.data.isAdmin) {
 const logoff = $(".log-out");
 logoff.addEventListener("click", function () {
   localStorage.removeItem("loginUser");
-  window.location.replace("./Login.html");
+  window.location.replace("./index.html");
 });
 //formatDate
 function formatDate(date) {

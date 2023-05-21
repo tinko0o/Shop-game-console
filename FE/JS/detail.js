@@ -229,7 +229,7 @@ function renderContent (data){
     <hr>
     <p class="product-price">${formatCurrency(data.price)}</p>`
     const html_description = `                            
-    <p class="product-title mt-4 mb-1">About this product</p>
+    <p class="product-title mt-4 mb-1">Mô tả:</p>
     <p class="product-description mb-4">
     ${data.description}
     </p>`

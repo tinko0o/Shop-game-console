@@ -271,18 +271,19 @@ exports.getTopSalesProducts = async (req, res) => {
     const products = {};
     orders.forEach((order) => {
       order.products.forEach((product) => {
-        if (products[product.id]) {
-          products[product.id].quantity += product.quantity;
-        } else {
-          products[product.id] = {
-            name: product.name,
-            manufacturer: product.manufacturer,
-            type: product.type,
-            img: product.img,
-            price: product.price,
-            quantity: product.quantity,
-          };
-        }
+        if (order.status === "Đã giao")
+          if (products[product.id]) {
+            products[product.id].quantity += product.quantity;
+          } else {
+            products[product.id] = {
+              name: product.name,
+              manufacturer: product.manufacturer,
+              type: product.type,
+              img: product.img,
+              price: product.price,
+              quantity: product.quantity,
+            };
+          }
       });
     });
     const topProducts = Object.values(products)

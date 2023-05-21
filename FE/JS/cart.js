@@ -79,8 +79,8 @@ function renderCart(data){
     $(".total-text").innerHTML = `Tổng tiền: ${formatCurrency(data.data.total)}`;
   }
   else{
-      $("#add-to-cart").innerHTML = "no product in cart";
-      $(".total-text").innerHTML = "0đ";
+      $("#add-to-cart").innerHTML = "";
+      $(".total-text").innerHTML = "Tổng tiền: 0đ";
       
     }
 }

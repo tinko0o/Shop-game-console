@@ -40,30 +40,27 @@ function header(){
         <li class="profile">
           <div class="btn-group dropstart">
             <button type="button" class=" dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              Your profile
+              Thông tin tài khoản
             </button>
             <ul class="dropdown-menu">
-
-              <li>Name: ${User.data?.name}</li>
+              <li>Họ tên: ${User.data?.name}</li>
               <li>Email:${User.data?.email}</li>
-              <li>phone: ${User.data?.phone ? User.data.phone : 'không có'}</li>
-              <li class="Change">Change Password
+              <li class="Change">Đổi mật khẩu
                 <div class="dropdown-pass">
                   <form action="#">
-                    <input id="old-p" type="text"placeholder="Old Password">
-                    <input id="new-p" type="text"placeholder="New Password">
-                    <input id="re-p" type="text"placeholder="Repeat new Password">
-                    <button class="btn btn-dark btn-changePass" type="submit">Change</button>
+                    <input id="old-p" type="password"placeholder="Mật khẩu cũ">
+                    <input id="new-p" type="password"placeholder="Mật khẩu mới" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"title="Phải chứa ít nhất một số và một chữ hoa và chữ thường, và ít nhất 8 ký tự trở lên">
+                    <input id="re-p" type="password"placeholder="Nhập lại mật khẩu mới">
+                    <button class="btn btn-dark btn-changePass" type="submit">Cập nhật</button>
                   </form> 
                 </div>
               </li>
               <li>
                 <div class="btn-group dropstart">
                   <button type="button" class="btn btn-secondary dropdown-toggle edit-profile" data-bs-toggle="dropdown" aria-expanded="false">
-                    Edit Profile
+                    Thông tin cá nhân
                   </button>
                   <ul class="dropdown-menu">
-
                     Edit
                   </ul>
                 </div>
@@ -71,8 +68,8 @@ function header(){
             </ul>
           </div>
         </li>
-        <li class="purchase"><a href="./purchase.html">Purchase</a></li>
-        <li class="logout">Logout</li>
+        <li class="purchase"><a href="./purchase.html">Đơn hàng</a></li>
+        <li class="logout">Đăng xuất</li>
     </ul>
         `;
         // btn log-out
@@ -397,7 +394,7 @@ window.addEventListener("load",function(){
                 <a class="detail-img" data-id=${val._id} href="#">
                     <img src="${val.img}" alt="imagesProduct">
                 </a>
-                <button data-id=${val._id} class="add-cart">Add to cart</button>
+                <button data-id=${val._id} class="add-cart">Thêm vào giỏ</button>
                 </div>
                 <div class="content">
                 <p class="price">${formatCurrency(val.price)}</p>

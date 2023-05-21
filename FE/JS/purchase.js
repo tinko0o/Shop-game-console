@@ -3,10 +3,10 @@ const $$ = document.querySelectorAll.bind(document);
 const User = JSON.parse(localStorage.getItem("loginUser"));
 const http = "http://localhost:8080/api/";
 const userID = User?.data.idUser;
-import {header,formatCurrency,alertFullil,alertFail} from "./header.js";
+import { header, formatCurrency, alertFullil, alertFail } from "./header.js";
 //console.log
 function log(value) {
-  console.log(`${value}: `,value)
+  console.log(`${value}: `, value)
 }
 // format daytime
 function formatDate(date) {
@@ -16,48 +16,47 @@ function formatDate(date) {
   return `${day}-${month}-${year}`;
 }
 
-function formattedDate(date){
+function formattedDate(date) {
   const dated = new Date(`${date}`)
   return formatDate(dated)
 };
 async function getPurchased() {
-    await fetch(`${http}oders/`, {
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        authentication: User?.token,                         
-        },
+  await fetch(`${http}oders/`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,
+    },
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      log(data);
+      renderPuchase(data);
     })
-        .then((data) => data.json())
-        .then((data) => {
-        log(data);
-        renderPuchase(data);
-        })
-        .catch((err) => {
-        console.log(err);
-        })
+    .catch((err) => {
+      console.log(err);
+    })
 }
 async function cancelOder(id) {
-    await fetch(`${http}oders/cancel/${id}`, {
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        authentication: User?.token,                         
-        },
-            method:"put",
-        })
-        .then((data) => data.json())
-        .then((data) => {
-          if(data.success)
-          {
-            alertFullil(data.message)
-            getPurchased() 
-          }
-          else{
-            alertFail(data.message)
-          }
-        })
-        .catch((err) => {
-        console.log(err);
-        })
+  await fetch(`${http}oders/cancel/${id}`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,
+    },
+    method: "put",
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      if (data.success) {
+        alertFullil(data.message)
+        getPurchased()
+      }
+      else {
+        alertFail(data.message)
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
 }
 function rateStar(productId, orderId, rating) {
   return fetch(`${http}ratings/add`, {
@@ -110,13 +109,13 @@ function renderPuchase(data) {
       <div class="block">
         <div class="address d-flex justify-content-between">
           <div class="address-content d-block">
-            <p class="u-name"><strong>Name:</strong>${val.name}</p>
-            <p class="p-address"><strong>Address:</strong>${val.address}</p>
-            <p class="p-createdAt"><strong>createdAt:</strong>${formattedDate(val.createdAt)}</p>
+          <p class="p-createdAt"><strong>Đặt vào:</strong>${formattedDate(val.createdAt)}</p>
+            <p class="p-address"><strong>Địa chỉ:</strong>${val.address}</p>
+            
           </div>
           <div class="total d-block">
-            <p class="t-price"><strong>Total:</strong>${val.total}</p>
-            <p class="t-quantity"><strong>Quantity:</strong>x${count}</p>
+            <p class="t-quantity"><strong>Số sản phẩm:</strong>${count}</p>
+            <p class="t-price"><strong>Tổng tiền:</strong>${formatCurrency(val.total)}</p>
           </div>
           <div class="status d-block">
             <p class="s-status"><strong>Status:</strong>${val.status}</p>
@@ -151,7 +150,7 @@ function handleRatingClick(event) {
     starsContainer.dataset.rating = selectedIndex;
   }
 }
-function refeshRate(){
+function refeshRate() {
   const starsRatingElements = document.querySelectorAll('.stars-rating');
   starsRatingElements.forEach(starsRatingElement => {
     const rating = parseInt(starsRatingElement.dataset.rating);
@@ -170,7 +169,7 @@ function refeshRate(){
     }
   });
 }
-window.addEventListener("load",function(e){
+window.addEventListener("load", function (e) {
 
   getPurchased();
   header();
@@ -178,11 +177,11 @@ window.addEventListener("load",function(e){
     refeshRate();
   }, 1000);
 
-    const purchased= $(".purchased");
-    purchased.addEventListener('click',function(e){
+  const purchased = $(".purchased");
+  purchased.addEventListener('click', function (e) {
     const products = e.target.closest('.products')
     const product = e.target.closest('.product')
-    const stars =e.target.closest(".stars-rating .fa-star")
+    const stars = e.target.closest(".stars-rating .fa-star")
     const rate = e.target.closest(".btn-rate")
     const img = e.target.closest("img")
     const name = e.target.closest(".name-product")
@@ -208,16 +207,16 @@ window.addEventListener("load",function(e){
           alertFail(err);
         });
     }
-    if(img || name){
-        const id = product.dataset.id;
-        window.location.href = `./detail.html?idpd=${id}`
+    if (img || name) {
+      const id = product.dataset.id;
+      window.location.href = `./detail.html?idpd=${id}`
     }
-    if(btnCancel){
-        const id = btnCancel.dataset.id;
-        log(id)
-        cancelOder(id)
-      }
+    if (btnCancel) {
+      const id = btnCancel.dataset.id;
+      log(id)
+      cancelOder(id)
+    }
 
-    });
+  });
 
 })

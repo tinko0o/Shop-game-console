@@ -14,30 +14,17 @@ export function header(){
         <li class="profile">
           <div class="btn-group dropstart">
             <button type="button" class=" dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              Your profile
+              Thông tin tài khoản
             </button>
             <ul class="dropdown-menu">
-
-              <li>Name: ${User.data?.name}</li>
+              <li>Họ tên: ${User.data?.name}</li>
               <li>Email:${User.data?.email}</li>
-              <li>phone:023234234</li>
-              <li disabled  class="Change">Change Password
-                <div class="dropdown-pass">
-                  <form action="#">
-                    <input type="text"placeholder="Old Password">
-                    <input type="text"placeholder="New Password">
-                    <input type="text"placeholder="Repeat new Password">
-                    <button class="btn btn-dark btn-changePass" type="submit">Change</button>
-                  </form> 
-                </div>
-              </li>
-              <li>
+              <li style="display:none">
                 <div class="btn-group dropstart">
                   <button type="button" class="btn btn-secondary dropdown-toggle edit-profile" data-bs-toggle="dropdown" aria-expanded="false">
-                    Edit Profile
+                    Thông tin cá nhân
                   </button>
                   <ul class="dropdown-menu">
-
                     Edit
                   </ul>
                 </div>
@@ -45,15 +32,15 @@ export function header(){
             </ul>
           </div>
         </li>
-        <li class="purchase"><a href="./purchase.html">Purchase</a></li>
-        <li class="logout">Logout</li>
+        <li class="purchase"><a href="./purchase.html">Đơn hàng</a></li>
+        <li class="logout">Đăng xuất</li>
     </ul>
         `;
         // btn log-out
         const logoff = $(".logout");
         logoff.addEventListener("click", function () {
           localStorage.removeItem("loginUser");
-          window.location.replace("./Login.html");
+          window.location.replace("./index.html");
         });
         const editUser = $(".edit-profile");
         editUser.addEventListener("click", function () {
@@ -89,32 +76,3 @@ export  function formatCurrency(price, symbol = "đ") {
   decPart = (decPart + '000').substr(0, 3);
   return intPart + symbol;
 }
-// UPdate Quantity Cart
-// export function U_quantityCart(){
-//   console.log(User?.token)
-//   if(User){
-//     fetch(`${http}carts/cart/amount`,{
-//       headers:{
-//         "Content-type": "application/json; charset=UTF-8",
-//         authentication: User?.token,                         
-//       },
-//       // method:"post",
-//       // body: JSON.stringify({_id,quantity:1})
-//     })
-//     .then((data)=>data.json())
-//     .then((data)=>{
-//       if(data.success)
-//       {
-//         cartQuantities.innerHTML = data?.data;
-//       }
-//       else{
-//         header().logoff.click();
-//       }
-//     })
-//     .catch(()=>{
-//       alertFail();
-//     })
-//   }else{
-//     cartQuantities.innerHTML = "";
-//   }
-// }
