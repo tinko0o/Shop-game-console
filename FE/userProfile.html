@@ -1,217 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./fontawesome-free-6.1.2-web/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-        <link rel="shortcut icon" type="image/png" href="./img/logo.jpg">
+    <link href="/FE/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="./img/logo.jpg">
     <link rel="stylesheet" href="./Scss/admin.css">
     <title>Thông tin cá nhân</title>
 </head>
+
 <body>
-<div class="alert alert-danger" role="alert">
-    <span>Something was wrong</span> <i class="fa-solid fa-exclamation"></i>
-</div>
-<div class="alert alert-primary" role="alert">
-    <span>A simple danger alert with</span> <i class="fa-solid fa-check"></i>
-</div>
+    <div class="alert alert-danger" role="alert">
+        <span>Something was wrong</span> <i class="fa-solid fa-exclamation"></i>
+    </div>
+    <div class="alert alert-primary" role="alert">
+        <span>A simple danger alert with</span> <i class="fa-solid fa-check"></i>
+    </div>
     <div class="page-content page-container" id="">
-    <div class="padding">
-        <div class="row  d-flex justify-content-center">
-        <div class="col-xl-8 container ">
-        <div class="card user-card-full">
-            <div class="row ">
+        <div class="padding">
+            <div class="row  d-flex justify-content-center">
+                <div class="col-xl-8 container ">
+                    <div class="card user-card-full">
+                        <div class="row ">
 
-                <div class="col ">
-                    <div class="card-block">
-                        <h6 class="m-b-20 p-b-5 b-b-default f-w-600">THÔNG TIN</h6>
-                        <div class="row">
-                            <div class=" col col-lg-4">
-                                <p class="m-b-10 f-w-600">Họ tên:</p>
-                                <input id="name" disabled type="text" placeholder="Họ tên">
-                            </div>
-                            <div class=" col col-lg-4 ">
-                                <p class="m-b-10 f-w-600">Email:</p>
-                                <input id="email" disabled type="text" placeholder="Email">
-                            </div>
-                            <div class="col  col-lg-4">
-                                <p class="m-b-10 f-w-600">Số điện thoại:</p>
-                                <input id="phone" type="text" placeholder="Số điện thoại">
+                            <div class="col ">
+                                <div class="card-block">
+                                    <h6 class="m-b-20 p-b-5 b-b-default f-w-600">THÔNG TIN</h6>
+                                    <div class="row">
+                                        <div class=" col col-lg-4">
+                                            <p class="m-b-10 f-w-600">Họ tên:</p>
+                                            <input id="name" disabled type="text" placeholder="Họ tên">
+                                        </div>
+                                        <div class=" col col-lg-4 ">
+                                            <p class="m-b-10 f-w-600">Email:</p>
+                                            <input id="email" disabled type="text" placeholder="Email">
+                                        </div>
+                                        <div class="col  col-lg-4">
+                                            <p class="m-b-10 f-w-600">Số điện thoại:</p>
+                                            <input id="phone" type="text" placeholder="Số điện thoại">
+                                        </div>
+                                    </div>
+                                    <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">ĐỊA CHỈ</h6>
+                                    <div class="row">
+                                        <div class="col col-lg-3">
+                                            <p class="m-b-10 f-w-600">Tỉnh/Thành phố</p>
+                                            <input id="city" type="text" placeholder="Tỉnh/Thành phố">
+
+                                        </div>
+                                        <div class="col col-lg-3">
+                                            <p class="m-b-10 f-w-600">Quận/Huyện</p>
+                                            <input id="district" type="text" placeholder="Quận/Huyện">
+                                        </div>
+                                        <div class="col col-lg-3">
+                                            <p class="m-b-10 f-w-600">Phường/xã</p>
+                                            <input id="ward" type="text" placeholder="Phường/xã">
+                                        </div>
+                                        <div class="col col-lg-3">
+                                            <p class="m-b-10 f-w-600">Số Nhà/đường</p>
+                                            <input id="street" type="text" placeholder="Số Nhà/đường">
+                                        </div>
+                                    </div>
+                                    <ul class="social-link list-unstyled m-t-40 m-b-10 d-flex justify-content-between">
+                                        <li> <button class="btn btn-primary update">Cập nhật</button></li>
+                                        <li><a class="btn btn-dark" href="./index.html">Quay về trang chủ</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">ĐỊA CHỈ</h6>
-                        <div class="row">
-                            <div class="col col-lg-3">
-                                <p class="m-b-10 f-w-600">Tỉnh/Thành phố</p>
-                                <input id="city" type="text" placeholder="Tỉnh/Thành phố">
-
-                            </div>
-                            <div class="col col-lg-3">
-                                <p class="m-b-10 f-w-600">Quận/Huyện</p>
-                                <input id="district" type="text" placeholder="Quận/Huyện">
-                            </div>
-                            <div class="col col-lg-3">
-                                <p class="m-b-10 f-w-600">Phường/xã</p>
-                                <input id="ward" type="text" placeholder="Phường/xã">
-                            </div>
-                            <div class="col col-lg-3">
-                                <p class="m-b-10 f-w-600">Số Nhà/đường</p>
-                                <input id="street" type="text" placeholder="Số Nhà/đường">
-                            </div>                         
-                        </div>
-                        <ul class="social-link list-unstyled m-t-40 m-b-10 d-flex justify-content-between">
-                            <li> <button class="btn btn-primary update">Cập nhật</button></li>
-                            <li><a class="btn btn-dark" href="./index.html">Quay về trang chủ</a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-        </div>
-        </div>
-    </div>
 </body>
 <script src="./JS/userProfile.js"></script>
+<script src="/FE/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 </html>
 <style>
     body {
-    background-color: #f9f9fa
-}
+        background-color: #f9f9fa
+    }
 
-.padding {
-    padding: 3rem !important
-}
+    .padding {
+        padding: 3rem !important
+    }
 
-.user-card-full {
-    overflow: hidden;
-}
+    .user-card-full {
+        overflow: hidden;
+    }
 
-.card {
-    border-radius: 5px;
-    -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
-    box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
-    border: none;
-    margin-bottom: 30px;
-}
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+        box-shadow: 0 1px 20px 0 rgba(69, 90, 100, 0.08);
+        border: none;
+        margin-bottom: 30px;
+    }
 
-.m-r-0 {
-    margin-right: 0px;
-}
+    .m-r-0 {
+        margin-right: 0px;
+    }
 
-.m-l-0 {
-    margin-left: 0px;
-}
+    .m-l-0 {
+        margin-left: 0px;
+    }
 
-.user-card-full .user-profile {
-    border-radius: 5px 0 0 5px;
-}
+    .user-card-full .user-profile {
+        border-radius: 5px 0 0 5px;
+    }
 
-.bg-c-lite-green {
+    .bg-c-lite-green {
         background: -webkit-gradient(linear, left top, right top, from(#f29263), to(#ee5a6f));
-    background: linear-gradient(to right, #ee5a6f, #f29263);
-}
+        background: linear-gradient(to right, #ee5a6f, #f29263);
+    }
 
-.user-profile {
-    padding: 20px 0;
-}
+    .user-profile {
+        padding: 20px 0;
+    }
 
-.card-block {
-    padding: 1.25rem;
-}
+    .card-block {
+        padding: 1.25rem;
+    }
 
-.m-b-25 {
-    margin-bottom: 25px;
-}
+    .m-b-25 {
+        margin-bottom: 25px;
+    }
 
-.img-radius {
-    border-radius: 5px;
-}
+    .img-radius {
+        border-radius: 5px;
+    }
 
 
- 
-h6 {
-    font-size: 14px;
-}
 
-.card .card-block p {
-    line-height: 25px;
-}
+    h6 {
+        font-size: 14px;
+    }
 
-@media only screen and (min-width: 1400px){
-p {
-    font-size: 14px;
-}
-}
+    .card .card-block p {
+        line-height: 25px;
+    }
 
-.card-block {
-    padding: 1.25rem;
-}
+    @media only screen and (min-width: 1400px) {
+        p {
+            font-size: 14px;
+        }
+    }
 
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0;
-}
+    .card-block {
+        padding: 1.25rem;
+    }
 
-.m-b-20 {
-    margin-bottom: 20px;
-}
+    .b-b-default {
+        border-bottom: 1px solid #e0e0e0;
+    }
 
-.p-b-5 {
-    padding-bottom: 5px !important;
-}
+    .m-b-20 {
+        margin-bottom: 20px;
+    }
 
-.card .card-block p {
-    line-height: 25px;
-}
+    .p-b-5 {
+        padding-bottom: 5px !important;
+    }
 
-.m-b-10 {
-    margin-bottom: 10px;
-}
+    .card .card-block p {
+        line-height: 25px;
+    }
 
-.text-muted {
-    color: #919aa3 !important;
-}
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
 
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0;
-}
+    .text-muted {
+        color: #919aa3 !important;
+    }
 
-.f-w-600 {
-    font-weight: 600;
-}
+    .b-b-default {
+        border-bottom: 1px solid #e0e0e0;
+    }
 
-.m-b-20 {
-    margin-bottom: 20px;
-}
+    .f-w-600 {
+        font-weight: 600;
+    }
 
-.m-t-40 {
-    margin-top: 20px;
-}
+    .m-b-20 {
+        margin-bottom: 20px;
+    }
 
-.p-b-5 {
-    padding-bottom: 5px !important;
-}
+    .m-t-40 {
+        margin-top: 20px;
+    }
 
-.m-b-10 {
-    margin-bottom: 10px;
-}
+    .p-b-5 {
+        padding-bottom: 5px !important;
+    }
 
-.m-t-40 {
-    margin-top: 20px;
-}
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
 
-.user-card-full .social-link li {
-    display: inline-block;
-}
+    .m-t-40 {
+        margin-top: 20px;
+    }
 
-.user-card-full .social-link li a {
-    font-size: 20px;
-    margin: 0 10px 0 0;
-    -webkit-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
-}
+    .user-card-full .social-link li {
+        display: inline-block;
+    }
+
+    .user-card-full .social-link li a {
+        font-size: 20px;
+        margin: 0 10px 0 0;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
 </style>

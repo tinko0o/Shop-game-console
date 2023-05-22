@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./Scss/Login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link href="/FE/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="./img/logo.jpg">
     <title>Đăng nhập</title>
 </head>
+
 <body>
 
     <div class="alert alert-danger " role="alert">
@@ -26,16 +29,19 @@
                     </div>
                     <span></span>
                     <label>
-                        <input type="text" class="r-username" placeholder="Họ tên" pattern=".{4,}" title="Bốn ký tự trở lên"/>
+                        <input type="text" class="r-username" placeholder="Họ tên" pattern=".{4,}"
+                            title="Bốn ký tự trở lên" />
                     </label>
                     <label>
-                        <input type="email" class="r-email" placeholder="Email"/>
+                        <input type="email" class="r-email" placeholder="Email" />
                     </label>
                     <label>
-                        <input type="password" class="r-password" placeholder="Mật khẩu" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"title="Phải chứa ít nhất một số và một chữ hoa và chữ thường, và ít nhất 8 ký tự trở lên"/>
+                        <input type="password" class="r-password" placeholder="Mật khẩu"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Phải chứa ít nhất một số và một chữ hoa và chữ thường, và ít nhất 8 ký tự trở lên" />
                     </label>
                     <label>
-                        <input type="password" class="confirm" placeholder="Xác nhận mật khẩu"/>
+                        <input type="password" class="confirm" placeholder="Xác nhận mật khẩu" />
                     </label>
                     <button class="btn-submit-register" style="margin-top: 9px">Đăng ký</button>
                 </form>
@@ -47,10 +53,10 @@
                     </div>
                     <span></span>
                     <label>
-                        <input class="l-email" type="email" placeholder="Email"/>
+                        <input class="l-email" type="email" placeholder="Email" />
                     </label>
                     <label>
-                        <input class="l-password" type="password" placeholder="Mật khẩu"/>
+                        <input class="l-password" type="password" placeholder="Mật khẩu" />
                     </label>
                     <a href="#"></a>
                     <button type="submit">Đăng nhập</button>
@@ -73,8 +79,10 @@
         </div>
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="./JS/Login.js"></script>
-    </body>
+    <script src="/FE/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
