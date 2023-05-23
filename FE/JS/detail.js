@@ -118,7 +118,7 @@ function renderCmt(data) {
             </div>
             <div class="cmt-command">
               ${deleteButton}
-              <button class="btn-rep" data-id="${v._id}" data-parent="${v.parentCommentId}">Reply</button>
+              <button class="btn-rep" data-id="${v._id}" data-parent="${v.parentCommentId}">Trả lời</button>
               <span>${formattedDate(v.createdAt)}</span>
             </div>
           </div>
@@ -146,7 +146,7 @@ function renderCmt(data) {
           </div>
           <div class="cmt-command">
             ${deleteButton}
-            <button class="btn-rep" data-id="${val._id}">Reply</button>
+            <button class="btn-rep" data-id="${val._id}">Trả lời</button>
             <span>${formattedDate(val.createdAt)}</span>
           </div>
         </div>
@@ -403,15 +403,15 @@ window.addEventListener("load",function(){
         .then((data)=>{
           if(data.success)
           {
-            alertFullil();
+            alertFullil("Thêm sản phẩm thành công");
             U_quantityCart();
           }
           else{
-            alertFail();
+            alertFail(data.message);
           }
         })
-        .catch(()=>{
-          alertFail();
+        .catch((err)=>{
+          alertFail(err);
         })
       });
     // listCmt.addEventListener("submit",function(e){

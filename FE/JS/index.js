@@ -590,7 +590,7 @@ window.addEventListener("load",function(){
                         // console.log(data)
                         if(data.success)
                         {
-                          alertFullil();
+                          alertFullil("Thêm sản phẩm thành công");
                           U_quantityCart();
                         }
                         else{

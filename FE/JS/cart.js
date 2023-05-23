@@ -168,7 +168,7 @@ async function updateCart(id,quantity){
             if(data.success)
             {
                 renderCart(data);
-              alertFullil();
+              alertFullil("Cập nhật sản phẩm thành công");
             }
             else{
               alertFail();
@@ -188,6 +188,7 @@ window.addEventListener("load",function(){
     const deleteAll = $(".detele-all");
     deleteAll.addEventListener("click",function(){
       deleteAllCart();
+      U_quantityCart()
     })
     addCart.addEventListener("change", function (e) {
         const quantityInput = e.target.closest(".quantity");
@@ -199,7 +200,7 @@ window.addEventListener("load",function(){
             if (+quantityInput.value >= 1 && +quantityInput.value <= 100) {
               dataCart[index].quantity= quantityInput.value; 
                 updateCart(id,parseInt(quantityInput.value));
-                alertFullil();
+                // alertFullil();
                 U_quantityCart()
             }
             else{
