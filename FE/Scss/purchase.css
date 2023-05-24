@@ -35,6 +35,10 @@
   visibility: visible;
 }
 
+a {
+  text-decoration: none !important;
+}
+
 header .container .nav-top {
   height: 50px;
   padding: 5px 0;

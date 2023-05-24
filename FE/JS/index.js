@@ -391,9 +391,11 @@ window.addEventListener("load",function(){
             return `
             <div class="product col-lg-4 col-md-6 col-xl-3">
                 <div class="item">
+                <div class="image">
                 <a class="detail-img" data-id=${val._id} href="#">
                     <img src="${val.img}" alt="imagesProduct">
                 </a>
+                </div>
                 <button data-id=${val._id} class="add-cart">Thêm vào giỏ</button>
                 </div>
                 <div class="content">

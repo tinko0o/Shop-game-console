@@ -83,7 +83,7 @@ function renderTopProducts(data) {
             </div>
         </th>
         <th>${val.type}</th>
-        <th>${val.price}</th>
+        <th>${formatCurrency(val.price)}</th>
         <th>${val.quantity}</th>
 
     </tr>
@@ -267,7 +267,7 @@ async function getStatistic() {
       // renderUser(data);
       // console.log(data)
       $(".rating-product").innerHTML = data.data[0]?.totalProducts || 0
-      $(".rating-revenue").innerHTML = data.data[0]?.totalSales || 0 
+      $(".rating-revenue").innerHTML = formatCurrency(data.data[0]?.totalSales) || 0 
       $(".rating-users").innerHTML = data.data[0]?.totalUsers || 0
       $(".rating-orders").innerHTML = data.data[0]?.numberOfOrder || 0
     })

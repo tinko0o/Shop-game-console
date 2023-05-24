@@ -215,7 +215,7 @@ async function getComment() {
 function renderContent (data){
     const html_img=`<img class="img-fluid details-img" src="${data.img}" alt="">`
     const html_name = `                          
-    <p class="product-category mb-0">${data.manufacturer} <strong>${data.type}</strong></p>
+    <p class="product-category mb-0">${data.manufacturer}
     <h3>${data.name}</h3>
     <p><strong>Ngày ra mắt:</strong>${ formattedDate(data.release_date)}</p>
     <div class="stars-rating">

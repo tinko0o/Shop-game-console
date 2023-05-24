@@ -32,7 +32,7 @@ export function header(){
             </ul>
           </div>
         </li>
-        <li class="purchase"><a href="./purchase.html">Đơn hàng</a></li>
+        <li class="purchase"><a href="./purchase.html" >Đơn hàng</a></li>
         <li class="logout">Đăng xuất</li>
     </ul>
         `;
