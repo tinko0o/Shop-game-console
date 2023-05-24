@@ -82,10 +82,11 @@ function rateStar(productId, orderId, rating) {
 function renderPuchase(data) {
   const html = data.data.map((val, index) => {
     let count = 0;
+    let status = val.status
     const producthtml = val.products.map((v, i) => {
       count = count + v.quantity;
       const ratingClass = v.rating > 0 ? "disabled" : "";
-      const ratingButton = v.rating > 0 ? "" : `<button class="btn btn-rate">Rating</button>`;
+      const ratingButton = status == "Đã giao" ? v.rating > 0 ? " " : `<button class="btn btn-rate">Rating</button>` :"";
       return `
         <div data-id="${v.id}" class="product">
           <img src="${v.img}" alt="">
@@ -154,7 +155,7 @@ function refeshRate() {
   const starsRatingElements = document.querySelectorAll('.stars-rating');
   starsRatingElements.forEach(starsRatingElement => {
     const rating = parseInt(starsRatingElement.dataset.rating);
-    console.log(starsRatingElements)
+    // console.log(starsRatingElements)
     // Xóa tất cả lớp 'filled' của các sao trước khi đặt lại
     starsRatingElement.querySelectorAll('i').forEach(starElement => {
       starElement.classList.remove('filled');
@@ -213,7 +214,7 @@ window.addEventListener("load", function (e) {
     }
     if (btnCancel) {
       const id = btnCancel.dataset.id;
-      log(id)
+      // log(id)
       cancelOder(id)
     }
 

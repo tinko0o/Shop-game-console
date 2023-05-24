@@ -82,6 +82,27 @@ async function oder(data){
       }
     })
 }
+async function oderMomo(nextUrl,total){
+    await fetch(`${http}momo`,{
+        headers: {                     
+        "Content-type": "application/json; charset=UTF-8"},
+        method:"post",
+        body:JSON.stringify({nextUrl,total}) 
+        
+    })
+    .then((data) => data.json())
+    .then((data) => {
+      console.log(data);
+      window.location.replace(data.data.payUrl)
+      // if(!data.success){
+      //   alertFail(data?.message);
+      // }else{
+      //   alertFullil(data?.message);
+      //   window.location.replace("./thank.html");
+      // }
+    })
+}
+let total = 0;
 function renderProduct(data){
     if(data.data !=null){
         const html = data.data.products.map((val,index)=>{
@@ -99,6 +120,7 @@ function renderProduct(data){
         })
         $(".products").innerHTML = html.join("");
         $(".subtotal-detail").innerHTML = formatCurrency(data.data.total);
+        total=data.data.total;
     }else{
         $(".products").innerHTML = " no product";
         $(".subtotal-detail").innerHTML = "0d";
@@ -134,5 +156,22 @@ window.addEventListener("load",function(){
         // updateUser(name,phone,dataAdressUser);
         // getUser();
         oder(dataAdressUser);
+    })
+    const momo = $(".btn-MOMO-submit")
+    momo.addEventListener("click",function(e){
+      e.preventDefault()
+        const phone =$("#u-phone").value;
+        const city =$("#u-city").value;
+        const district =$("#u-district").value;
+        const wards =$("#u-ward").value;
+        const streetAndHouseNumber =$("#u-street").value;
+        const dataAdressUser = {phone,city,district,wards,streetAndHouseNumber}
+        // console.log(total);
+        const url = "http://127.0.0.1:5500/FE/thank.html"
+        oderMomo(url,total);
+        localStorage.setItem(
+        "Momo",
+        JSON.stringify({isMomo:true ,total, data:dataAdressUser})
+      );
     })
 })
