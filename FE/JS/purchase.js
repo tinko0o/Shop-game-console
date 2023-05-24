@@ -83,6 +83,7 @@ function renderPuchase(data) {
   const html = data.data.map((val, index) => {
     let count = 0;
     let status = val.status
+    const cancelBtn = status == "Đang chờ" ? `<button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>`:""  
     const producthtml = val.products.map((v, i) => {
       count = count + v.quantity;
       const ratingClass = v.rating > 0 ? "disabled" : "";
@@ -121,7 +122,7 @@ function renderPuchase(data) {
           <div class="status d-block">
             <p class="s-status"><strong>Status:</strong>${val.status}</p>
             <hr style="margin-bottom: 0; color: white;">
-            <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>
+            ${cancelBtn}
           </div>
         </div>
         <hr>
