@@ -8,6 +8,7 @@ const orderRouter = require("./routes/oderRouter");
 const ratingRouter = require("./routes/ratingRouter");
 const commentRouter = require("./routes/commentRouter");
 const salesReportRouter = require("./routes/salesReportRouter");
+const { momo } = require("./test");
 const bodyParser = require("body-parser");
 const cors = require('cors')
 dotenv.config();
@@ -44,6 +45,7 @@ app.use("/api/oders", orderRouter);
 app.use("/api/ratings",ratingRouter);
 app.use("/api/comments",commentRouter);
 app.use("/api/sales-Reports",salesReportRouter);
+app.post("/api/momo", momo);
 
 app.listen(process.env.PORT || 8000, () => {
     console.log("Server is runing! port:" + process.env.PORT);
