@@ -167,11 +167,15 @@ window.addEventListener("load",function(){
         const streetAndHouseNumber =$("#u-street").value;
         const dataAdressUser = {phone,city,district,wards,streetAndHouseNumber}
         // console.log(total);
-        const url = "http://127.0.0.1:5500/FE/thank.html"
-        oderMomo(url,total);
-        localStorage.setItem(
-        "Momo",
-        JSON.stringify({isMomo:true ,total, data:dataAdressUser})
-      );
+        if(!phone||!city||!district||!wards||!streetAndHouseNumber){
+          alertFail("vui lòng điền thông tin đầy đủ")
+        }else{
+          const url = "http://127.0.0.1:5500/FE/thank.html"
+          oderMomo(url,total);
+          localStorage.setItem(
+          "Momo",
+          JSON.stringify({isMomo:true ,total, data:dataAdressUser})
+        );
+        }
     })
 })
