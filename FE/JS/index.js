@@ -334,7 +334,7 @@ window.addEventListener("load",function(){
         })
           .then((data) => data.json())
           .then((data) => {
-            console.log(data)
+            // console.log(data)
             this.render(data);
             this.page(page, limit, data.length);
           })

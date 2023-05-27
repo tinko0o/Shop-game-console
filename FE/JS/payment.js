@@ -23,7 +23,7 @@ async function getUser(){
       if(data.data === null){
         alertFail();
       }else{
-        log(data)
+        // log(data)
       localStorage.setItem(
         "loginUser",
         JSON.stringify({data:data.data , token:token})

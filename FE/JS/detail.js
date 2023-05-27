@@ -203,7 +203,7 @@ async function getComment() {
         })
           .then((data) => data.json())
           .then((data) => {
-            log(data);
+            // log(data);
             // log(data.comments[0].replies)
             renderCmt(data);
           })
@@ -351,7 +351,7 @@ window.addEventListener("load",function(){
     fetch(`${http}products/${idpd}`)
     .then((data)=>data.json())
     .then((data)=>{
-      log(data);
+      // log(data);
         renderContent(data.data);
         displayRating(data.data?.avgRating);
 
