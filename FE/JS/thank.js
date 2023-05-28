@@ -3,7 +3,7 @@ const momo = JSON.parse(localStorage.getItem("Momo"))||null;
 const http = "http://localhost:8080/api/";
 const User = JSON.parse(localStorage.getItem("loginUser"));
 async function oder(data){
-    await fetch(`${http}oders/create`,{
+    await fetch(`${http}oders/create/Momo`,{
         headers: {                     
         "Content-type": "application/json; charset=UTF-8",
         authentication: User.token,},

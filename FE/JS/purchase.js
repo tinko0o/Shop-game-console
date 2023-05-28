@@ -118,6 +118,7 @@ function renderPuchase(data) {
           <div class="total d-block">
             <p class="t-quantity"><strong>Số sản phẩm:</strong>${count}</p>
             <p class="t-price"><strong>Tổng tiền:</strong>${formatCurrency(val.total)}</p>
+            <p class="t-methods"><strong>Phương thức:</strong>${val.methods}</p>
           </div>
           <div class="status d-block">
             <p class="s-status"><strong>Trang thái:</strong>${val.status}</p>

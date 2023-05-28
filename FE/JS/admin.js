@@ -172,8 +172,8 @@ function renderPuchase(data) {
                             <p class="p-createdAt"><strong>Ngày đặt:</strong>${formattedDate(val.createdAt)}</p>
                         </div>
                         <div class="status">
+                            <p class="t-methods"><strong>Phương thức:</strong>${val.methods}</p>
                             <p class="s-status"><strong>Trạng thái:</strong>${val.status}</p>
-                            <hr style="margin-bottom: 0; color: white;">
                             <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>
                             <button data-id="${val._id}" class="btn btn-primary  btn-confirm">Xác nhận</button>
                             <button data-id="${val._id}" class="btn btn-success btn-deleved">Đã giao</button>                           

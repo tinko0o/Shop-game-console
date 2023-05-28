@@ -283,7 +283,7 @@ exports.confirmOrder = async (req, res) => {
                 message: "Không tìm thấy đơn hàng",
             });
         }
-        if (order.status !== "Đang chờ" || order.status !== "Đã thanh toán") {
+        if (order.status !== "Đang chờ" && order.status !== "Đã thanh toán") {
             return res.status(400).json({
                 success: false,
                 message: "Không thể xác nhận đơn hàng khi đang ở trạng thái trên",
@@ -394,7 +394,7 @@ exports.cancelOrderUser = async (req, res) => {
               message: "Không tìm thấy đơn hàng",
           });
       }
-      if (order.status !== "Đang chờ" || order.status !== "Đã thanh toán") {
+      if (order.status !== "Đang chờ" && order.status !== "Đã thanh toán") {
           return res.status(400).json({
               success: false,
               message: "Chỉ có thể hủy đơn hàng khi đơn hàng đang đợi xác nhận",

@@ -394,7 +394,6 @@ a {
 }
 .puchase .purchased .block .address .address-content .u-name {
   display: flex;
-  max-width: 200px;
   margin-right: 10px;
 }
 .puchase .purchased .block .address .address-content .u-name .u-phone {
