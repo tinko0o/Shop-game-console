@@ -126,7 +126,7 @@ body {
   text-align: center;
   width: 100%;
   height: 40px;
-  background-color: #202020;
+  background-color: #363535;
   color: #fff;
   font-size: 20px;
   font-weight: 700;
@@ -134,7 +134,22 @@ body {
   border-radius: 5px;
 }
 .f-checkout .user-checkout .sub-total .btn-submit:hover {
-  background-color: #3b3a3a;
+  background-color: #1f1e1e;
+}
+.f-checkout .user-checkout .sub-total .btn-MOMO-submit {
+  display: block;
+  text-align: center;
+  width: 100%;
+  height: 40px;
+  background-color: #5760e4;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  transition: 0.2s;
+  border-radius: 5px;
+}
+.f-checkout .user-checkout .sub-total .btn-MOMO-submit:hover {
+  background-color: #283cec;
 }
 .f-checkout .product-checkout .title-product {
   display: flex;

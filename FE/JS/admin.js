@@ -456,6 +456,28 @@ function delivedOder(id) {
     })
 
 }
+function changePassAdmin(password, newPassword, confirmPassword) {
+  fetch(`${http}users/user/changeAdminPassword/`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      authentication: User?.token,
+    },
+    method: "put",
+    body: JSON.stringify({password, newPassword, confirmPassword})
+  })
+    .then((data) => data.json())
+    .then((data) => {
+      if (data.success) {
+        // alertFullil(data.message)
+      }
+      else {
+        alertFail(data.message)
+      }
+    })
+    .catch(() => {
+      alertFail();
+    })
+}
 document.addEventListener("DOMContentLoaded", function (event) {
   product();
   getUser()
@@ -505,10 +527,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
   const nav_dash = $(".nav-dash");
   const nav_product = $(".nav-product");
   const nav_comment = $(".nav-comment");
+  const nav_key = $(".nav-key");
   const mainUser = $(".main-user");
   const mainDash = $(".main-dashboard");
   const mainProduct = $(".main-product");
   const mainComment = $(".main-comment");
+  const mainKey = $(".main-key");
   const main = $$(".main");
   nav_user.onclick = function (e) {
     // mainDash.classList.remove("nav-active")
@@ -527,6 +551,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
   nav_comment.onclick = function (e) {
     main.forEach((l) => l.classList.remove("nav-active"));
     mainComment.classList.add("nav-active");
+  };
+  nav_key.onclick = function (e) {
+    main.forEach((l) => l.classList.remove("nav-active"));
+    mainKey.classList.add("nav-active");
   };
   // Main User
   const btnAdd = $(".add-new");
@@ -809,6 +837,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
     if (btnDelivery) {
       const deliveryId = btnDelivery.dataset.id
       delivedOder(deliveryId)
+    }
+  })
+  //Main Key
+  const formChangePass = $(".form-change-pass-admin")
+  formChangePass.addEventListener('submit',function(e){
+    e.preventDefault();
+    const password = $("#inputPasswordOld").value
+    const newPassword =$("#inputPasswordNew").value
+    const confirmPassword=$("#inputPasswordNewVerify").value
+    if(newPassword != confirmPassword){
+      alertFail("Mật khẩu không khớp")
+    }else{
+      changePassAdmin(password, newPassword, confirmPassword)
+      alertFullil("Cập nhật thành công")
+      $("#inputPasswordOld").value = ""
+      $("#inputPasswordNew").value =""
+      $("#inputPasswordNewVerify").value =""
     }
   })
 });
