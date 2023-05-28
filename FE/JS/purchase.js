@@ -93,7 +93,7 @@ function renderPuchase(data) {
           <img src="${v.img}" alt="">
           <div class="p-name">
             <h4 class="name-product">${v.name}</h4>
-            <span class="quantity">X${v.quantity}</span>
+            <span class="quantity">${v.quantity}</span>
           </div>
           <p class="p-total">${v.price}</p>
           <div data-id="${v.id}" data-rating="${v.rating}" class="stars-rating ${ratingClass}">
@@ -120,7 +120,7 @@ function renderPuchase(data) {
             <p class="t-price"><strong>Tổng tiền:</strong>${formatCurrency(val.total)}</p>
           </div>
           <div class="status d-block">
-            <p class="s-status"><strong>Status:</strong>${val.status}</p>
+            <p class="s-status"><strong>Trang thái:</strong>${val.status}</p>
             <hr style="margin-bottom: 0; color: white;">
             ${cancelBtn}
           </div>

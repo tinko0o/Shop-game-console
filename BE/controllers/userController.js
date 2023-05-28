@@ -388,6 +388,62 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+
+// change password admin
+exports.changeAdminPassword = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Không được phép",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user && !user.isAdmin) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy tài khoản admin",
+      })
+    }
+    const { password, newPassword, confirmPassword } = req.body;
+    if (!password || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Không hợp lệ",
+      });
+    }
+    if (!bcrypt.compareSync(password, user.password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Sai mật khẩu",
+      });
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu xác nhận không trùng",
+      });
+    }
+    const salt = bcrypt.genSaltSync(12);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    const updatedUser = await User.findOneAndUpdate(
+      { email: decoded.email },
+      { password: hashedPassword },
+      { new: true }
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Cập nhật mật khẩu cho admin thành công",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi cập nhật mật khẩu cho admin" });
+  }
+};
+
 // CODE YOU, YOU TỰ FIX VÀ TỰ GẮN
 
 //check Admin

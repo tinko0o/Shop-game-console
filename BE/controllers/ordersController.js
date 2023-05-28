@@ -7,7 +7,7 @@ const SalesReport = require("../models/salesReportModel");
 const Rating = require("../models/ratingModel");
 const { isEmpty } = require("lodash");
 
-//create order with default information
+//create order with COD
 
 exports.createOrder = async (req, res) => {
     try {
@@ -45,6 +45,8 @@ exports.createOrder = async (req, res) => {
         district: district || user.district,
         wards: wards || user.wards,
         streetAndHouseNumber: streetAndHouseNumber || user.streetAndHouseNumber,
+        methods: "COD (thanh toán khi giao hàng)",
+        status: "Đang chờ"
       });
       for (const product of newOrder.products) {
         const productRating = await Rating.findOne({ productId: product.id });
@@ -90,6 +92,92 @@ exports.createOrder = async (req, res) => {
       res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi đặt hàng" });
     }
   };
+
+  //create order with MOMO
+
+exports.createOrderWithMomo = async (req, res) => {
+  try {
+    const token = req.headers.authentication;
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Không được phép",
+      });
+    }
+    const key = process.env.JWT_SEC;
+    const decoded = jwt.verify(token, key);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Không tìm thấy tài khoản",
+      });
+    }
+    const cart = await Cart.findOne({ userId: user._id });
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy giỏ hàng",
+      });
+    }
+    const { name, phone, city, district, wards, streetAndHouseNumber, address } = req.body;
+    const newOrder = new Order({
+      userId: user._id,
+      products: cart.products,
+      total: cart.total,
+      name: name || user.name,
+      phone: phone || user.phone,
+      city: city || user.city,
+      district: district || user.district,
+      wards: wards || user.wards,
+      streetAndHouseNumber: streetAndHouseNumber || user.streetAndHouseNumber,
+      methods: "Thanh toán với MOMO",
+      status: "Đã thanh toán"
+    });
+    for (const product of newOrder.products) {
+      const productRating = await Rating.findOne({ productId: product.id });
+      let userRating = 0;
+      if (productRating) {
+        const userRatingObj = productRating.users.find(
+          (ratingObj) => ratingObj.id.toString() === user._id.toString()
+        );
+        if (userRatingObj) {
+          userRating = userRatingObj.rating;
+        }
+      }
+      product.rating = userRating;
+    }
+    newOrder.address =
+      address ||
+      `${newOrder.streetAndHouseNumber}, ${newOrder.wards}, ${newOrder.district}, ${newOrder.city}`;
+    if (
+      isEmpty(newOrder.name) ||
+      isEmpty(newOrder.phone) ||
+      isEmpty(newOrder.city) ||
+      isEmpty(newOrder.district) ||
+      isEmpty(newOrder.wards) ||
+      isEmpty(newOrder.streetAndHouseNumber) ||
+      isEmpty(newOrder.address)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu các trường bắt buộc",
+      });
+    }
+    for (const product of newOrder.products) {//// this don't touch
+      product.rating = 0;
+    }
+    await newOrder.save();
+    await cart.deleteOne({ userId: user._id });
+    return res.status(200).json({
+      success: true,
+      message: "Đặt hàng thành công",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi đặt hàng" });
+  }
+};
 
 
 //get user orders
@@ -195,10 +283,10 @@ exports.confirmOrder = async (req, res) => {
                 message: "Không tìm thấy đơn hàng",
             });
         }
-        if (order.status !== "Đang chờ") {
+        if (order.status !== "Đang chờ" || order.status !== "Đã thanh toán") {
             return res.status(400).json({
                 success: false,
-                message: "Chỉ có thể xác nhận đơn hàng đang ở trang thái chờ",
+                message: "Không thể xác nhận đơn hàng khi đang ở trạng thái trên",
             });
         }
         order.status = "Xác nhận";
@@ -245,7 +333,7 @@ exports.deliveryOrder = async (req, res) => {
     if (order.status !== "Xác nhận") {
         return res.status(400).json({
             success: false,
-            message: "Chỉ có thể xác nhận giao hàng khi đã xác nhận đơn hàng",
+            message: "Chỉ có thể xác nhận đã giao hàng khi đã xác nhận đơn hàng",
         });
     }
     let amount = 0;
@@ -306,10 +394,10 @@ exports.cancelOrderUser = async (req, res) => {
               message: "Không tìm thấy đơn hàng",
           });
       }
-      if (order.status !== "Đang chờ") {
+      if (order.status !== "Đang chờ" || order.status !== "Đã thanh toán") {
           return res.status(400).json({
               success: false,
-              message: "Chỉ có thể hủy đơn hàng khi đơn đang ở trang thái chờ",
+              message: "Chỉ có thể hủy đơn hàng khi đơn hàng đang đợi xác nhận",
           });
       }
       order.status = "Đã hủy";

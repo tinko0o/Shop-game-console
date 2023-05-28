@@ -3,6 +3,7 @@ const oderController = require("../controllers/ordersController");
 
 //user
 router.post("/create",oderController.createOrder); //ok
+router.post("/create/Momo",oderController.createOrderWithMomo); //ok
 router.get("",oderController.getOrders); //ok
 router.put("/cancel/:id",oderController.cancelOrderUser);
 
