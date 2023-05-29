@@ -354,7 +354,7 @@ exports.deliveryOrder = async (req, res) => {
     } else {
       salesReport.totalSales += order.total;
       salesReport.numberOfOrders++;
-      const existingOrder = await Order.findOne({ userId: order.userId, createdAt: { $gte: salesReportDate }, status: "delivered" });
+      const existingOrder = await Order.findOne({ userId: order.userId, createdAt: { $gte: salesReportDate }, status: "Đã giao" });
       if (!existingOrder) {
         salesReport.totalUsers++;
       }

@@ -91,7 +91,7 @@ $(".cart").addEventListener("click",function(){
   if(User){
     window.location.replace("./cart.html")
   }else{
-    alertFail("You need login fist")
+    alertFail("Bạn cần phải đăng nhập")
   }
 })
 // UPdate Quantity Cart
