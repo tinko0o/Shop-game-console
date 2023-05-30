@@ -83,7 +83,7 @@ function renderPuchase(data) {
   const html = data.data.map((val, index) => {
     let count = 0;
     let status = val.status
-    const cancelBtn = status == "Đang chờ" ? `<button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>`:""  
+    const cancelBtn = status == "Đang chờ" ? `<button data-id="${val._id}" class="btn btn-danger btn-cancel">Hủy Đơn</button>`:""  
     const producthtml = val.products.map((v, i) => {
       count = count + v.quantity;
       const ratingClass = v.rating > 0 ? "disabled" : "";

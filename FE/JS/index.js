@@ -574,34 +574,35 @@ window.addEventListener("load",function(){
                     window.location.href = `./detail.html?idpd=${idProduct}`;
                   }
                   if(btnAddCart){
-                    const id = btnAddCart.dataset.id;
-                      // const dataPoduct={
-                      //   id:dataPoductID,
-                      //   quantity:1,
-                      // };
-                      fetch(`${http}carts/add`,{
-                        headers:{
-                          "Content-type": "application/json; charset=UTF-8",
-                          authentication: User.token,                         
-                        },
-                        method:"post",
-                        body: JSON.stringify({id,quantity:1})
-                      })
-                      .then((data)=>data.json())
-                      .then((data)=>{
-                        // console.log(data)
-                        if(data.success)
-                        {
-                          alertFullil("Thêm sản phẩm thành công");
-                          U_quantityCart();
-                        }
-                        else{
+                    if(!User){
+                      alertFail("Bạn cần đang nhập để sử dụng chức năng này")
+                    }else{
+
+                      const id = btnAddCart.dataset.id;
+                        fetch(`${http}carts/add`,{
+                          headers:{
+                            "Content-type": "application/json; charset=UTF-8",
+                            authentication: User.token,                         
+                          },
+                          method:"post",
+                          body: JSON.stringify({id,quantity:1})
+                        })
+                        .then((data)=>data.json())
+                        .then((data)=>{
+                          // console.log(data)
+                          if(data.success)
+                          {
+                            alertFullil("Thêm sản phẩm thành công");
+                            U_quantityCart();
+                          }
+                          else{
+                            alertFail();
+                          }
+                        })
+                        .catch(()=>{
                           alertFail();
-                        }
-                      })
-                      .catch(()=>{
-                        alertFail();
-                      })
+                        })
+                    }
                     
                   }
 

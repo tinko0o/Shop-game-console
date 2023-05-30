@@ -336,10 +336,13 @@ function addCmt(comment){
 }
 formAddCmt.addEventListener("submit",function(e){
   e.preventDefault();
-  const txtCmt=$("#txt-add").value;
-  addCmt(txtCmt);
-  $("#txt-add").value = "";
-
+  if(!User){
+    alertFail("Bạn cần đang nhập để sử dụng chức năng này")
+  }else{
+    const txtCmt=$("#txt-add").value;
+    addCmt(txtCmt);
+    $("#txt-add").value = "";
+  }
 })
 window.addEventListener("load",function(){
   header();
@@ -385,34 +388,38 @@ window.addEventListener("load",function(){
       //add-cart
       const btnAddCart = $(".add-cart");
       btnAddCart.addEventListener("click",function(e){
-        const id =getSearchParameters().idpd ;
-        const quantity=parseInt(quantityInput.value); 
-        // const dataPoduct={
-        //   id:dataPoductID,
-        //   quantity:1,
-        // };
-        fetch(`${http}carts/add`,{
-          headers:{
-            "Content-type": "application/json; charset=UTF-8",
-            authentication: User.token,                         
-          },
-          method:"post",
-          body: JSON.stringify({id,quantity})
-        })
-        .then((data)=>data.json())
-        .then((data)=>{
-          if(data.success)
-          {
-            alertFullil("Thêm sản phẩm thành công");
-            U_quantityCart();
-          }
-          else{
-            alertFail(data.message);
-          }
-        })
-        .catch((err)=>{
-          alertFail(err);
-        })
+        if(!User){
+          alertFail("Bạn cần đang nhập để sử dụng chức năng này")
+        }else{
+          const id =getSearchParameters().idpd ;
+          const quantity=parseInt(quantityInput.value); 
+          // const dataPoduct={
+          //   id:dataPoductID,
+          //   quantity:1,
+          // };
+          fetch(`${http}carts/add`,{
+            headers:{
+              "Content-type": "application/json; charset=UTF-8",
+              authentication: User.token,                         
+            },
+            method:"post",
+            body: JSON.stringify({id,quantity})
+          })
+          .then((data)=>data.json())
+          .then((data)=>{
+            if(data.success)
+            {
+              alertFullil("Thêm sản phẩm thành công");
+              U_quantityCart();
+            }
+            else{
+              alertFail(data.message);
+            }
+          })
+          .catch((err)=>{
+            alertFail(err);
+          })
+        }
       });
     // listCmt.addEventListener("submit",function(e){
     //   e.preventDefault();

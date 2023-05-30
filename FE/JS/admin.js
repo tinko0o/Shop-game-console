@@ -5,7 +5,7 @@ const alertSuccess = $(".alert-primary");
 const alertDanger = $(".alert-danger");
 const http = "http://localhost:8080/api/";
 let getDataProduct = {};
-if (!User.data.isAdmin) {
+if (!User?.data.isAdmin) {
   window.location.replace("./index.html");
 }
 // btn log-out
@@ -42,7 +42,7 @@ function log(value) {
   console.log(`${value}: `, value)
 }
 formatCurrency
-function formatCurrency(price, symbol = "đ") {
+function formatCurrency(price=0, symbol = "đ") {
   var DecimalSeparator = Number('1.2').toLocaleString().substr(1, 1);
   var priceWithCommas = price.toLocaleString();
   var arParts = String(priceWithCommas).split(DecimalSeparator);
@@ -174,7 +174,7 @@ function renderPuchase(data) {
                         <div class="status">
                             <p class="t-methods"><strong>Phương thức:</strong>${val.methods}</p>
                             <p class="s-status"><strong>Trạng thái:</strong>${val.status}</p>
-                            <button data-id="${val._id}" class="btn btn-secondary btn-cancel">Hủy Đơn</button>
+                            <button data-id="${val._id}" class="btn btn-danger btn-cancel">Hủy Đơn</button>
                             <button data-id="${val._id}" class="btn btn-primary  btn-confirm">Xác nhận</button>
                             <button data-id="${val._id}" class="btn btn-success btn-deleved">Đã giao</button>                           
                         </div>                        
@@ -248,7 +248,7 @@ async function getAllOder() {
   })
     .then((data) => data.json())
     .then((data) => {
-      log(data)
+      // log(data)
       renderPuchase(data);
     })
     .catch((err) => {
@@ -491,7 +491,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // Validate that all variables exist
     if (toggle && nav && bodypd && headerpd) {
       toggle.addEventListener("click", () => {
-        console.log("hehe");
         // show navbar
         nav.classList.toggle("show");
         // change icon
@@ -723,7 +722,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         // input.parentElement.removeChild(input);
       });
       updateProduct(id, data);
-      console.log(data)
+      // console.log(data)
     }
 
 
