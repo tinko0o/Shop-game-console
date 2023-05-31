@@ -577,7 +577,6 @@ window.addEventListener("load",function(){
                     if(!User){
                       alertFail("Bạn cần đang nhập để sử dụng chức năng này")
                     }else{
-
                       const id = btnAddCart.dataset.id;
                         fetch(`${http}carts/add`,{
                           headers:{
@@ -602,8 +601,7 @@ window.addEventListener("load",function(){
                         .catch(()=>{
                           alertFail();
                         })
-                    }
-                    
+                    }                    
                   }
 
             };

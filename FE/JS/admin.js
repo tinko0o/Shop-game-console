@@ -127,12 +127,10 @@ function renderProduct(data) {
 
         </th>
         <th data-key="release_date" data-value="${formattedDate(val.release_date)}">${formattedDate(val.release_date)}</th>
-        <th data-key="type" data-value="${val.type}"> ${val.type} </th>
         <th data-key="manufacturer" data-value="${val.manufacturer}"> ${val.manufacturer} </th>
         <th data-key="price" data-value="${val.price}"> ${formatCurrency(val.price)} </th>
-        <th data-key="description" data-value="${val.description}" class="description">
-          ${val.description}
-        </th>
+        <th data-key="description" data-value="${val.description}" class="description">${val.description}</th>
+        <th data-key="type" data-value="${val.type}"> ${val.type} </th>
         <th class="d-flex">
             <a data-id="${val?._id}" class=" btn btn-danger edit-product" title="Add" data-toggle="tooltip"><i class="fa-solid fa-pencil"></i></a>
             <a data-id="${val?._id}"class=" btn btn-primary delete-product" title="cancel" data-toggle="tooltip"><i class="fa-solid fa-xmark"></i></a>
@@ -221,6 +219,7 @@ async function getTopProducts() {
     })
     .catch((err) => {
       console.log(err);
+      logoff.click() // logout if err
     })
 }
 getTopProducts()
@@ -673,10 +672,31 @@ document.addEventListener("DOMContentLoaded", function (event) {
       deleteButton.disabled = false;
 
       // Add input fields to each cell
-      inputs.forEach((cell, index) => {
-        const text = cell.dataset.value;
-        cell.innerHTML = `<input type="text" value="${text}">`;
-      });
+  inputs.forEach((cell, index) => {
+    const text = cell.dataset.value;
+    if (index === 6) {
+      const selectField = `
+        <select id="p-type" class="form-control" name="type" style="padding: 0px 8px 6px;">
+          <option value="">Chọn</option>
+          <option value="Máy XBOX SERIES">Máy XBOX SERIES</option>
+          <option value="Máy PS5">Máy PS5</option>
+          <option value="Máy PS4">Máy PS4</option>
+          <option value="Máy Nintendo Switch">Máy Nintendo Switch</option>
+          <option value="Game PS4">Game PS4</option>
+          <option value="Game PS5">Game PS5</option>
+          <option value="Game Nintendo Switch">Game Nintendo Switch</option>
+          <option value="Game XBOX SERIES">Game XBOX SERIES</option>
+          <option value="Phụ kiện PS5">Phụ kiện PS5</option>
+          <option value="Phụ kiện PS4">Phụ kiện PS4</option>
+          <option value="Phụ kiện Nintendo Switch">Phụ kiện Nintendo Switch</option>
+          <option value="Phụ Kiện XBOX SERIES">Phụ Kiện XBOX SERIES</option>
+        </select>
+      `;
+      cell.innerHTML = selectField;
+    } else {
+      cell.innerHTML = `<input type="text" value="${text}">`;
+    }
+  });
     }
 
     const saveBtn = e.target.closest(".save-product");
@@ -707,7 +727,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         description: row.querySelector('th[data-key="description"]').dataset.value,
       };
       inputs.forEach((input, index) => {
-
         const key = row.querySelector(`th:nth-child(${index + 1})`).dataset.key;
         if (key !== null) {
           const value = input.value;
@@ -715,12 +734,28 @@ document.addEventListener("DOMContentLoaded", function (event) {
           if (key.startsWith("img")) {
             row.querySelector("th:first-child").innerHTML = `<img src="${value}" alt="">`;
           } else {
-            row.querySelector(`th[data-key="${key}"]`).dataset.value = value;
-            row.querySelector(`th[data-key="${key}"]`).textContent = value;
+            if(key =="price"){
+            row.querySelector(`th[data-key="price"]`).dataset.value = value;
+            row.querySelector(`th[data-key="price"]`).textContent =formatCurrency(parseInt(value));
+            }else{
+              row.querySelector(`th[data-key="${key}"]`).dataset.value = value;
+              row.querySelector(`th[data-key="${key}"]`).textContent = value;
+            }
           }
         }
         // input.parentElement.removeChild(input);
       });
+      
+      const selectElement = row.querySelector('select[name="type"]');
+      if(selectElement.value==""){
+        const typeValue = row.querySelector(`th[data-key="type"]`).dataset.value
+        row.querySelector(`th[data-key="type"]`).textContent = typeValue;
+        data["type"] = typeValue;
+      }else{
+        row.querySelector(`th[data-key="type"]`).dataset.value = selectElement.value;
+        row.querySelector(`th[data-key="type"]`).textContent = selectElement.value;
+        data["type"] = selectElement.value;
+      }
       updateProduct(id, data);
       // console.log(data)
     }
@@ -779,6 +814,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
           <td><input id="p-img" type="text" class="form-control" name="img" placeholder="Link ảnh"></td>
           <td><input id="p-name" type="text" class="form-control" name="name" placeholder="Tên"></td>
           <td><input id="p-r_date" type="text" class="form-control" name="release_date" placeholder="Ngày ra mắt"></td>
+          <td><input id="p-manufac" type="text" class="form-control" name="manufacturer" placeholder="Sản xuất"></td>
+          <td><input id="p-price" type="text" class="form-control" name="price" placeholder="Giá"></td>
+          <td><textarea id="p-descript" class="form-control" name="description" placeholder="Mô tả" style="height: 150px"></textarea></td>
           <td>
               <select id="p-type" class="form-control" name="type" style="padding: 0px 8px 6px;">
                   <option value="">Chọn</option>
@@ -796,9 +834,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
                   <option value="Phụ Kiện XBOX SERIES">Phụ Kiện XBOX SERIES</option>
               </select>
           </td>
-          <td><input id="p-manufac" type="text" class="form-control" name="manufacturer" placeholder="Sản xuất"></td>
-          <td><input id="p-price" type="text" class="form-control" name="price" placeholder="Giá"></td>
-          <td><textarea id="p-descript" class="form-control" name="description" placeholder="Mô tả" style="height: 150px"></textarea></td>
           <td>
               <a class="add-product" type="submit" title="Add"><i class="fa-solid fa-plus"></i></a>
               <a class="cancel-product" title="cancel"><i class="fa-solid fa-xmark"></i></a>

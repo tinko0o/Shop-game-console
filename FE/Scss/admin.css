@@ -208,6 +208,13 @@ a {
     padding-left: calc(var(--nav-width) + 188px);
   }
 }
+.main-key {
+  position: relative;
+  background-image: url("https://img.freepik.com/free-vector/hand-painted-watercolor-pastel-sky-background_23-2148902771.jpg");
+  background-size: cover;
+  padding: 15% 20% 20% 20%;
+}
+
 .main-dashboard img {
   width: 200px;
   height: 170px;
