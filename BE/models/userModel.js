@@ -13,6 +13,8 @@ const UserSchema = new mongoose.Schema(
     isAdmin: { type: Boolean, default: false },
     resetToken: { type: String },
     resetTokenExpiration: { type: Date },
+    verificationToken: { type: String },
+    isVerified: {type: Boolean}
   },
   {
     timestamps: true,

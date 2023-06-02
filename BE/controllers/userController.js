@@ -14,22 +14,40 @@ exports.register = async (req, res) => {
     return res.status(400).json({
       success: false,
       error: {
-        message: "Thiếu các trường bắt buộc",
+        message: 'Thiếu các trường bắt buộc',
       },
     });
   }
+
   const salt = await bcrypt.genSaltSync(12);
   const hashedPassword = await bcrypt.hashSync(password, salt);
+
   try {
+    const verificationToken = crypto.randomBytes(20).toString('hex');
     const user = new User({
       name,
       email,
       password: hashedPassword,
+      verificationToken,
+      isVerified: false,
     });
+
     await user.save();
+
+    const verificationLink = `http://localhost:8080/api/users/user/verifyEmail?token=${verificationToken}`;
+
+    const mailOptions = {
+      from: 'manhha2392000@gmail.com',
+      to: user.email,
+      subject: 'Xác minh địa chỉ email',
+      text: `Xin chào,\n\nVui lòng nhấp vào liên kết sau để xác minh địa chỉ email của bạn:\n\n${verificationLink}\n\nTrân trọng,\nNhóm hỗ trợ của chúng tôi`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
     res.status(201).json({
       success: true,
-      message: "Đăng ký tài khoản thành công",
+      message: 'Đăng ký thành công, vui lòng xác nhận email',
     });
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));
@@ -38,19 +56,114 @@ exports.register = async (req, res) => {
       res.status(400).json({
         success: false,
         error: {
-          message: "Email đã tồn tại",
+          message: 'Email đã tồn tại',
         },
       });
     } else {
       res.status(500).json({
         success: false,
         error: {
-          message: "Đã xảy ra sự cố khi tạo tài khoản",
+          message: 'Đã xảy ra sự cố khi tạo tài khoản',
         },
       });
     }
   }
 };
+
+// verify email
+
+exports.verifyEmail = async (req, res) => {
+  const { token } = req.query;
+
+  try {
+    const user = await User.findOne({ verificationToken: token });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy người dùng',
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Email xác minh thành công',
+    });
+  } catch (error) {
+    console.log(JSON.stringify(error, null, 2));
+    console.log();
+
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Đã xảy ra sự cố khi xác minh email',
+      },
+    });
+  }
+};
+
+// Resend verification email
+
+exports.resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email không được bỏ trống',
+    });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy người dùng',
+      });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Tài khoản đã được xác minh',
+      });
+    }
+
+    const verificationToken = crypto.randomBytes(20).toString('hex');
+    user.verificationToken = verificationToken;
+    await user.save();
+
+    const verificationLink = `http://localhost:8080/api/users/user/verifyEmail?token=${verificationToken}`;
+
+    const mailOptions = {
+      from: 'manhha2392000@gmail.com',
+      to: user.email,
+      subject: 'Xác minh địa chỉ email',
+      text: `Xin chào,\n\nVui lòng nhấp vào liên kết sau để xác minh địa chỉ email của bạn:\n\n${verificationLink}\n\nTrân trọng,\nNhóm hỗ trợ của chúng tôi`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: 'Gửi lại email xác minh thành công',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'Đã xảy ra sự cố khi gửi lại email xác minh',
+    });
+  }
+};
+
+
 
 //login
 
@@ -70,6 +183,14 @@ exports.login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "Không tìm tài khoản",
+      });
+    }
+
+    if(!user.isVerified)
+    {
+      return res.status(401).json({
+        success: false,
+        message: "Tài khoản chưa được xác minh, vui lòng check email để xác minh",
       });
     }
 

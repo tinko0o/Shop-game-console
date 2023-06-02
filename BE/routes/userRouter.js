@@ -10,6 +10,8 @@ router.put("/user/update/", userController.updateUser);
 router.get("/user",userController.getUser);
 router.post("/user/forgetPassword",userController.forgotPassword);
 router.put("/user/resetPassword",userController.resetPassword);
+router.get("/user/verifyEmail",userController.verifyEmail);
+router.post("/user/resendVerification",userController.resendVerificationEmail);
 
 //admin
 router.get("",userController.getAllUsers);
