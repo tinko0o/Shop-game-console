@@ -204,6 +204,11 @@ header{
                         li{
                           position: relative;
                         }
+                        .nav-edit{
+                          &:hover{
+                            background-color: white !important;
+                          }
+                        }
                         .Change{
                           &:hover{
                             .dropdown-pass{

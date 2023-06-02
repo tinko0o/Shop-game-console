@@ -275,6 +275,9 @@ header .container .nav-top .nav-action .user .dropdown-user .profile:hover .drop
 header .container .nav-top .nav-action .user .dropdown-user .profile li {
   position: relative;
 }
+header .container .nav-top .nav-action .user .dropdown-user .profile .nav-edit:hover {
+  background-color: white !important;
+}
 header .container .nav-top .nav-action .user .dropdown-user .profile .Change:hover .dropdown-pass {
   visibility: visible;
   opacity: 1;

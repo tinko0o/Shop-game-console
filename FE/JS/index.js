@@ -55,7 +55,7 @@ function header(){
                   </form> 
                 </div>
               </li>
-              <li>
+              <li class="nav-edit">
                 <div class="btn-group dropstart">
                   <button type="button" class="btn btn-secondary dropdown-toggle edit-profile" data-bs-toggle="dropdown" aria-expanded="false">
                     Thông tin cá nhân

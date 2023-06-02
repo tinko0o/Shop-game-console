@@ -2,6 +2,9 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const { json } = require("body-parser");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+
 
 //register
 
@@ -444,38 +447,101 @@ exports.changeAdminPassword = async (req, res) => {
   }
 };
 
-// CODE YOU, YOU TỰ FIX VÀ TỰ GẮN
 
-//check Admin
-// exports.checkAuthorization =async (req,res)=>{
-//   try{
-//     const token = req.headers.authentication;
-//     if(!token){
-//       return res.status(200).JSON({
-//         success:false,
-//         message:"UnAuthorization"
-//       });
-//     }
-//     const key =process.env.JWT_SEC;
-//     const user = jwt.verify(token,key);
-//     const email = user.email;
-//     if(user){
-//       const users = await User.findOne({email});
-//       res.status(200).json({
-//         success:true,
-//         data: users.isAdmin,
-//       });
-//     }else{
-//       res.status(200).json({
-//         success:false,
-//         message:"UnAuthorization"
-//       });
-//     }
-//   }
-//   catch(err){
-//     res.status(500).json({
-//       success:false,
-//       state:"UnAuthorization",
-//     });
-//   }
-// };
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: "manhha2392000@gmail.com",
+    pass: "devrvqmuqvfufgds",
+  },
+});
+
+
+// forget password
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy tài khoản",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    user.resetToken = resetToken;
+    user.resetTokenExpiration = Date.now() + 3600000;
+    await user.save();
+
+    const mailOptions = {
+      from: "manhha2392000@gmail.com",
+      to: user.email,
+      subject: "Đặt lại mật khẩu",
+      text: `Xin chào,\n\nBạn đã yêu cầu đặt lại mật khẩu. Vui lòng sử dụng mã sau để đặt lại mật khẩu của bạn:\n\n${resetToken}\n\nMã này sẽ hết hạn sau 1 giờ.\n\nNếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.\n\nTrân trọng,\nNhóm hỗ trợ của chúng tôi`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({
+      success: true,
+      message: "Một email đã được gửi đến bạn để đặt lại mật khẩu.",
+    });
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ success: false, message: "Đã xảy ra sự cố khi yêu cầu đặt lại mật khẩu" });
+  }
+};
+
+// reset password
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { resetToken, password, confirmPassword } = req.body;
+
+    const user = await User.findOne({
+      resetToken,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Đường dẫn đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu xác nhận không trùng",
+      });
+    }
+
+    const salt = bcrypt.genSaltSync(12);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Mật khẩu đã được đặt lại thành công.",
+    });
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ success: false, message: "Đã xảy ra sự cố khi đặt lại mật khẩu" });
+  }
+};
+
+
+

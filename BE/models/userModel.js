@@ -11,6 +11,8 @@ const UserSchema = new mongoose.Schema(
     wards: { type: String, require: true },
     streetAndHouseNumber: { type: String, require: true },
     isAdmin: { type: Boolean, default: false },
+    resetToken: { type: String },
+    resetTokenExpiration: { type: Date },
   },
   {
     timestamps: true,
