@@ -51,20 +51,20 @@ export function header(){
     }
 }
 //alert
-export  function alertFullil(message="success") {
+export  function alertFullil(message="success",time = 1500) {
   alertSuccess.children[0].textContent = `${message}`;
   alertSuccess.classList.add("get-active");
   setTimeout(() => {
     alertSuccess.classList.remove("get-active");
-  }, 1500);
+  }, time);
 }
 
-export  function alertFail(message="Something fail!") {
+export  function alertFail(message="Something fail!",time = 1500) {
   alertDanger.children[0].textContent = `${message}`;
   alertDanger.classList.add("get-active");
   setTimeout(() => {
     alertDanger.classList.remove("get-active");
-  }, 1500);
+  }, time);
 }
 //formatCurrency
 export  function formatCurrency(price, symbol = "đ") {
