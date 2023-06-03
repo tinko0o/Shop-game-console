@@ -10,6 +10,7 @@ const alertDanger = $(".alert-danger");
 const formSignin = $(".get-signin");
 const http = "http://localhost:8080/api/users/";
 const checkRegister = JSON.parse(localStorage.getItem("register"));
+let isEmail = "";
 signUpButton.addEventListener('click', () =>{
   $(".sign-up-container").innerHTML=htmlSignUp
   container.classList.add('right-panel-active')
@@ -31,7 +32,7 @@ signUpButton.addEventListener('click', () =>{
         email,
         password,
       };
-      console.log(data)
+      // console.log(data)
       register(data);
     } else {
       alertDanger.children[0].textContent =
@@ -44,8 +45,18 @@ signUpButton.addEventListener('click', () =>{
   });
 });
 
-signInButton.addEventListener('click', () =>
-    container.classList.remove('right-panel-active'));
+signInButton.addEventListener('click', () =>{
+  if(isEmail){
+    const resendHtml = `<a class="re-send" href="#">Gửi lại email xác nhận?</a>`
+    forgot.insertAdjacentHTML('beforebegin', resendHtml)
+    const btnReSend = $(".re-send")
+    btnReSend.addEventListener('click', () =>{
+      resendVerify(isEmail)
+    })
+  }
+  container.classList.remove('right-panel-active')
+});
+
 // ------------------------
 
 // const signinBtn = document.querySelector(".signin-btn");
@@ -171,7 +182,23 @@ function resetPassword(resetToken, password, confirmPassword){
     alertFail();
   })
 }
-
+async function resendVerify(email){
+    await fetch(`${http}user/resendVerification`,{
+        headers: {                     
+        "Content-type": "application/json; charset=UTF-8",
+        },
+        method:"post",
+        body:JSON.stringify({email})    
+    })
+    .then((data) => data.json())
+    .then((data) => {
+      if(data.success){
+        alertFullil(data.message)
+      }else{
+        alertFail(data.message)
+      }
+    })
+}
 //LOGIN----------
 async function login(data){
   await fetch(`${http}login`,{
@@ -239,6 +266,7 @@ async function register(data){
           setTimeout(() => {
             alertSuccess.classList.remove("get-active");
           }, 3000);
+          isEmail = data.email;
           signInButton.click();
           // formSignin.elements["email"].value = data.email;
           // formSignin.elements["password"].value = data.password;

@@ -4,7 +4,8 @@ const { json } = require("body-parser");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-
+const ejs = require('ejs');
+const fs = require('fs');
 
 //register
 
@@ -71,7 +72,6 @@ exports.register = async (req, res) => {
 };
 
 // verify email
-
 exports.verifyEmail = async (req, res) => {
   const { token } = req.query;
 
@@ -79,20 +79,23 @@ exports.verifyEmail = async (req, res) => {
     const user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy người dùng',
-      });
+        const template = fs.readFileSync('views/verify-fail.ejs', 'utf-8');
+        const html = ejs.render(template);
+        return res.status(404).send(html);
     }
 
     user.isVerified = true;
     user.verificationToken = undefined;
     await user.save();
 
-    res.status(200).json({
-      success: true,
-      message: 'Email xác minh thành công',
-    });
+    // Đọc nội dung của file template verify-email.ejs
+    const template = fs.readFileSync('views/verify-email.ejs', 'utf-8');
+
+    // Render template với dữ liệu cần truyền vào (nếu có)
+    const html = ejs.render(template, { username: user.name });
+
+    // Trả về HTML đã render
+    res.status(200).send(html);
   } catch (error) {
     console.log(JSON.stringify(error, null, 2));
     console.log();
@@ -105,6 +108,39 @@ exports.verifyEmail = async (req, res) => {
     });
   }
 };
+// exports.verifyEmail = async (req, res) => {
+//   const { token } = req.query;
+
+//   try {
+//     const user = await User.findOne({ verificationToken: token });
+
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Không tìm thấy người dùng',
+//       });
+//     }
+
+//     user.isVerified = true;
+//     user.verificationToken = undefined;
+//     await user.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Email xác minh thành công',
+//     });
+//   } catch (error) {
+//     console.log(JSON.stringify(error, null, 2));
+//     console.log();
+
+//     res.status(500).json({
+//       success: false,
+//       error: {
+//         message: 'Đã xảy ra sự cố khi xác minh email',
+//       },
+//     });
+//   }
+// };
 
 // Resend verification email
 
