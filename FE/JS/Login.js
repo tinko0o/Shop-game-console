@@ -11,6 +11,7 @@ const formSignin = $(".get-signin");
 const http = "http://localhost:8080/api/users/";
 const checkRegister = JSON.parse(localStorage.getItem("register"));
 let isEmail = "";
+let isCheckEmail = false;
 signUpButton.addEventListener('click', () =>{
   $(".sign-up-container").innerHTML=htmlSignUp
   container.classList.add('right-panel-active')
@@ -46,13 +47,14 @@ signUpButton.addEventListener('click', () =>{
 });
 
 signInButton.addEventListener('click', () =>{
-  if(isEmail){
+  if(isEmail && isCheckEmail){
     const resendHtml = `<a class="re-send" href="#">Gửi lại email xác nhận?</a>`
     forgot.insertAdjacentHTML('beforebegin', resendHtml)
     const btnReSend = $(".re-send")
     btnReSend.addEventListener('click', () =>{
       resendVerify(isEmail)
     })
+    isCheckEmail =  false
   }
   container.classList.remove('right-panel-active')
 });
@@ -88,8 +90,8 @@ const htmlSignUp=`
           </div>
           <span></span>
           <label>
-              <input type="text" class="r-username" placeholder="Họ tên" pattern=".{4,}"
-                  title="Bốn ký tự trở lên" required/>
+              <input type="text" class="r-username" placeholder="Họ tên" pattern=".{4,30}"
+                  title="Bốn ký tự trở lên và tối đa 30 ký tự" required/>
           </label>
           <label>
               <input type="email" class="r-email" placeholder="Email" required/>
@@ -268,6 +270,7 @@ async function register(data){
           }, 3000);
           isEmail = data.email;
           signInButton.click();
+          isCheckEmail = true
           // formSignin.elements["email"].value = data.email;
           // formSignin.elements["password"].value = data.password;
           // Confirm SIGN_IN
