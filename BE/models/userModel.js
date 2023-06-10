@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema(
     resetToken: { type: String },
     resetTokenExpiration: { type: Date },
     verificationToken: { type: String },
-    isVerified: {type: Boolean}
+    isVerified: { type: Boolean },
   },
   {
     timestamps: true,

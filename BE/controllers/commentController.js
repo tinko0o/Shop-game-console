@@ -5,6 +5,7 @@ const Product = require("../models/productModel");
 const Comment = require("../models/commentModel");
 const Order = require("../models/orderModel");
 
+// add comment
 exports.addComment = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -37,10 +38,8 @@ exports.addComment = async (req, res) => {
         message: "Không tìm thấy order",
       });
     }
-
     let parentCommentId = null;
     let repliedToUsername = null;
-
     if (req.body.parentCommentId !== undefined) {
       const parentComment = await Comment.findById(req.body.parentCommentId);
       if (!parentComment) {
@@ -60,9 +59,12 @@ exports.addComment = async (req, res) => {
         repliedToUsername = parentComment.name;
       }
     }
-
     const isAdmin = user.isAdmin;
-    const isProductInOrder = orders.some(order => order.products.some(product => product.id.toString() === req.body.productId.toString()));
+    const isProductInOrder = orders.some((order) =>
+      order.products.some(
+        (product) => product.id.toString() === req.body.productId.toString()
+      )
+    );
     const newComment = new Comment({
       productId: req.body.productId,
       userId: user.id,
@@ -80,7 +82,6 @@ exports.addComment = async (req, res) => {
       message: "Bình luận thành công",
       data: newComment,
     });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -90,10 +91,7 @@ exports.addComment = async (req, res) => {
   }
 };
 
-
-
-//delete product comments 1
-
+// delete product comments
 exports.deleteComment = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -125,12 +123,6 @@ exports.deleteComment = async (req, res) => {
         message: "Không tìm thấy bình luận",
       });
     }
-    // if (comment.userId.toString() !== user.id.toString()) {
-    //   return res.status(403).json({
-    //     success: false,
-    //     message: "Bạn không có quyền xóa bình luận này",
-    //   });
-    // }
     await Comment.findByIdAndDelete(req.params.commentId);
     return res.status(200).json({
       success: true,
@@ -145,26 +137,28 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
-//get product comments
-
+// get product comments
 exports.getComments = async (req, res) => {
   try {
     const productId = req.params.productId;
-    const comments = await Comment.find({ productId: productId, parentCommentId: null }).sort({ createdAt: -1 });
+    const comments = await Comment.find({
+      productId: productId,
+      parentCommentId: null,
+    }).sort({ createdAt: -1 });
     const commentsWithReplies = [];
 
     for (const comment of comments) {
       const commentData = comment.toObject();
-      const replies = await Comment.find({ parentCommentId: comment._id }).sort({ createdAt: 1 });
+      const replies = await Comment.find({ parentCommentId: comment._id }).sort(
+        { createdAt: 1 }
+      );
       commentData.replies = [];
-
       for (const reply of replies) {
         const replyData = reply.toObject();
         commentData.replies.push(replyData);
       }
       commentsWithReplies.push(commentData);
     }
-
     res.status(200).json({
       success: true,
       comments: commentsWithReplies,

@@ -4,8 +4,7 @@ const jwt = require("jsonwebtoken");
 const Cart = require("../models/cartModel");
 const Product = require("../models/productModel");
 
-//add user cart
-
+// add user cart
 exports.addCart = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -23,16 +22,14 @@ exports.addCart = async (req, res) => {
         success: false,
         message: "Bạn không có quyền",
       });
-    }
-    else {
+    } else {
       const product = await Product.findById({ _id: req.body.id });
       if (!product) {
         return res.status(404).json({
           success: false,
           message: "Không tìm thấy sản phẩm",
         });
-      }
-      else {
+      } else {
         const cart = await Cart.findOne({ userId: user._id });
         if (!cart && req.body) {
           const newCart = new Cart({
@@ -48,14 +45,13 @@ exports.addCart = async (req, res) => {
               },
             ],
             total: product.price * req.body.quantity,
-          })
+          });
           await newCart.save();
           return res.status(200).json({
             success: true,
             data: newCart,
           });
-        }
-        else {
+        } else {
           const checkProduct = cart.products.findIndex(
             (product) => product.id == req.body.id
           );
@@ -64,7 +60,10 @@ exports.addCart = async (req, res) => {
             updatedProducts[checkProduct].quantity += req.body.quantity;
             await Cart.findByIdAndUpdate(
               { _id: cart.id },
-              { products: updatedProducts, total: cart.total + product.price * req.body.quantity }
+              {
+                products: updatedProducts,
+                total: cart.total + product.price * req.body.quantity,
+              }
             );
           } else {
             const newProduct = {
@@ -78,7 +77,10 @@ exports.addCart = async (req, res) => {
             const updatedProducts = [...cart.products, newProduct];
             await Cart.findByIdAndUpdate(
               { _id: cart.id },
-              { products: updatedProducts, total: cart.total + product.price * req.body.quantity }
+              {
+                products: updatedProducts,
+                total: cart.total + product.price * req.body.quantity,
+              }
             );
           }
           return res.status(200).json({
@@ -89,12 +91,13 @@ exports.addCart = async (req, res) => {
       }
     }
   } catch (err) {
-    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi thêm vào giỏ" });
+    res
+      .status(500)
+      .json({ success: false, message: "Đã xảy ra lỗi khi thêm vào giỏ" });
   }
 };
 
-//update product quantity
-
+// update product quantity
 exports.updateCart = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -121,7 +124,9 @@ exports.updateCart = async (req, res) => {
       });
     }
     const productId = req.params.id;
-    const product = cart.products.find((product) => String(product.id) === productId);
+    const product = cart.products.find(
+      (product) => String(product.id) === productId
+    );
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -135,11 +140,14 @@ exports.updateCart = async (req, res) => {
         message: "Số lượng phải lớn hơn 0",
       });
     }
-    const productIndex = cart.products.findIndex((product) => String(product.id) === productId);
+    const productIndex = cart.products.findIndex(
+      (product) => String(product.id) === productId
+    );
     const updatedProducts = [...cart.products];
     const oldQuantity = updatedProducts[productIndex].quantity;
     updatedProducts[productIndex].quantity = newQuantity;
-    const newTotal = cart.total - (oldQuantity * product.price) + (newQuantity * product.price);
+    const newTotal =
+      cart.total - oldQuantity * product.price + newQuantity * product.price;
     await Cart.findByIdAndUpdate(
       { _id: cart.id },
       { products: updatedProducts, total: newTotal }
@@ -151,12 +159,16 @@ exports.updateCart = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi cập nhật số lượng sản phẩm" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Đã xảy ra lỗi khi cập nhật số lượng sản phẩm",
+      });
   }
 };
 
-//delete cart products
-
+// delete cart products
 exports.deleteCartProducts = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -183,30 +195,37 @@ exports.deleteCartProducts = async (req, res) => {
       });
     }
     const productId = req.params.id;
-    const products = cart.products.filter(val => val.id !== productId);
-    const deletedProduct = cart.products.find(val => val.id === productId);
+    const products = cart.products.filter((val) => val.id !== productId);
+    const deletedProduct = cart.products.find((val) => val.id === productId);
     const deletedQuantity = deletedProduct.price * deletedProduct.quantity;
     const newTotal = cart.total - deletedQuantity;
     if (products.length === 0) {
       await Cart.findOneAndDelete({ userId: user._id });
       return res.status(200).json({
         success: true,
-        message: "Xóa giỏ hàng thành công"
+        message: "Xóa giỏ hàng thành công",
       });
     }
-    await Cart.findOneAndUpdate({ userId: user._id }, {products, total: newTotal});
+    await Cart.findOneAndUpdate(
+      { userId: user._id },
+      { products, total: newTotal }
+    );
     return res.status(200).json({
       success: true,
-      message: "Xóa sản phẩm trong giỏ thành công"
+      message: "Xóa sản phẩm trong giỏ thành công",
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xóa sản phẩm trong giỏ hàng" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Đã xảy ra lỗi khi xóa sản phẩm trong giỏ hàng",
+      });
   }
 };
 
-//delete cart
-
+// delete cart
 exports.deleteCart = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -238,12 +257,13 @@ exports.deleteCart = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Đã xảy ra lỗi khi xóa giỏ hàng" });
+    res
+      .status(500)
+      .json({ success: false, message: "Đã xảy ra lỗi khi xóa giỏ hàng" });
   }
 };
 
-//get cart
-
+// get cart
 exports.getCart = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -262,7 +282,7 @@ exports.getCart = async (req, res) => {
         message: "không tìm thấy người dùng",
       });
     }
-    const cart = await Cart.findOne({ userId: user._id })
+    const cart = await Cart.findOne({ userId: user._id });
     if (!cart) {
       return res.status(200).json({
         success: true,
@@ -274,12 +294,16 @@ exports.getCart = async (req, res) => {
       data: cart,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi xuất giỏ hàng của người dùng" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Đã xảy ra sự cố khi xuất giỏ hàng của người dùng",
+      });
   }
 };
 
-//get amount of products
-
+// get amount of products
 exports.getAmountCart = async (req, res) => {
   try {
     const token = req.headers.authentication;
@@ -298,7 +322,7 @@ exports.getAmountCart = async (req, res) => {
         message: "Không tìm thấy người dùng",
       });
     }
-    const cart = await Cart.findOne({ userId: user._id })
+    const cart = await Cart.findOne({ userId: user._id });
     if (!cart) {
       return res.status(200).json({
         success: true,
@@ -306,15 +330,19 @@ exports.getAmountCart = async (req, res) => {
       });
     }
     let amount = 0;
-    cart.products.forEach((products)=>{
-      amount += products.quantity
+    cart.products.forEach((products) => {
+      amount += products.quantity;
     });
     res.status(200).json({
       success: true,
       data: amount,
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Đã xảy ra sự cố khi lấy tổng sản phẩm trong giỏ hàng" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Đã xảy ra sự cố khi lấy tổng sản phẩm trong giỏ hàng",
+      });
   }
 };
-
