@@ -79,6 +79,10 @@ body {
   margin: 0;
 }
 
+.carousel-item {
+  height: 500px;
+}
+
 .image {
   display: block;
   width: 100%;

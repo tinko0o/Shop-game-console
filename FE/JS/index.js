@@ -112,10 +112,13 @@ function U_quantityCart(){
         cartQuantities.innerHTML = data?.data;
       }
       else{
-        header().logoff.click();
+          localStorage.removeItem("loginUser");
+          window.location.reload();
       }
     })
     .catch(()=>{
+          localStorage.removeItem("loginUser");
+          window.location.reload();
       alertFail();
     })
   }else{
