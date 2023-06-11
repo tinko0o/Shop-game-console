@@ -257,11 +257,11 @@ async function register(data){
       .then((response) => response.json())
       .then((response) => {
         if (!response.success) {
-          alertDanger.children[0].textContent = `${response.message}`;
-          alertDanger.classList.add("get-active");
-          setTimeout(() => {
-            alertDanger.classList.remove("get-active");
-          }, 3000);
+            alertDanger.children[0].textContent = `${response.error.message}`;
+            alertDanger.classList.add("get-active");
+            setTimeout(() => {
+              alertDanger.classList.remove("get-active");
+            }, 3000);
         } else {
           alertSuccess.children[0].textContent = `Đăng ký thành công,bạn cần xác minh tài khoản trước khi đăng nhập nhé`;
           alertSuccess.classList.add("get-active");
@@ -269,8 +269,8 @@ async function register(data){
             alertSuccess.classList.remove("get-active");
           }, 3000);
           isEmail = data.email;
-          signInButton.click();
           isCheckEmail = true
+          signInButton.click();
           // formSignin.elements["email"].value = data.email;
           // formSignin.elements["password"].value = data.password;
           // Confirm SIGN_IN
