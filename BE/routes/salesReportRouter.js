@@ -3,8 +3,7 @@ const salesReportController = require("../controllers/salesReportController");
 
 //user
 
-
 //admin
-router.get("",salesReportController.getSalesReports);
+router.get("", salesReportController.getSalesReports);
 
 module.exports = router;
