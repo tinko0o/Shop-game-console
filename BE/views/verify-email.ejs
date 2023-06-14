@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -8,4 +8,70 @@
   <h1>Email của bạn đã được xác minh thành công!</h1>
   <p>Cảm ơn user: <strong><%= username %></strong> đã xác minh địa chỉ email của mình.</p>
 </body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CẢM ƠN</title>
+</head>
+
+<body>
+    <div class="thank-page">
+        <div class="container">
+            <!-- <img disabled src="./thanks.png" alt=""> -->
+            <h1>Email của bạn đã được xác minh thành công!</h1>
+            <hr>
+            <p>Cảm ơn user: <strong><%= username %></strong> đã xác minh địa chỉ email của mình.</p>
+            <p>Hãy đóng trang và quay lại trang đăng nhập để tiếp tục nhé</p>
+            <!-- <button class="btn-back">Quay lại trang chủ ngay</button> -->
+        </div>
+    </div>
+</body>
 </html>
+
+<style>
+  .container {
+  padding: 0 20% 0 20%;
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+.container img {
+  width: 500px;
+  display: block;
+  margin: auto;
+}
+.container h1 {
+  font-size: 40px;
+}
+.container p {
+  font-size: 20px;
+}
+.container .btn-back {
+  font-size: 20px;
+  border-radius: 4px;
+  transition: 0.4s;
+  height: 40px;
+}
+.container .btn-back:hover {
+  background-color: antiquewhite;
+}/*# sourceMappingURL=thank.css.map */
+</style>
+<!-- <script>
+  const $ = document.querySelector.bind(document);
+const momo = JSON.parse(localStorage.getItem("Momo"))||null;
+const http = "http://localhost:8080/api/";
+const User = JSON.parse(localStorage.getItem("loginUser"));
+window.addEventListener("load",function(){
+    this.setTimeout(()=>{
+        this.window.location.replace("http://192.168.0.38:5500/FE/index.html")
+    },4000)
+    $(".btn-back").addEventListener("click",function(){
+        window.location.replace("http://192.168.0.38:5500/FE/index.html")
+    })
+})
+</script> -->

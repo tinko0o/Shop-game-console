@@ -1,10 +1,66 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Email Xác Minh</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CẢM ƠN</title>
 </head>
+
 <body>
-  <h1>Không tìm thấy người dùng!</h1>
+    <div class="thank-page">
+        <div class="container">
+            <!-- <img disabled src="./thanks.png" alt=""> -->
+            <h1>Không tìm thấy người dùng!</h1>
+            <hr>
+            <p>Có thể link hết hạn hoặc bạn thao tác sai yêu cầu, hãy thử lại nhé</p>
+            <!-- <button class="btn-back">Quay lại trang chủ ngay</button> -->
+        </div>
+    </div>
 </body>
 </html>
+
+<style>
+  .container {
+  padding: 0 20% 0 20%;
+  display: block;
+  margin: auto;
+  text-align: center;
+}
+.container img {
+  width: 500px;
+  display: block;
+  margin: auto;
+}
+.container h1 {
+  font-size: 40px;
+}
+.container p {
+  font-size: 20px;
+}
+.container .btn-back {
+  font-size: 20px;
+  border-radius: 4px;
+  transition: 0.4s;
+  height: 40px;
+}
+.container .btn-back:hover {
+  background-color: antiquewhite;
+}/*# sourceMappingURL=thank.css.map */
+</style>
+<!-- <script>
+  const $ = document.querySelector.bind(document);
+const momo = JSON.parse(localStorage.getItem("Momo"))||null;
+const http = "http://localhost:8080/api/";
+const User = JSON.parse(localStorage.getItem("loginUser"));
+window.addEventListener("load",function(){
+    this.setTimeout(()=>{
+        this.window.location.replace("http://192.168.0.38:5500/FE/index.html")
+    },4000)
+    $(".btn-back").addEventListener("click",function(){
+        window.location.replace("http://192.168.0.38:5500/FE/index.html")
+    })
+})
+</script> -->
